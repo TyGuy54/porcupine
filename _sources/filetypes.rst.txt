@@ -1,38 +1,13 @@
-File Types
-==========
-
-.. _automagic-filetype-creation:
-
-Porcupine supports editing several different kinds of files. When opening or
-saving a file, only a small subset of supported file types is listed under the
-"Files of type" menu, so if the type of some file is not listed there just
-select "All Files". There's a good chance that your file will be syntax
-highlighted correctly anyway.
-
-
-filetypes.ini
--------------
-
-If you edit files of some specific type often, you can add that file type to
-your ``filetypes.ini`` configuration file. This way it will show up on the
-"Files of type" menu, but you can also set up other stuff such as indentation
-settings or running commands.
-
-Porcupine creates a ``filetypes.ini`` when it's started for the first time. You
-can edit it easily by opening *Porcupine Settings* from the *Edit* menu and
-clicking the *Edit filetypes.ini* button. Then follow the instructions in the
-beginning of the file.
-
-If your ``filetypes.ini`` contains something invalid, Porcupine will print a
-warning message to the terminal or command prompt and start normally. If you
-want to reset all changes you have done to ``filetypes.ini``, just delete it
-and restart Porcupine. It will create a new ``filetypes.ini``.
-
-
-The ``porcupine.filetypes`` module
-----------------------------------
+:mod:`porcupine.filetypes` --- ``filetypes.ini`` stuff
+======================================================
 
 .. module:: porcupine.filetypes
+
+.. seealso::
+    The documentation for configuring ``filetypes.ini`` is in
+    `Porcupine Wiki <https://github.com/Akuli/porcupine/wiki/Getting-Porcupine-to-work-with-a-programming-language>`_.
+
+
 
 This module exposes an API for things that are defined in ``filetypes.ini``.
 
@@ -43,9 +18,8 @@ Filetype Objects
 ^^^^^^^^^^^^^^^^
 
 Many functions in :mod:`porcupine.filetypes` return filetype objects. Most
-filetype objects represent a section beginning with ``[a header]`` in
-``filetypes.ini``, but Porcupine creates new filetype objects on the fly as
-needed (see :ref:`above <automagic-filetype-creation>`).
+filetype objects represent the configuration for one file type in ``filetypes.ini``,
+but Porcupine creates new filetype objects on the fly for files that Pygments knows but ``filetypes.ini`` doesn't.
 
 Filetype objects have these attributes and methods:
 
@@ -63,21 +37,30 @@ Filetype objects have these attributes and methods:
 .. attribute:: somefiletype.tabs2spaces
 .. attribute:: somefiletype.indent_size
 .. attribute:: somefiletype.max_line_length
+.. attribute:: somefiletype.langserver_command
+.. attribute:: somefiletype.langserver_language_id
+.. attribute:: somefiletype.langserver_port
 
     See your ``filetype.ini`` for details regarding each attribute. Types or
     possible values are listed here:
 
-    ========================    ========================================
-    ``filename_patterns``       list of strings
-    ``mimetypes``               list of strings
-    ``shebang_regex``           a regex object from :func:`re.compile`
-    ``tabs2spaces``             True or False
-    ``indent_size``             int
-    ``max_line_length``         int
-    ========================    ========================================
+    ============================    ========================================
+    ``filename_patterns``           list of strings
+    ``mimetypes``                   list of strings
+    ``shebang_regex``               a regex object from :func:`re.compile`
+    ``tabs2spaces``                 True or False
+    ``indent_size``                 int
+    ``max_line_length``             int
+    ``langserver_command``          str
+    ``langserver_language_id``      str
+    ``langserver_port``             int or None
+    ============================    ========================================
 
     If no ``shebang_regex`` is given in ``filetypes.ini``, ``shebang_regex`` is
     set to a regex object that matches nothing.
+
+    Setting ``langserver_port`` to None means that stdin and stdout of the
+    langserver process will be used instead of a TCP socket.
 
 .. method:: somefiletype.get_lexer(**kwargs)
 

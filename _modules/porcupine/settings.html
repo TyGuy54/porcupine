@@ -1,18 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>porcupine.settings &#8212; Porcupine API 0.70.0-git-91b3c90 documentation</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.settings &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -42,7 +42,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkfont</span>
-<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
 <span class="kn">import</span> <span class="nn">types</span>
 
 <span class="c1"># the pygments stuff is just for _validate_pygments_style_name()</span>
@@ -55,8 +55,8 @@
 <span class="c1"># porcupine._run because that imports this file (lol)</span>
 <span class="c1"># that&#39;s why &quot;import porcupine&quot;</span>
 <span class="kn">import</span> <span class="nn">porcupine</span>
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="k">import</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">porcupine.filetypes</span> <span class="k">import</span> <span class="n">get_all_filetypes</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">porcupine.filetypes</span> <span class="kn">import</span> <span class="n">get_all_filetypes</span>
 
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -122,7 +122,7 @@
 
 <span class="k">class</span> <span class="nc">_ConfigSection</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_notebook</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.init() wasn&#39;t called&quot;</span> <span class="o">%</span> <span class="vm">__name__</span><span class="p">)</span>
 
@@ -155,7 +155,7 @@
             <span class="n">errorvar</span><span class="o">=</span><span class="n">tkinter</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">(),</span>  <span class="c1"># true when the triangle is showing</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_infos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -165,8 +165,8 @@
             <span class="n">_loaded_json</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">old_value</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%r</span><span class="s2"> was set to </span><span class="si">%r</span><span class="s2">, running callbacks&quot;</span><span class="p">,</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%r</span><span class="s2"> was set to </span><span class="si">%r</span><span class="s2">, running </span><span class="si">%d</span><span class="s2"> callbacks&quot;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">callbacks</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">func</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -181,19 +181,19 @@
                     <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">(</span><span class="si">%r</span><span class="s2">) didn&#39;t work&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
                                   <span class="n">func_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_loaded_json</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_infos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">default</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>    <span class="c1"># the abc requires this</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>    <span class="c1"># the abc requires this</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;cannot delete options&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_infos</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_infos</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -303,7 +303,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_var_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
         <span class="k">return</span> <span class="n">var</span>
 
-    <span class="k">def</span> <span class="nf">add_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">triangle_key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">triangle_key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a ``ttk.Frame`` to the dialog and return it.</span>
 
 <span class="sd">        The frame will contain a label that displays a |triangle| when</span>
@@ -315,6 +315,7 @@
 <span class="sd">            frame = section.add_frame(key)</span>
 <span class="sd">            var = section.get_var(key, tkinter.BooleanVar)</span>
 <span class="sd">            ttk.Checkbutton(frame, text=text, variable=var).pack(side=&#39;left&#39;)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content_frame</span><span class="p">)</span>
         <span class="n">frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
@@ -334,6 +335,16 @@
             <span class="n">on_errorvar_changed</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">frame</span>
+
+    <span class="c1"># TODO: document this</span>
+    <span class="k">def</span> <span class="nf">add_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_frame</span><span class="p">()</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s1">&#39;&lt;Configure&gt;&#39;</span><span class="p">,</span>
+            <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">label</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">wraplength</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">width</span><span class="p">)),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">label</span>
 
     <span class="k">def</span> <span class="nf">add_checkbutton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a ``ttk.Checkbutton`` that sets an option to a bool.&quot;&quot;&quot;</span>
@@ -437,7 +448,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pygments</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">pygments</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">ClassNotFound</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InvalidValue</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">None</span>
+        <span class="k">raise</span> <span class="n">InvalidValue</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="kn">from</span> <span class="bp">None</span>
 
 
 <span class="k">def</span> <span class="nf">_init</span><span class="p">():</span>
@@ -475,8 +486,8 @@
 
     <span class="n">fixedfont</span> <span class="o">=</span> <span class="n">tkfont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TkFixedFont&#39;</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">font_families</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">family</span> <span class="k">for</span> <span class="n">family</span> <span class="ow">in</span> <span class="n">tkfont</span><span class="o">.</span><span class="n">families</span><span class="p">()</span>
-                     <span class="c1"># i get weird fonts starting with @ on windows</span>
-                     <span class="k">if</span> <span class="ow">not</span> <span class="n">family</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">))</span>
+                           <span class="c1"># i get weird fonts starting with @ on windows</span>
+                           <span class="k">if</span> <span class="ow">not</span> <span class="n">family</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">))</span>
 
     <span class="n">general</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="o">.</span><span class="n">actual</span><span class="p">(</span><span class="s1">&#39;family&#39;</span><span class="p">))</span>
     <span class="n">general</span><span class="o">.</span><span class="n">add_combobox</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="n">font_families</span><span class="p">,</span> <span class="s2">&quot;Font Family:&quot;</span><span class="p">,</span>
@@ -502,38 +513,29 @@
     <span class="n">general</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">general</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="n">_validate_pygments_style_name</span><span class="p">)</span>
 
-    <span class="n">filetypes</span> <span class="o">=</span> <span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;File Types&#39;</span><span class="p">)</span>
-    <span class="n">label1</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">filetypes</span><span class="o">.</span><span class="n">content_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="p">(</span>
-        <span class="s2">&quot;Currently there&#39;s no GUI for changing filetype specific settings, &quot;</span>
-        <span class="s2">&quot;but they&#39;re stored in filetypes.ini and you can edit it yourself.&quot;</span><span class="p">))</span>
-    <span class="n">label2</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">filetypes</span><span class="o">.</span><span class="n">content_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">You can use the following option to choose which filetype &quot;</span>
-        <span class="s2">&quot;Porcupine should use when you create a new file in Porcupine. You &quot;</span>
-        <span class="s2">&quot;can change the filetype after creating the file clicking Filetypes &quot;</span>
-        <span class="s2">&quot;in the menu bar.&quot;</span><span class="p">))</span>
-    <span class="n">filetypes</span><span class="o">.</span><span class="n">content_frame</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>      <span class="c1"># automatic wrapping</span>
-        <span class="s1">&#39;&lt;Configure&gt;&#39;</span><span class="p">,</span>
-        <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="p">{</span>   <span class="c1"># have fun figuring out why javascripty { } works</span>
-            <span class="n">label1</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">wraplength</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">width</span><span class="p">),</span>
-            <span class="n">label2</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">wraplength</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">width</span><span class="p">),</span>
-        <span class="p">},</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">edit_it</span><span class="p">():</span>
         <span class="c1"># porcupine/tabs.py imports this file</span>
         <span class="c1"># these local imports feel so evil xD  MUHAHAHAA!!!</span>
-        <span class="kn">from</span> <span class="nn">porcupine</span> <span class="k">import</span> <span class="n">tabs</span>
+        <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">tabs</span>
 
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirs</span><span class="o">.</span><span class="n">configdir</span><span class="p">,</span> <span class="s1">&#39;filetypes.ini&#39;</span><span class="p">)</span>
         <span class="n">manager</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span>
         <span class="n">manager</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
         <span class="n">_dialog</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
 
-    <span class="n">label1</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">filetypes</span><span class="o">.</span><span class="n">content_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Edit filetypes.ini&quot;</span><span class="p">,</span>
+    <span class="n">filetypes</span> <span class="o">=</span> <span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;File Types&#39;</span><span class="p">)</span>
+    <span class="n">filetypes</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span>
+        <span class="s2">&quot;Currently there&#39;s no GUI for changing filetype specific settings, &quot;</span>
+        <span class="s2">&quot;but they&#39;re stored in filetypes.ini and you can edit it yourself.&quot;</span><span class="p">)</span>
+    <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">filetypes</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(),</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Edit filetypes.ini&quot;</span><span class="p">,</span>
                <span class="n">command</span><span class="o">=</span><span class="n">edit_it</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-    <span class="n">label2</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
 
     <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">filetype</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="n">get_all_filetypes</span><span class="p">()]</span>
+    <span class="n">filetypes</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span>
+        <span class="s2">&quot;You can use the following option to choose which filetype &quot;</span>
+        <span class="s2">&quot;Porcupine should use when you create a new file in Porcupine. You &quot;</span>
+        <span class="s2">&quot;can change the filetype after creating the file by clicking &quot;</span>
+        <span class="s2">&quot;Filetypes in the menu bar.&quot;</span><span class="p">)</span>
     <span class="n">filetypes</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s1">&#39;Plain Text&#39;</span><span class="p">)</span>
     <span class="n">filetypes</span><span class="o">.</span><span class="n">add_combobox</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span>
                            <span class="s2">&quot;Default filetype for new files:&quot;</span><span class="p">)</span>
@@ -599,16 +601,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../../plugin-intro.html">Introduction to Writing Plugins</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html">File Types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
 </ul>
 
 <div class="relations">
@@ -621,17 +623,23 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -640,8 +648,8 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

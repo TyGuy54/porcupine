@@ -1,22 +1,22 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.70.0-git-91b3c90 documentation</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="porcupine.pluginloader — The module that loads plugins on startup" href="pluginloader.html" />
-    <link rel="prev" title="File Types" href="filetypes.html" />
+    <link rel="prev" title="porcupine.filetypes — filetypes.ini stuff" href="filetypes.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -41,16 +41,16 @@ in the <em>Edit</em> menu.</p>
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>The settings are divided into <strong>sections</strong>. Each section is shown as
 a tab in the setting dialog. You can also create your own sections.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.settings.get_section">
-<code class="descclassname">porcupine.settings.</code><code class="descname">get_section</code><span class="sig-paren">(</span><em>section_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#get_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.get_section" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">get_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#get_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.get_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a section object, creating it if it doesn’t exist yet.</p>
 <p>The <em>section_name</em> is a title of a tab in the <em>Porcupine Settings</em>
 dialog, such as <code class="docutils literal notranslate"><span class="pre">'General'</span></code> or <code class="docutils literal notranslate"><span class="pre">'File</span> <span class="pre">Types'</span></code>.</p>
 </dd></dl>
 
 <p>For example, you can do this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="k">import</span> <span class="n">settings</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">general_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>   <span class="c1"># get an existing section</span>
 <span class="n">wat_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;Wat Wat&#39;</span><span class="p">)</span>       <span class="c1"># create a new section</span>
@@ -71,7 +71,7 @@ dialog, such as <code class="docutils literal notranslate"><span class="pre">'Ge
 </div>
 <p>The sections behave a lot like dictionaries, so if you can do something with
 a dict you can probably do it with a section object as well.</p>
-<p>One restriction is that you can only use <a class="reference external" href="https://docs.python.org/3/library/json.html#module-json" title="(in Python v3.7)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a> compatible values,
+<p>One restriction is that you can only use <a class="reference external" href="https://docs.python.org/3/library/json.html#module-json" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a> compatible values,
 like strings, integers, floats and bools. I don’t recommend lists and dicts
 because they’re mutable; for example, after <code class="docutils literal notranslate"><span class="pre">section['key']</span> <span class="pre">=</span> <span class="pre">[]</span></code>, the
 <a class="reference internal" href="#porcupine.settings.section.connect" title="porcupine.settings.section.connect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">connect()</span></code></a> callbacks don’t run if you do
@@ -79,29 +79,27 @@ because they’re mutable; for example, after <code class="docutils literal notr
 <p>The “General” section has these options by default (but you can add more, see
 <a class="reference internal" href="#adding-options">Adding Options</a> below):</p>
 <blockquote>
-<div><dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">encoding</span></code></dt>
-<dd>This encoding should be used when reading and writing the user’s files.
-The default value is <code class="docutils literal notranslate"><span class="pre">'UTF-8'</span></code>.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">font_family</span></code> and <code class="docutils literal notranslate"><span class="pre">font_size</span></code></dt>
-<dd><p class="first">The current font family and size as a string and an integer.</p>
+<div><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">encoding</span></code></dt><dd><p>This encoding should be used when reading and writing the user’s files.
+The default value is <code class="docutils literal notranslate"><span class="pre">'UTF-8'</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">font_family</span></code> and <code class="docutils literal notranslate"><span class="pre">font_size</span></code></dt><dd><p>The current font family and size as a string and an integer.</p>
 <p>Porcupine also keeps these settings in a special font named
 <code class="docutils literal notranslate"><span class="pre">TkFixedFont</span></code>, so if you want to use this font in a widget just
 pass it a <code class="docutils literal notranslate"><span class="pre">font='TkFixedFont'</span></code> option. <code class="docutils literal notranslate"><span class="pre">Text</span></code> widgets use
 <code class="docutils literal notranslate"><span class="pre">TkFixedFont</span></code> by default.</p>
 <p>Do this if you need a <code class="docutils literal notranslate"><span class="pre">Font</span></code> object instead of the font name as a
 string:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkfont</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkfont</span>
 
 <span class="n">fixedfont</span> <span class="o">=</span> <span class="n">tkfont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TkFixedFont&#39;</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">pygments_style</span></code></dt>
-<dd><p class="first">Name of the current Pygments style, not the style object itself.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">pygments_style</span></code></dt><dd><p>Name of the current Pygments style, not the style object itself.</p>
 <p>Use this config value like this:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="k">import</span> <span class="n">settings</span>
-<span class="kn">from</span> <span class="nn">pygments</span> <span class="k">import</span> <span class="n">styles</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>
 
 <span class="n">general_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>
 <span class="n">the_style</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">general_config</span><span class="p">[</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">])</span>
@@ -112,12 +110,12 @@ string:</p>
 </div></blockquote>
 <p>The “File Types” section contains this:</p>
 <blockquote>
-<div><dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">default_filetype</span></code></dt>
-<dd>This is the name of the filetype that is used when the user creates a
+<div><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">default_filetype</span></code></dt><dd><p>This is the name of the filetype that is used when the user creates a
 new file by e.g. pressing Ctrl+N. Use
 <a class="reference internal" href="filetypes.html#porcupine.filetypes.get_filetype_by_name" title="porcupine.filetypes.get_filetype_by_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_filetype_by_name()</span></code></a> if you want a
-<a class="reference internal" href="filetypes.html#filetype-objects"><span class="std std-ref">filetype object</span></a> instead.</dd>
+<a class="reference internal" href="filetypes.html#filetype-objects"><span class="std std-ref">filetype object</span></a> instead.</p>
+</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -126,8 +124,8 @@ new file by e.g. pressing Ctrl+N. Use
 <p>Section objects also support running callbacks when a value is changed. For
 example, this annoying plugin warns the user when the encoding is set to
 ASCII in the setting dialog:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">messagebox</span>
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="k">import</span> <span class="n">settings</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">general_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>
 
@@ -145,26 +143,26 @@ ASCII in the setting dialog:</p>
 <p>There’s nothing wrong with using tkinter things like
 <code class="docutils literal notranslate"><span class="pre">messagebox.showwarning()</span></code> in callback functions, but tkinter isn’t
 thread-safe so you must not set config values from threads.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.connect">
-<code class="descclassname">section.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>key</em>, <em>callback</em>, <em>run_now=True</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.connect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">connect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">callback</span></em>, <em class="sig-param"><span class="n">run_now</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedule <code class="docutils literal notranslate"><span class="pre">callback(section[key])</span></code> to be called when the value
 of an option changes.</p>
 <p>If <em>run_now</em> is True, <code class="docutils literal notranslate"><span class="pre">callback(section[key])</span></code> is also called
 immediately when <code class="docutils literal notranslate"><span class="pre">connect()</span></code> is called, and the option is
 reset if the callback raises <a class="reference internal" href="#porcupine.settings.InvalidValue" title="porcupine.settings.InvalidValue"><code class="xref py py-exc docutils literal notranslate"><span class="pre">InvalidValue</span></code></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><em>run_now</em> is True by default, so if you don’t want to run
+<p class="admonition-title">Note</p>
+<p><em>run_now</em> is True by default, so if you don’t want to run
 the callback right away you need an explicit
 <code class="docutils literal notranslate"><span class="pre">run_now=False</span></code>.</p>
 </div>
 <p>More than one callback can be connected to the same key.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.disconnect">
-<code class="descclassname">section.</code><code class="descname">disconnect</code><span class="sig-paren">(</span><em>key</em>, <em>callback</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.disconnect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">callback</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Undo a <a class="reference internal" href="#porcupine.settings.section.connect" title="porcupine.settings.section.connect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">connect()</span></code></a> call.</p>
 </dd></dl>
 
@@ -174,26 +172,26 @@ the callback right away you need an explicit
 <p>Unlike with dictionaries, you need to add options to the sections before you
 can assign more values to it. This way Porcupine can easily keep track of
 default values and let you easily add things to the setting dialog.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.add_option">
-<code class="descclassname">section.</code><code class="descname">add_option</code><span class="sig-paren">(</span><em>key</em>, <em>default</em>, <em>*</em>, <em>reset=True</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_option" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">add_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">reset</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new option without adding widgets to the setting dialog.</p>
 <p><code class="docutils literal notranslate"><span class="pre">section[key]</span></code> will be <em>default</em> unless something else is
 specified.</p>
 <p>If <em>reset</em> is True, the setting dialog’s reset button sets this
 option to <em>default</em>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <em>reset</em> argument should be False for settings that
+<p class="admonition-title">Note</p>
+<p>The <em>reset</em> argument should be False for settings that
 cannot be changed with the dialog. That way, clicking the
 reset button resets only the settings that are shown in the
 dialog.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.reset">
-<code class="descclassname">section.</code><code class="descname">reset</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.reset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">reset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set <code class="docutils literal notranslate"><span class="pre">section[key]</span></code> back to the default value.</p>
 <p>The value is always reset to the <em>default</em> argument passed to
 <a class="reference internal" href="#porcupine.settings.section.add_option" title="porcupine.settings.section.add_option"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_option()</span></code></a>, regardless of its <em>reset</em> argument.</p>
@@ -207,9 +205,9 @@ Ctrl+0 resets <code class="docutils literal notranslate"><span class="pre">font_
 changes string values with e.g. an entry, but you probably don’t want to allow
 any strings. For example, the only correct values of an <code class="docutils literal notranslate"><span class="pre">indent</span></code> option might
 be <code class="docutils literal notranslate"><span class="pre">'tabs'</span></code> and <code class="docutils literal notranslate"><span class="pre">'spaces'</span></code>.</p>
-<dl class="exception">
+<dl class="py exception">
 <dt id="porcupine.settings.InvalidValue">
-<em class="property">exception </em><code class="descclassname">porcupine.settings.</code><code class="descname">InvalidValue</code><a class="reference internal" href="_modules/porcupine/settings.html#InvalidValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.InvalidValue" title="Permalink to this definition">¶</a></dt>
+<em class="property">exception </em><code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">InvalidValue</code><a class="reference internal" href="_modules/porcupine/settings.html#InvalidValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.InvalidValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise this in a callback if the value is invalid.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wat_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;Wat Wat&#39;</span><span class="p">)</span>
@@ -225,8 +223,8 @@ be <code class="docutils literal notranslate"><span class="pre">'tabs'</span></c
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Be sure to connect validator callbacks before anything else is
+<p class="admonition-title">Note</p>
+<p>Be sure to connect validator callbacks before anything else is
 connected. The callbacks are ran in the same order as they are
 connected, and running other callbacks with an invalid value is
 probably not what you want.</p>
@@ -249,31 +247,31 @@ succeeded:</p>
 <p>These methods add a widget to the setting dialog. Unless otherwise mentioned,
 the <em>text</em> argument is a string displayed on the left side of the widget, and a
 <img alt="triangle" src="_images/triangle.gif" /> is displayed on the right side if the user chooses an invalid value.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.add_checkbutton">
-<code class="descclassname">section.</code><code class="descname">add_checkbutton</code><span class="sig-paren">(</span><em>key</em>, <em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_checkbutton" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">add_checkbutton</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_checkbutton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <code class="docutils literal notranslate"><span class="pre">ttk.Checkbutton</span></code> that sets an option to a bool.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.add_entry">
-<code class="descclassname">section.</code><code class="descname">add_entry</code><span class="sig-paren">(</span><em>key</em>, <em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_entry" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">add_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_entry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <code class="docutils literal notranslate"><span class="pre">ttk.Entry</span></code> that sets an option to a string.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.add_combobox">
-<code class="descclassname">section.</code><code class="descname">add_combobox</code><span class="sig-paren">(</span><em>key</em>, <em>choices</em>, <em>text</em>, <em>*</em>, <em>case_sensitive=True</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_combobox" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">add_combobox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">choices</span></em>, <em class="sig-param"><span class="n">text</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">case_sensitive</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_combobox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <code class="docutils literal notranslate"><span class="pre">ttk.Combobox</span></code> that sets an option to a string.</p>
 <p>The combobox will contain each string in <em>choices</em>.</p>
 <p>A <a class="reference external" href="Validating">validator callback</a> that ensures the value is
 in <em>choices</em> is also added. If <em>case_sensitive</em> is False,
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str.casefold" title="(in Python v3.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.casefold()</span></code></a> is used when comparing the strings.</p>
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str.casefold" title="(in Python v3.8)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.casefold()</span></code></a> is used when comparing the strings.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.add_spinbox">
-<code class="descclassname">section.</code><code class="descname">add_spinbox</code><span class="sig-paren">(</span><em>key</em>, <em>minimum</em>, <em>maximum</em>, <em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_spinbox" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">add_spinbox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">minimum</span></em>, <em class="sig-param"><span class="n">maximum</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_spinbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <a class="reference internal" href="utils.html#porcupine.utils.Spinbox" title="porcupine.utils.Spinbox"><code class="xref py py-class docutils literal notranslate"><span class="pre">utils.Spinbox</span></code></a> that sets
 an option to an integer.</p>
 <p>The <em>minimum</em> and <em>maximum</em> arguments are used as the bounds for
@@ -291,18 +289,18 @@ any widgets you want to the setting dialog.</p>
 <p>You should take care of these things:</p>
 <blockquote>
 <div><ul class="simple">
-<li>The section’s value is updated immediately when the user does something to
-the widget.</li>
-<li>The widget itself is updated immediately when the section’s value changes
-(e.g. with the reset button).</li>
+<li><p>The section’s value is updated immediately when the user does something to
+the widget.</p></li>
+<li><p>The widget itself is updated immediately when the section’s value changes
+(e.g. with the reset button).</p></li>
 </ul>
 </div></blockquote>
 <p>Many widgets take a <code class="docutils literal notranslate"><span class="pre">textvariable</span></code> option that can be set to a
 <code class="docutils literal notranslate"><span class="pre">tkinter.StringVar</span></code>, and it does just that – the widget gets updated when it
 changes, and the <code class="docutils literal notranslate"><span class="pre">StringVar</span></code> gets updated when the widget changes.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.get_var">
-<code class="descclassname">section.</code><code class="descname">get_var</code><span class="sig-paren">(</span><em>key</em>, <em>var_type=tkinter.StringVar</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.get_var" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">get_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">var_type</span><span class="o">=</span><span class="default_value">tkinter.StringVar</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.get_var" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a tkinter variable that is bound to an option.</p>
 <p>Changing the value of the variable updates the config section,
 and changing the value in the section also sets the variable’s
@@ -315,12 +313,12 @@ is meant to be True or False.</p>
 section but the triangles in the frames returned by
 <a class="reference internal" href="#porcupine.settings.section.add_frame" title="porcupine.settings.section.add_frame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_frame()</span></code></a> are shown.</p>
 <p>Calling this function multiple times with different <code class="docutils literal notranslate"><span class="pre">var_type</span></code>
-arguments raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a>.</p>
+arguments raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a>.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="porcupine.settings.section.add_frame">
-<code class="descclassname">section.</code><code class="descname">add_frame</code><span class="sig-paren">(</span><em>triangle_key</em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_frame" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">add_frame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">triangle_key</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#porcupine.settings.section.add_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <code class="docutils literal notranslate"><span class="pre">ttk.Frame</span></code> to the dialog and return it.</p>
 <p>The frame will contain a label that displays a <img alt="triangle" src="_images/triangle.gif" /> when
 the value of the variable from <a class="reference internal" href="#porcupine.settings.section.get_var" title="porcupine.settings.section.get_var"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_var()</span></code></a> is invalid. The
@@ -333,9 +331,9 @@ triangle label is packed with <code class="docutils literal notranslate"><span c
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="porcupine.settings.section.content_frame">
-<code class="descclassname">section.</code><code class="descname">content_frame</code><a class="headerlink" href="#porcupine.settings.section.content_frame" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">section.</code><code class="sig-name descname">content_frame</code><a class="headerlink" href="#porcupine.settings.section.content_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <code class="docutils literal notranslate"><span class="pre">ttk.Frame</span></code> represents a tab in the setting dialog. All of the above
 convenience methods and <a class="reference internal" href="#porcupine.settings.section.add_frame" title="porcupine.settings.section.add_frame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_frame()</span></code></a> pack widgets into this.</p>
 <p>You can also add your own widgets to this frame. Usually it’s best to pack
@@ -349,16 +347,16 @@ them like <code class="docutils literal notranslate"><span class="pre">widget.pa
 <p>These functions are exposed here for unusual things like
 <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/poppingtabs.py">the poppingtabs plugin</a>. You
 probably don’t need these.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.settings.show_dialog">
-<code class="descclassname">porcupine.settings.</code><code class="descname">show_dialog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#show_dialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.show_dialog" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">show_dialog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#show_dialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.show_dialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the “Porcupine Settings” dialog.</p>
 <p>This function is called when the user opens the dialog from the menu.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.settings.save">
-<code class="descclassname">porcupine.settings.</code><code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.save" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the settings to the config file.</p>
 <p>Note that <a class="reference internal" href="porcupine.html#porcupine.run" title="porcupine.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.run()</span></code></a> always calls this before it returns,
 so usually you don’t need to worry about this yourself.</p>
@@ -388,39 +386,45 @@ so usually you don’t need to worry about this yourself.</p>
 <li class="toctree-l1"><a class="reference internal" href="plugin-intro.html">Introduction to Writing Plugins</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="images.html"><code class="docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html">File Types</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="filetypes.html" title="previous chapter">File Types</a></li>
-      <li>Next: <a href="pluginloader.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
+      <li>Previous: <a href="filetypes.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+      <li>Next: <a href="pluginloader.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -429,8 +433,8 @@ so usually you don’t need to worry about this yourself.</p>
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/settings.rst.txt"

@@ -1,18 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.70.0-git-91b3c90 documentation</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="porcupine.pluginloader — The module that loads plugins on startup" href="pluginloader.html" />
@@ -38,25 +38,25 @@
 plugins can use freely.</p>
 <div class="section" id="information-about-python">
 <h2>Information about Python<a class="headerlink" href="#information-about-python" title="Permalink to this headline">¶</a></h2>
-<dl class="data">
+<dl class="py data">
 <dt id="porcupine.utils.running_pythonw">
-<code class="descclassname">porcupine.utils.</code><code class="descname">running_pythonw</code><a class="headerlink" href="#porcupine.utils.running_pythonw" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">running_pythonw</code><a class="headerlink" href="#porcupine.utils.running_pythonw" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is True if Python is running in pythonw.exe on Windows.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">pythonw.exe</span></code> program runs Python scripts without a command
 prompt, so you need to check for that when doing things like
 starting a new command prompt from Python.</p>
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="porcupine.utils.python_executable">
-<code class="descclassname">porcupine.utils.</code><code class="descname">python_executable</code><a class="headerlink" href="#porcupine.utils.python_executable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Like <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.executable" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.executable</span></code></a>, but this should also be correct on
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">python_executable</code><a class="headerlink" href="#porcupine.utils.python_executable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.executable" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.executable</span></code></a>, but this should also be correct on
 <code class="docutils literal notranslate"><span class="pre">pythonw.exe</span></code>.</p>
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="porcupine.utils.short_python_command">
-<code class="descclassname">porcupine.utils.</code><code class="descname">short_python_command</code><a class="headerlink" href="#porcupine.utils.short_python_command" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">short_python_command</code><a class="headerlink" href="#porcupine.utils.short_python_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>A short command for running the Python that Porcupine is running on.</p>
 <p>This may contain arguments. For example, this might be <code class="docutils literal notranslate"><span class="pre">'py</span> <span class="pre">-3'</span></code> on a
 Windows system that has both Python 2 and Python 3 installed, and Python 2
@@ -66,16 +66,16 @@ quoted more. For example, this code is <strong>bad</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">utils</span><span class="o">.</span><span class="n">short_python_command</span><span class="p">,</span> <span class="s1">&#39;blah&#39;</span><span class="p">,</span> <span class="s1">&#39;blah&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>Use <a class="reference internal" href="#porcupine.utils.python_executable" title="porcupine.utils.python_executable"><code class="xref py py-data docutils literal notranslate"><span class="pre">python_executable</span></code></a> if you want to do a <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.call" title="(in Python v3.7)"><code class="xref py py-func docutils literal notranslate"><span class="pre">subprocess.call()</span></code></a> or
+<p>Use <a class="reference internal" href="#porcupine.utils.python_executable" title="porcupine.utils.python_executable"><code class="xref py py-data docutils literal notranslate"><span class="pre">python_executable</span></code></a> if you want to do a <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.call" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">subprocess.call()</span></code></a> or
 something like that.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="tkinter-utilities">
 <h2>Tkinter Utilities<a class="headerlink" href="#tkinter-utilities" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.set_tooltip">
-<code class="descclassname">porcupine.utils.</code><code class="descname">set_tooltip</code><span class="sig-paren">(</span><em>widget</em>, <em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#set_tooltip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.set_tooltip" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">set_tooltip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#set_tooltip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.set_tooltip" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple tooltip implementation with tkinter.</p>
 <p>After calling <code class="docutils literal notranslate"><span class="pre">set_tooltip(some_widget,</span> <span class="pre">&quot;hello&quot;)</span></code>, “hello” will be
 displayed in a small window when the user moves the mouse over the
@@ -89,9 +89,9 @@ wrote the tooltip code! Idlelib is awful and I don’t want to use
 anything from it in my editor.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.bind_mouse_wheel">
-<code class="descclassname">porcupine.utils.</code><code class="descname">bind_mouse_wheel</code><span class="sig-paren">(</span><em>widget</em>, <em>callback</em>, <em>*</em>, <em>prefixes=''</em>, <em>**bind_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#bind_mouse_wheel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_mouse_wheel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_mouse_wheel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span></em>, <em class="sig-param"><span class="n">callback</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">prefixes</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">bind_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#bind_mouse_wheel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_mouse_wheel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bind mouse wheel events to callback.</p>
 <p>The callback will be called like <code class="docutils literal notranslate"><span class="pre">callback(direction)</span></code> where
 <em>direction</em> is <code class="docutils literal notranslate"><span class="pre">'up'</span></code> or <code class="docutils literal notranslate"><span class="pre">'down'</span></code>. The <em>prefixes</em> argument can
@@ -99,15 +99,15 @@ be used to change the binding string. For example,
 <code class="docutils literal notranslate"><span class="pre">prefixes='Control-'</span></code> means that callback will be ran when the
 user holds down Control and rolls the wheel.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This function has not been tested on OSX. If you have a Mac,
+<p class="admonition-title">Note</p>
+<p>This function has not been tested on OSX. If you have a Mac,
 please try it out and let me know how much it sucked.</p>
 </div>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.bind_tab_key">
-<code class="descclassname">porcupine.utils.</code><code class="descname">bind_tab_key</code><span class="sig-paren">(</span><em>widget</em>, <em>on_tab</em>, <em>**bind_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#bind_tab_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_tab_key" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_tab_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span></em>, <em class="sig-param"><span class="n">on_tab</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">bind_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#bind_tab_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_tab_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenience function for binding Tab and Shift+Tab.</p>
 <p>Use this function like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">on_tab</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">shifted</span><span class="p">):</span>
@@ -125,16 +125,16 @@ just like with regular bindings.</p>
 also works on X11.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.bind_with_data">
-<code class="descclassname">porcupine.utils.</code><code class="descname">bind_with_data</code><span class="sig-paren">(</span><em>widget</em>, <em>sequence</em>, <em>callback</em>, <em>add=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#bind_with_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_with_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_with_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span></em>, <em class="sig-param"><span class="n">sequence</span></em>, <em class="sig-param"><span class="n">callback</span></em>, <em class="sig-param"><span class="n">add</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#bind_with_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_with_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Like <code class="docutils literal notranslate"><span class="pre">widget.bind(sequence,</span> <span class="pre">callback)</span></code>, but supports the <code class="docutils literal notranslate"><span class="pre">data</span></code>
 argument of <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>.</p>
 <p>Here’s an example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="k">import</span> <span class="n">utils</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">utils</span>
 
 <span class="k">def</span> <span class="nf">on_wutwut</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span>
 
 <span class="n">utils</span><span class="o">.</span><span class="n">bind_with_data</span><span class="p">(</span><span class="n">some_widget</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;Thingy&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">on_wutwut</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -144,35 +144,26 @@ argument of <code class="docutils literal notranslate"><span class="pre">event_g
 </div>
 <p>Note that everything is a string in Tcl, so tkinter <code class="docutils literal notranslate"><span class="pre">str()</span></code>’s the data.</p>
 <p>The event objects have all the attributes that tkinter events
-usually have, and these additional attributes:</p>
+usually have, and these additional attributes and methods:</p>
 <blockquote>
-<div><dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">data</span></code></dt>
-<dd>See the above example.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">data_int</span></code> and <code class="docutils literal notranslate"><span class="pre">data_float</span></code></dt>
-<dd>These are set to <code class="docutils literal notranslate"><span class="pre">int(event.data)</span></code> and <code class="docutils literal notranslate"><span class="pre">float(event.data)</span></code>,
-or None if <code class="docutils literal notranslate"><span class="pre">data</span></code> is not a valid integer or float.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">data_widget</span></code></dt>
-<dd>If a widget was passed as <code class="docutils literal notranslate"><span class="pre">data</span></code> to <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>,
-this is that widget. Otherwise this is None.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">data_tuple(converter1,</span> <span class="pre">converter2,</span> <span class="pre">...)</span></code></dt>
-<dd>If a string from <code class="xref py py-func docutils literal notranslate"><span class="pre">create_tcl_list()</span></code> is passed to
-<code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>, this splits the list back to the strings
-passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">create_tcl_list()</span></code> and optionally converts them to
-other types like <code class="docutils literal notranslate"><span class="pre">converter(string_value)</span></code>. For example,
-<code class="docutils literal notranslate"><span class="pre">event.data_tuple(int,</span> <span class="pre">int,</span> <span class="pre">str,</span> <span class="pre">float)</span></code> returns a 4-tuple with
-types <code class="docutils literal notranslate"><span class="pre">(int,</span> <span class="pre">int,</span> <span class="pre">str,</span> <span class="pre">float)</span></code>, throwing an error if some of the
-elements can’t be converted or the iterable passed to
-<code class="xref py py-func docutils literal notranslate"><span class="pre">create_tcl_list()</span></code> didn’t contain exactly 4 elements.</dd>
+<div><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">data_string</span></code></dt><dd><p>See the above example.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">data_widget()</span></code></dt><dd><p>If a widget was passed as <code class="docutils literal notranslate"><span class="pre">data</span></code> to <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>,
+then this returns that widget.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">data_json()</span></code></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">json.dumps(something)</span></code> was passed as <code class="docutils literal notranslate"><span class="pre">data</span></code> to
+<code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>, then this returns the parsed JSON.</p>
+</dd>
 </dl>
 </div></blockquote>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.get_keyboard_shortcut">
-<code class="descclassname">porcupine.utils.</code><code class="descname">get_keyboard_shortcut</code><span class="sig-paren">(</span><em>binding</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#get_keyboard_shortcut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.get_keyboard_shortcut" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">get_keyboard_shortcut</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">binding</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#get_keyboard_shortcut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.get_keyboard_shortcut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a Tk binding string to a format that most people are used to.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;Control-c&gt;&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;Control-c&gt;&#39;</span><span class="p">)</span>
 <span class="go">&#39;Ctrl+C&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;Control-C&gt;&#39;</span><span class="p">)</span>
 <span class="go">&#39;Ctrl+Shift+C&#39;</span>
@@ -186,9 +177,9 @@ elements can’t be converted or the iterable passed to
 </div>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.run_in_thread">
-<code class="descclassname">porcupine.utils.</code><code class="descname">run_in_thread</code><span class="sig-paren">(</span><em>blocking_function</em>, <em>done_callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#run_in_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.run_in_thread" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">run_in_thread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocking_function</span></em>, <em class="sig-param"><span class="n">done_callback</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#run_in_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.run_in_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run <code class="docutils literal notranslate"><span class="pre">blocking_function()</span></code> in another thread.</p>
 <p>If the <em>blocking_function</em> raises an error,
 <code class="docutils literal notranslate"><span class="pre">done_callback(False,</span> <span class="pre">traceback)</span></code> will be called where <em>traceback</em>
@@ -199,35 +190,35 @@ called from Tk’s main loop, so it can do things with Tkinter widgets
 unlike <em>blocking_function</em>.</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="porcupine.utils.Spinbox">
-<em class="property">class </em><code class="descclassname">porcupine.utils.</code><code class="descname">Spinbox</code><a class="reference internal" href="_modules/porcupine/utils.html#Spinbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.Spinbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a Ttk version of <code class="docutils literal notranslate"><span class="pre">tkinter.Spinbox</span></code>.</p>
-<p>Ttk has a <code class="docutils literal notranslate"><span class="pre">spinbox</span></code> widget, but there’s no <code class="docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code>
-yet (perhaps the ttk spinbox is a new thing and tkinter hasn’t been
-updated yet). This class should behave mostly like <code class="docutils literal notranslate"><span class="pre">tkinter.Spinbox</span></code>.</p>
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">Spinbox</code><a class="reference internal" href="_modules/tkinter/ttk.html#Spinbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.Spinbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starting with Python 3.7, this is <code class="docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code>. On Python 3.6,
+this class behaves just like <code class="docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code> on Python 3.7.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="miscellaneous">
 <h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.invert_color">
-<code class="descclassname">porcupine.utils.</code><code class="descname">invert_color</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#invert_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.invert_color" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">invert_color</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">color</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">black_or_white</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#invert_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.invert_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a color with opposite red, green and blue values.</p>
 <p>Example: <code class="docutils literal notranslate"><span class="pre">invert_color('white')</span></code> is <code class="docutils literal notranslate"><span class="pre">'#000000'</span></code> (black).</p>
 <p>This function uses tkinter for converting the color to RGB. That’s
 why a tkinter root window must have been created, but <em>color</em> can be
 any Tk-compatible color string, like a color name or a <code class="docutils literal notranslate"><span class="pre">'#rrggbb'</span></code>
-string.</p>
-<p>The return value is always a <code class="docutils literal notranslate"><span class="pre">'#rrggbb</span></code> string (also compatible
+string. The return value is always a <code class="docutils literal notranslate"><span class="pre">'#rrggbb</span></code> string (also compatible
 with Tk).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">black_or_white=True</span></code> is set, then the result is always <code class="docutils literal notranslate"><span class="pre">'#000000'</span></code>
+(black) or <code class="docutils literal notranslate"><span class="pre">'#ffffff'</span></code> (white), depending on whether the color is bright
+or dark.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.backup_open">
-<code class="descclassname">porcupine.utils.</code><code class="descname">backup_open</code><span class="sig-paren">(</span><em>path</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#backup_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.backup_open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Like <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.7)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>, but uses a backup file if needed.</p>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">backup_open</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#backup_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.backup_open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>, but uses a backup file if needed.</p>
 <p>This is useless with modes like <code class="docutils literal notranslate"><span class="pre">'r'</span></code> because they don’t modify
 the file, but this is useful when overwriting the user’s files.</p>
 <p>This needs to be used as a context manager. For example:</p>
@@ -241,11 +232,11 @@ the file, but this is useful when overwriting the user’s files.</p>
 <p>This automatically restores from the backup on failure.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.quote">
-<code class="descclassname">porcupine.utils.</code><code class="descname">quote</code><span class="sig-paren">(</span><em>argument</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.quote" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">quote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">argument</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.quote" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add quotes around an argument of a command.</p>
-<p>This function is equivalent to <a class="reference external" href="https://docs.python.org/3/library/shlex.html#shlex.quote" title="(in Python v3.7)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shlex.quote()</span></code></a> on non-Windows systems,
+<p>This function is equivalent to <a class="reference external" href="https://docs.python.org/3/library/shlex.html#shlex.quote" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shlex.quote()</span></code></a> on non-Windows systems,
 and on Windows it adds double quotes in a similar way. This is useful for
 running commands in the Windows command prompt or a POSIX-compatible shell.</p>
 </dd></dl>
@@ -257,9 +248,9 @@ running commands in the Windows command prompt or a POSIX-compatible shell.</p>
 Porcupine still uses them, the function does something that was difficult to
 implement or I’m planning on rewriting the whole function in an incompabile way
 later.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.errordialog">
-<code class="descclassname">porcupine.utils.</code><code class="descname">errordialog</code><span class="sig-paren">(</span><em>title</em>, <em>message</em>, <em>monospace_text=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#errordialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.errordialog" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">errordialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">monospace_text</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#errordialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.errordialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a lot like <code class="docutils literal notranslate"><span class="pre">tkinter.messagebox.showerror</span></code>.</p>
 <p>This function can be called with or without creating a root window
 first. If <em>monospace_text</em> is not None, it will be displayed below
@@ -274,9 +265,9 @@ the message in a <code class="docutils literal notranslate"><span class="pre">tk
 </div>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="porcupine.utils.temporary_bind">
-<code class="descclassname">porcupine.utils.</code><code class="descname">temporary_bind</code><span class="sig-paren">(</span><em>widget</em>, <em>sequence</em>, <em>func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#temporary_bind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.temporary_bind" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">temporary_bind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span></em>, <em class="sig-param"><span class="n">sequence</span></em>, <em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#temporary_bind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.temporary_bind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bind and unbind a callback.</p>
 <p>It’s possible (and in Porcupine plugins, highly recommended) to use
 <code class="docutils literal notranslate"><span class="pre">add=True</span></code> when binding. This way more than one function can be
@@ -324,38 +315,44 @@ from <a class="reference internal" href="#porcupine.utils.bind_with_data" title=
 <li class="toctree-l1"><a class="reference internal" href="plugin-intro.html">Introduction to Writing Plugins</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="images.html"><code class="docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html">File Types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="pluginloader.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
+      <li>Previous: <a href="pluginloader.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -364,8 +361,8 @@ from <a class="reference internal" href="#porcupine.utils.bind_with_data" title=
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/utils.rst.txt"
