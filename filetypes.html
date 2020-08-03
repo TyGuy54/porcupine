@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.filetypes — filetypes.ini stuff &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
+    <title>porcupine.filetypes — filetypes.ini stuff &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -175,25 +175,25 @@ will return a useful value.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="porcupine.filetypes.guess_filetype">
-<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">guess_filetype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/filetypes.html#guess_filetype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.guess_filetype" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">guess_filetype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.8)">pathlib.Path</a></span></em><span class="sig-paren">)</span> &#x2192; porcupine.filetypes.FileType<a class="reference internal" href="_modules/porcupine/filetypes.html#guess_filetype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.guess_filetype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a filetype object for a file name.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.filetypes.get_filetype_by_name">
-<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">get_filetype_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/filetypes.html#get_filetype_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.get_filetype_by_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">get_filetype_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; porcupine.filetypes.FileType<a class="reference internal" href="_modules/porcupine/filetypes.html#get_filetype_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.get_filetype_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find and return a filetype object by its <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.filetypes.get_all_filetypes">
-<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">get_all_filetypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/filetypes.html#get_all_filetypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.get_all_filetypes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">get_all_filetypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>porcupine.filetypes.FileType<span class="p">]</span><a class="reference internal" href="_modules/porcupine/filetypes.html#get_all_filetypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.get_all_filetypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of all loaded filetypes.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.filetypes.get_filedialog_kwargs">
-<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">get_filedialog_kwargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/filetypes.html#get_filedialog_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.get_filedialog_kwargs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.filetypes.</code><code class="sig-name descname">get_filedialog_kwargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span>Any<span class="p">]</span><a class="reference internal" href="_modules/porcupine/filetypes.html#get_filedialog_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.filetypes.get_filedialog_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a way to run tkinter dialogs that display the filetypes and extensions that Porcupine supports.</p>
 <p>This function returns a dictionary of keyword arguments suitable for
 functions in <code class="docutils literal notranslate"><span class="pre">tkinter.filedialog</span></code>. Example:</p>

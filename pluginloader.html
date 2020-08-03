@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
+    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -49,15 +49,15 @@ you get the idea.</p>
 or <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.highlight</span></code>.</p>
 <dl class="py function">
 <dt id="porcupine.pluginloader.find_plugins">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">find_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#find_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.find_plugins" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of names of plugins that can be loaded.</p>
+<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">find_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#find_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.find_plugins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return names of plugins that can be loaded.</p>
 <p>Note that loading some of the returned plugins may fail.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.pluginloader.load">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plugin_names</span></em>, <em class="sig-param"><span class="n">shuffle</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load plugins from an iterable of names.</p>
+<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plugin_names</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shuffle</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/pluginloader.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load plugins.</p>
 <p>The plugins are always ordered using their <code class="docutils literal notranslate"><span class="pre">setup_before</span></code> and
 <code class="docutils literal notranslate"><span class="pre">setup_after</span></code> lists. The <em>shuffle</em> argument determines what is
 done when multiple plugins can be loaded in any order with respect
@@ -71,7 +71,7 @@ need to wrap calls to this function in <code class="docutils literal notranslate
 
 <dl class="py function">
 <dt id="porcupine.pluginloader.get_loaded_plugins">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">get_loaded_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#get_loaded_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.get_loaded_plugins" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">get_loaded_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#get_loaded_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.get_loaded_plugins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of plugin names that have been loaded successfully.</p>
 <p>This is useful for writing plugins that need to start a new Porcupine
 process and load the same plugins in the new process. See

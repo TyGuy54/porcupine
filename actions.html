@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.actions — Add stuff to the menubar &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
+    <title>porcupine.actions — Add stuff to the menubar &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -46,25 +46,27 @@ menu are both created with just one <a class="reference internal" href="#porcupi
 example plugin that uses this module.</p>
 <div class="section" id="action-objects">
 <h2>Action Objects<a class="headerlink" href="#action-objects" title="Permalink to this headline">¶</a></h2>
-<p>The action adding functions documented below return these. All action objects
-have these attributes:</p>
-<dl class="py attribute">
-<dt id="porcupine.actions.any_action.path">
-<code class="sig-prename descclassname">any_action.</code><code class="sig-name descname">path</code><a class="headerlink" href="#porcupine.actions.any_action.path" title="Permalink to this definition">¶</a></dt>
+<p>Use one of the action adding functions documented below instead of trying to
+create a new action yourself with <code class="docutils literal notranslate"><span class="pre">Action(some</span> <span class="pre">arguments</span> <span class="pre">here)</span></code>.</p>
+<dl class="py class">
+<dt id="porcupine.actions.Action">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">Action</code><a class="reference internal" href="_modules/porcupine/actions.html#Action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.Action" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="porcupine.actions.Action.path">
+<code class="sig-name descname">path</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><a class="headerlink" href="#porcupine.actions.Action.path" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string consisting of user-readable parts joined with <code class="docutils literal notranslate"><span class="pre">/</span></code>, e.g.
 <code class="docutils literal notranslate"><span class="pre">'File/New</span> <span class="pre">File'</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="porcupine.actions.any_action.kind">
-<code class="sig-prename descclassname">any_action.</code><code class="sig-name descname">kind</code><a class="headerlink" href="#porcupine.actions.any_action.kind" title="Permalink to this definition">¶</a></dt>
-<dd><p>One of the strings <code class="docutils literal notranslate"><span class="pre">'command'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yesno'</span></code> or <code class="docutils literal notranslate"><span class="pre">'choice'</span></code> depending on
-which <a class="reference external" href="#action-adding-functions">adding function</a> the action came from.</p>
+<dt id="porcupine.actions.Action.kind">
+<code class="sig-name descname">kind</code><em class="property">: Literal[‘command’, ‘yesno’, ‘choice’]</em><a class="headerlink" href="#porcupine.actions.Action.kind" title="Permalink to this definition">¶</a></dt>
+<dd><p>This string indicates which <a class="reference external" href="#action-adding-functions">adding function</a> the action came from.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="porcupine.actions.any_action.binding">
-<code class="sig-prename descclassname">any_action.</code><code class="sig-name descname">binding</code><a class="headerlink" href="#porcupine.actions.any_action.binding" title="Permalink to this definition">¶</a></dt>
+<dt id="porcupine.actions.Action.binding">
+<code class="sig-name descname">binding</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><a class="headerlink" href="#porcupine.actions.Action.binding" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string suitable for tkinter’s <code class="docutils literal notranslate"><span class="pre">bind()</span></code> method, e.g. <code class="docutils literal notranslate"><span class="pre">'&lt;Control-n&gt;'</span></code>.
 <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/menubar.py">The menubar plugin</a> uses
 <a class="reference internal" href="utils.html#porcupine.utils.get_keyboard_shortcut" title="porcupine.utils.get_keyboard_shortcut"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.utils.get_keyboard_shortcut()</span></code></a> when it displays things like
@@ -72,20 +74,31 @@ which <a class="reference external" href="#action-adding-functions">adding funct
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="porcupine.actions.any_action.enabled">
-<code class="sig-prename descclassname">any_action.</code><code class="sig-name descname">enabled</code><a class="headerlink" href="#porcupine.actions.any_action.enabled" title="Permalink to this definition">¶</a></dt>
+<dt id="porcupine.actions.Action.enabled">
+<code class="sig-name descname">enabled</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><a class="headerlink" href="#porcupine.actions.Action.enabled" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if the action is currently usable, and False otherwise. The menubar
 makes disabled actions gray.</p>
-<p>Setting this to True or False generates an <code class="docutils literal notranslate"><span class="pre">&lt;&lt;ActionEnabled&gt;&gt;</span></code> or
-<code class="docutils literal notranslate"><span class="pre">&lt;&lt;ActionDisabled&gt;&gt;</span></code> virtual event respectively. These events are
-generated on the main window, and their datas are the <a class="reference internal" href="#porcupine.actions.any_action.path" title="porcupine.actions.any_action.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">path</span></code></a> strings.
-The virtual events do not run if the new <code class="docutils literal notranslate"><span class="pre">enabled</span></code> value does not differ
-from the old value.</p>
-<p>Example:</p>
+</dd></dl>
+
+<dl class="py virtualevent">
+<dt id="porcupine.actions.Action.ActionEnabled">
+<em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;ActionEnabled&gt;&gt;</code><a class="headerlink" href="#porcupine.actions.Action.ActionEnabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py virtualevent">
+<dt id="porcupine.actions.Action.ActionDisabled">
+<em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;ActionDisabled&gt;&gt;</code><a class="headerlink" href="#porcupine.actions.Action.ActionDisabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>These virtual events are generated on the <strong>main window</strong> when the
+<a class="reference internal" href="#porcupine.actions.Action.enabled" title="porcupine.actions.Action.enabled"><code class="xref py py-attr docutils literal notranslate"><span class="pre">enabled</span></code></a> attribute of any <a class="reference internal" href="#porcupine.actions.Action" title="porcupine.actions.Action"><code class="xref py py-class docutils literal notranslate"><span class="pre">Action</span></code></a> is changed.</p>
+<p>Setting <a class="reference internal" href="#porcupine.actions.Action.enabled" title="porcupine.actions.Action.enabled"><code class="xref py py-attr docutils literal notranslate"><span class="pre">enabled</span></code></a> to its current value does not generate
+these events. They are only created when <a class="reference internal" href="#porcupine.actions.Action.enabled" title="porcupine.actions.Action.enabled"><code class="xref py py-attr docutils literal notranslate"><span class="pre">enabled</span></code></a> is actually
+changed.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">data_string</span></code> of the event is set to the action name.
+For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">actions</span><span class="p">,</span> <span class="n">get_main_window</span><span class="p">,</span> <span class="n">utils</span>
 
 <span class="k">def</span> <span class="nf">on_action_enabled</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-    <span class="n">action</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get_action</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get_action</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span>
     <span class="o">...</span>
 
 <span class="n">utils</span><span class="o">.</span><span class="n">bind_with_data</span><span class="p">(</span><span class="n">get_main_window</span><span class="p">(),</span> <span class="s1">&#39;&lt;&lt;ActionEnabled&gt;&gt;&#39;</span><span class="p">,</span>
@@ -100,9 +113,13 @@ from the old value.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="porcupine.actions.command_action.callback">
-<code class="sig-prename descclassname">command_action.</code><code class="sig-name descname">callback</code><a class="headerlink" href="#porcupine.actions.command_action.callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the callback function passed to <a class="reference internal" href="#porcupine.actions.add_command" title="porcupine.actions.add_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_command()</span></code></a>. Only
+<dt id="porcupine.actions.Action.callback">
+<code class="sig-name descname">callback</code><em class="property">: Callable[[], None]</em><a class="headerlink" href="#porcupine.actions.Action.callback" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only actions added with <a class="reference internal" href="#porcupine.actions.add_command" title="porcupine.actions.add_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_command()</span></code></a> have this attribute.</p>
+</div>
+<p>This is the callback function passed to <a class="reference internal" href="#porcupine.actions.add_command" title="porcupine.actions.add_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_command()</span></code></a>. Only
 <code class="docutils literal notranslate"><span class="pre">'command'</span></code> actions have this attribute.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
@@ -112,9 +129,13 @@ from the old value.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="porcupine.actions.yesno_or_choice_action.var">
-<code class="sig-prename descclassname">yesno_or_choice_action.</code><code class="sig-name descname">var</code><a class="headerlink" href="#porcupine.actions.yesno_or_choice_action.var" title="Permalink to this definition">¶</a></dt>
-<dd><p>Only <code class="docutils literal notranslate"><span class="pre">'yesno'</span></code> and <code class="docutils literal notranslate"><span class="pre">'choice'</span></code> actions have a <code class="docutils literal notranslate"><span class="pre">var</span></code> attribute, and
+<dt id="porcupine.actions.Action.var">
+<code class="sig-name descname">var</code><em class="property">: tkinter.Variable</em><a class="headerlink" href="#porcupine.actions.Action.var" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only actions added with <a class="reference internal" href="#porcupine.actions.add_yesno" title="porcupine.actions.add_yesno"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_yesno()</span></code></a> and <a class="reference internal" href="#porcupine.actions.add_choice" title="porcupine.actions.add_choice"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_choice()</span></code></a> have this attribute.</p>
+</div>
+<p>Only <code class="docutils literal notranslate"><span class="pre">'yesno'</span></code> and <code class="docutils literal notranslate"><span class="pre">'choice'</span></code> actions have a <code class="docutils literal notranslate"><span class="pre">var</span></code> attribute, and
 it’s set to a tkinter variable object representing the current state. For
 <code class="docutils literal notranslate"><span class="pre">'yesno'</span></code> actions, this is a <code class="docutils literal notranslate"><span class="pre">tkinter.BooleanVar</span></code> that is set to
 <code class="docutils literal notranslate"><span class="pre">True</span></code> when the menuitem is checked and <code class="docutils literal notranslate"><span class="pre">False</span></code> when it’s not. The
@@ -123,10 +144,12 @@ currently selected choice.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="porcupine.actions.choice_action.choices">
-<code class="sig-prename descclassname">choice_action.</code><code class="sig-name descname">choices</code><a class="headerlink" href="#porcupine.actions.choice_action.choices" title="Permalink to this definition">¶</a></dt>
+<dt id="porcupine.actions.Action.choice_action.choices">
+<code class="sig-prename descclassname">choice_action.</code><code class="sig-name descname">choices</code><a class="headerlink" href="#porcupine.actions.Action.choice_action.choices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Only <code class="docutils literal notranslate"><span class="pre">'choice'</span></code> actions have this attribute, and it’s set to the
 <em>choices</em> passed to <a class="reference internal" href="#porcupine.actions.add_choice" title="porcupine.actions.add_choice"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_choice()</span></code></a>.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -134,12 +157,12 @@ currently selected choice.</p>
 <h2>Action Adding Functions<a class="headerlink" href="#action-adding-functions" title="Permalink to this headline">¶</a></h2>
 <p>These functions return the action object they add. Adding a new action also
 generates a <code class="docutils literal notranslate"><span class="pre">&lt;&lt;NewAction&gt;&gt;</span></code> virtual event on the main window with the data
-set to the action name, similarly to how the <a class="reference internal" href="#porcupine.actions.any_action.enabled" title="porcupine.actions.any_action.enabled"><code class="xref py py-attr docutils literal notranslate"><span class="pre">enabled</span></code></a>
+set to the action name, similarly to how the <code class="xref py py-attr docutils literal notranslate"><span class="pre">enabled</span></code>
 attribute works. Actions are usually added in the <code class="docutils literal notranslate"><span class="pre">setup()</span></code> function of a
 plugin, but adding more actions later works as well.</p>
 <dl class="py function">
 <dt id="porcupine.actions.add_command">
-<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">add_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">callback</span></em>, <em class="sig-param"><span class="n">keyboard_binding</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/actions.html#add_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.add_command" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">add_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[], None]</span></em>, <em class="sig-param"><span class="n">keyboard_binding</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#porcupine.actions.Action" title="porcupine.actions.Action">porcupine.actions.Action</a><a class="reference internal" href="_modules/porcupine/actions.html#add_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.add_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a simple action that runs <code class="docutils literal notranslate"><span class="pre">callback()</span></code>.</p>
 <p>The returned action object has a <code class="docutils literal notranslate"><span class="pre">callback</span></code> attribute set to the
 <code class="docutils literal notranslate"><span class="pre">callback</span></code> passed to this function.</p>
@@ -147,7 +170,7 @@ plugin, but adding more actions later works as well.</p>
 
 <dl class="py function">
 <dt id="porcupine.actions.add_yesno">
-<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">add_yesno</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyboard_binding</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">var</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/actions.html#add_yesno"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.add_yesno" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">add_yesno</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyboard_binding</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">var</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>tkinter.BooleanVar<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#porcupine.actions.Action" title="porcupine.actions.Action">porcupine.actions.Action</a><a class="reference internal" href="_modules/porcupine/actions.html#add_yesno"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.add_yesno" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an action that appears as a checkbox item in the menubar.</p>
 <p>If <em>var</em> is given, it should be a <code class="docutils literal notranslate"><span class="pre">tkinter.BooleanVar</span></code> and it’s
 used as the <code class="docutils literal notranslate"><span class="pre">var</span></code> of the option; otherwise a new <code class="docutils literal notranslate"><span class="pre">BooleanVar</span></code> is
@@ -157,7 +180,7 @@ created. <em>default</em> should be True or False, but it may be omitted if
 
 <dl class="py function">
 <dt id="porcupine.actions.add_choice">
-<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">add_choice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">choices</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">var</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/actions.html#add_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.add_choice" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">add_choice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">choices</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Any<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">var</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>tkinter.Variable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#porcupine.actions.Action" title="porcupine.actions.Action">porcupine.actions.Action</a><a class="reference internal" href="_modules/porcupine/actions.html#add_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.add_choice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an action for choosing one from a list of choices.</p>
 <p><a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/menubar.py">The menubar plugin</a> displays
 these actions as submenus that contain radio button items.</p>
@@ -171,7 +194,7 @@ created.</p>
 
 <p>The above functions take these optional keyword-only arguments as <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:</p>
 <dl>
-<dt><em>filetype_names</em></dt><dd><p>Enable and disable the action automatically so that it’s enabled only when
+<dt><em>filetype_names: List[str]</em></dt><dd><p>Enable and disable the action automatically so that it’s enabled only when
 a file of a specific type is being edited. For example,
 <code class="docutils literal notranslate"><span class="pre">filetype_names=['Python']</span></code> is useful for a Python-specific action.</p>
 <p>This should be a list or set of
@@ -179,7 +202,7 @@ a file of a specific type is being edited. For example,
 <a class="reference internal" href="filetypes.html#filetype-objects"><span class="std std-ref">filetype objects</span></a>. The action is disabled if the
 current tab is not a <a class="reference internal" href="tabs.html#porcupine.tabs.FileTab" title="porcupine.tabs.FileTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTab</span></code></a>.</p>
 </dd>
-<dt><em>tabtypes</em></dt><dd><p>Enable and disable the action automatically so that it’s enabled only when
+<dt><em>tabtypes: List[Type[porcupine.tabs.Tab]]</em></dt><dd><p>Enable and disable the action automatically so that it’s enabled only when
 the current tab is of a specific type.</p>
 <p>If given, this should be a listor set of <a class="reference internal" href="tabs.html#porcupine.tabs.Tab" title="porcupine.tabs.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a>
 subclasses, or <code class="docutils literal notranslate"><span class="pre">None</span></code> to also enable the action when there are no tabs.</p>
@@ -191,13 +214,13 @@ subclasses, or <code class="docutils literal notranslate"><span class="pre">None
 <h2>Other Functions<a class="headerlink" href="#other-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="porcupine.actions.get_action">
-<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">get_action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">action_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/actions.html#get_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.get_action" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">get_action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">action_path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#porcupine.actions.Action" title="porcupine.actions.Action">porcupine.actions.Action</a><a class="reference internal" href="_modules/porcupine/actions.html#get_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.get_action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look up and return an existing action object by its path.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.actions.get_all_actions">
-<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">get_all_actions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/actions.html#get_all_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.get_all_actions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.actions.</code><code class="sig-name descname">get_all_actions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#porcupine.actions.Action" title="porcupine.actions.Action">porcupine.actions.Action</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/actions.html#get_all_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.actions.get_all_actions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of all existing action objects in arbitrary order.</p>
 <p>Note that plugins like <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/menubar.py">the menubar</a>
 should also use the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;NewAction&gt;&gt;</span></code> virtual event documented

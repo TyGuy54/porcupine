@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine._run &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
+    <title>porcupine._run &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -36,10 +36,11 @@
 
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Empty</span>         <span class="c1"># queue is a handy variable name</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">import</span> <span class="nn">webbrowser</span>
 
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_logs</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">filetypes</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">tabs</span><span class="p">,</span> <span class="n">utils</span>
@@ -47,13 +48,13 @@
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># global state makes some things a lot easier</span>
-<span class="n">_root</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">_tab_manager</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">_init_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_root</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_tab_manager</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">TabManager</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_init_kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <span class="c1"># get_main_window() and get_tab_manager() work only if this has been called</span>
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../porcupine.html#porcupine.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">verbose_logging</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../porcupine.html#porcupine.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get everything ready for running Porcupine.</span>
 
 <span class="sd">    The *verbose_logging* option corresponds to the ``--verbose``</span>
@@ -80,7 +81,8 @@
     <span class="n">_setup_actions</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="get_init_kwargs"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">get_init_kwargs</span><span class="p">():</span>
+<span class="c1"># TODO: avoid Any typing</span>
+<div class="viewcode-block" id="get_init_kwargs"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">get_init_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Return a dictionary of the keyword arguments that were passed to :func:\</span>
 <span class="sd">`init`.</span>
 
@@ -92,14 +94,14 @@
     <span class="k">return</span> <span class="n">_init_kwargs</span></div>
 
 
-<div class="viewcode-block" id="get_main_window"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_main_window">[docs]</a><span class="k">def</span> <span class="nf">get_main_window</span><span class="p">():</span>
+<div class="viewcode-block" id="get_main_window"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_main_window">[docs]</a><span class="k">def</span> <span class="nf">get_main_window</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return the tkinter root window that Porcupine is using.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Porcupine is not running&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_root</span></div>
 
 
-<div class="viewcode-block" id="get_tab_manager"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_tab_manager">[docs]</a><span class="k">def</span> <span class="nf">get_tab_manager</span><span class="p">():</span>
+<div class="viewcode-block" id="get_tab_manager"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_tab_manager">[docs]</a><span class="k">def</span> <span class="nf">get_tab_manager</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">tabs</span><span class="o">.</span><span class="n">TabManager</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return the :class:`porcupine.tabs.TabManager` widget in the main window.</span>
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># these are on a separate line because pep-8 line length</span>
     <span class="k">if</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -107,7 +109,7 @@
     <span class="k">return</span> <span class="n">_tab_manager</span></div>
 
 
-<div class="viewcode-block" id="quit"><a class="viewcode-back" href="../../porcupine.html#porcupine.quit">[docs]</a><span class="k">def</span> <span class="nf">quit</span><span class="p">():</span>
+<div class="viewcode-block" id="quit"><a class="viewcode-back" href="../../porcupine.html#porcupine.quit">[docs]</a><span class="k">def</span> <span class="nf">quit</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calling this function is equivalent to clicking the X button in the</span>
 <span class="sd">    corner of the main window.</span>
@@ -118,6 +120,9 @@
 <span class="sd">    with :meth:`~porcupine.tabs.TabManager.close_tab` and widgets are</span>
 <span class="sd">    destroyed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
     <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">_tab_manager</span><span class="o">.</span><span class="n">tabs</span><span class="p">():</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">tab</span><span class="o">.</span><span class="n">can_be_closed</span><span class="p">():</span>
             <span class="k">return</span>
@@ -130,20 +135,22 @@
     <span class="n">_root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">_setup_actions</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">new_file</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_setup_actions</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">new_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">_tab_manager</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">(</span><span class="n">_tab_manager</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">open_files</span><span class="p">():</span>
-        <span class="n">paths</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilenames</span><span class="p">(</span>
-            <span class="o">**</span><span class="n">filetypes</span><span class="o">.</span><span class="n">get_filedialog_kwargs</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">open_files</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">get_filedialog_kwargs</span><span class="p">()</span>
+        <span class="n">paths</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilenames</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
         <span class="c1"># tkinter returns &#39;&#39; if the user cancels, and i&#39;m arfaid that python</span>
         <span class="c1"># devs might &quot;fix&quot; a future version to return None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">paths</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">tab</span> <span class="o">=</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">_tab_manager</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -154,8 +161,20 @@
 
             <span class="n">_tab_manager</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close_selected_tab</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span><span class="n">save_as</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="n">_tab_manager</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_as</span><span class="p">:</span>
+            <span class="n">tab</span><span class="o">.</span><span class="n">save_as</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tab</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">close_selected_tab</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">_tab_manager</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">tab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>      <span class="c1"># handled by tabtypes=[tabs.Tab] below</span>
         <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">can_be_closed</span><span class="p">():</span>
             <span class="n">_tab_manager</span><span class="o">.</span><span class="n">close_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
 
@@ -163,10 +182,9 @@
     <span class="c1">#       putting related items in a submenu?</span>
     <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;File/New File&quot;</span><span class="p">,</span> <span class="n">new_file</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-n&gt;&#39;</span><span class="p">)</span>
     <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;File/Open&quot;</span><span class="p">,</span> <span class="n">open_files</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-o&gt;&#39;</span><span class="p">)</span>
-    <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;File/Save&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">_tab_manager</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()),</span>
+    <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;File/Save&quot;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">save_file</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
                         <span class="s1">&#39;&lt;Control-s&gt;&#39;</span><span class="p">,</span> <span class="n">tabtypes</span><span class="o">=</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">])</span>
-    <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;File/Save As...&quot;</span><span class="p">,</span>
-                        <span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">_tab_manager</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">save_as</span><span class="p">()),</span>
+    <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;File/Save As...&quot;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">save_file</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
                         <span class="s1">&#39;&lt;Control-S&gt;&#39;</span><span class="p">,</span> <span class="n">tabtypes</span><span class="o">=</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">])</span>
 
     <span class="c1"># TODO: disable File/Quit when there are tabs, it&#39;s too easy to hit</span>
@@ -180,7 +198,7 @@
     <span class="c1">#       things like ttk themes and color styles?</span>
     <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;Edit/Porcupine Settings...&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">show_dialog</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">change_font_size</span><span class="p">(</span><span class="n">how</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">change_font_size</span><span class="p">(</span><span class="n">how</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># TODO: i think there is similar code in a couple other places too</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;reset&#39;</span><span class="p">:</span>
@@ -203,8 +221,11 @@
         <span class="s2">&quot;View/Reset Font Size&quot;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">change_font_size</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">),</span>
         <span class="s1">&#39;&lt;Control-0&gt;&#39;</span><span class="p">,</span> <span class="n">tabtypes</span><span class="o">=</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
-        <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="n">url</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">callback</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>     <span class="c1"># lambda doesn&#39;t work for this...</span>
+            <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>    <span class="c1"># ...because this returns non-None and mypy</span>
+
+        <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
 
     <span class="c1"># TODO: porcupine starring button?</span>
     <span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;Help/Porcupine Wiki&quot;</span><span class="p">,</span>
@@ -222,15 +243,7 @@
              <span class="s2">&quot;https://docs.python.org/&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_iter_queue</span><span class="p">(</span><span class="n">queue</span><span class="p">):</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
-            <span class="k">break</span>
-
-
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../porcupine.html#porcupine.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../porcupine.html#porcupine.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;init() wasn&#39;t called&quot;</span><span class="p">)</span>
 

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget — Handy tkinter.Text subclasses &#8212; Porcupine API 0.70.0-git-868870d documentation</title>
+    <title>porcupine.textwidget — Handy tkinter.Text subclasses &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -38,9 +38,15 @@
 <p>This module contains handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses.</p>
 <dl class="py class">
 <dt id="porcupine.textwidget.HandyText">
-<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">HandyText</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">master</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">create_peer_from</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#HandyText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.HandyText" title="Permalink to this definition">¶</a></dt>
-<dd><p>Like <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code>, but with some handy features.</p>
-<p>All arguments are passed to <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code>.</p>
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">HandyText</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">master</span><span class="p">:</span> <span class="n">tkinter.Widget</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">create_peer_from</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>tkinter.Text<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#HandyText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.HandyText" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class inherits from <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> and adds handy features.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> are passed to <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code>.
+If you want to understand <code class="docutils literal notranslate"><span class="pre">create_peer_from</span></code>, start by reading the
+<code class="docutils literal notranslate"><span class="pre">PEER</span> <span class="pre">WIDGETS</span></code> section in
+<a class="reference external" href="https://www.tcl.tk/man/tcl8.7/TkCmd/text.htm">text(3tk)</a>.
+Passing <code class="docutils literal notranslate"><span class="pre">create_peer_from=foo</span></code> creates a text widget that is a peer of
+another text widget named <code class="docutils literal notranslate"><span class="pre">foo</span></code>,
+which is useful for e.g. <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/overview.py">porcupine/plugins/overview.py</a>.</p>
 <dl class="py virtualevent">
 <dt id="porcupine.textwidget.HandyText.ContentChanged">
 <em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;ContentChanged&gt;&gt;</code><a class="headerlink" href="#porcupine.textwidget.HandyText.ContentChanged" title="Permalink to this definition">¶</a></dt>
@@ -49,35 +55,23 @@ in any way. Unlike <code class="docutils literal notranslate"><span class="pre">
 every time the content changes, and there’s no need to unset a flag
 like <code class="docutils literal notranslate"><span class="pre">textwidget.edit_modified(False)</span></code> or anything like that.</p>
 <p>If you want to know what changed and how, use
-<a class="reference internal" href="utils.html#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.utils.bind_with_data()</span></code></a> and <code class="docutils literal notranslate"><span class="pre">event.data_json()</span></code>.
-Then <code class="docutils literal notranslate"><span class="pre">event.data_json()</span></code> will return a list containing dicts filled
-with information. For example, this…</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># characters 0 to 5 on 1st line are the hello</span>
+<a class="reference internal" href="utils.html#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.utils.bind_with_data()</span></code></a> and
+<code class="docutils literal notranslate"><span class="pre">event.data_class(Changes)</span></code>. For example, this…</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># let&#39;s say that text widget contains &#39;hello world&#39;</span>
 <span class="n">textwidget</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;1.5&#39;</span><span class="p">,</span> <span class="s1">&#39;toot&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>…changes the <code class="docutils literal notranslate"><span class="pre">'hello'</span></code> to <code class="docutils literal notranslate"><span class="pre">'toot'</span></code>, generating a
-<code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> event with <code class="docutils literal notranslate"><span class="pre">data_json()</span></code> like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="s1">&#39;1.5&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;old_text_len&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-  <span class="s1">&#39;new_text&#39;</span><span class="p">,</span> <span class="s1">&#39;toot&#39;</span><span class="p">}]</span>
+<code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> event whose <code class="docutils literal notranslate"><span class="pre">.data_class(Changes)</span></code> returns
+a <a class="reference internal" href="#porcupine.textwidget.Changes" title="porcupine.textwidget.Changes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Changes</span></code></a> object like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Changes</span><span class="p">(</span><span class="n">change_list</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">Change</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1.5&#39;</span><span class="p">,</span> <span class="n">old_text_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">new_text</span><span class="o">=</span><span class="s1">&#39;toot&#39;</span><span class="p">),</span>
+<span class="p">])</span>
 </pre></div>
 </div>
-<p>Here <code class="docutils literal notranslate"><span class="pre">old_text_len</span></code> is <code class="docutils literal notranslate"><span class="pre">len('hello')</span></code>, not <code class="docutils literal notranslate"><span class="pre">len('toot')</span></code>.</p>
-<p>Unlike you might think, the <code class="docutils literal notranslate"><span class="pre">old_text_len</span></code> is not redundant. If the
-whole <code class="docutils literal notranslate"><span class="pre">'toot</span> <span class="pre">world'</span></code> is deleted…</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="s1">&#39;1.10&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;old_text_len&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-  <span class="s1">&#39;new_text&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">}]</span>
-</pre></div>
-</div>
-<p>…then <code class="docutils literal notranslate"><span class="pre">'1.10'</span></code> is no longer a valid index in the text widget
-because it contains 0 characters (and 0 is less than 10). In this case,
-checking only the <code class="docutils literal notranslate"><span class="pre">0</span></code> of <code class="docutils literal notranslate"><span class="pre">1.0</span></code> and the <code class="docutils literal notranslate"><span class="pre">10</span></code> of <code class="docutils literal notranslate"><span class="pre">1.10</span></code> could be
-used to calculate the 10, but that doesn’t work right when changing
-multiple lines.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> event occurs after the text in the text
+widget has already changed. Also, sometimes many changes are applied
+at once and <code class="docutils literal notranslate"><span class="pre">change_list</span></code> contains more than one item.</p>
 </dd></dl>
 
 <dl class="py virtualevent">
@@ -91,7 +85,7 @@ position.</p>
 
 <dl class="py method">
 <dt id="porcupine.textwidget.HandyText.iter_chunks">
-<code class="sig-name descname">iter_chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#HandyText.iter_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.HandyText.iter_chunks" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">iter_chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">100</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/textwidget.html#HandyText.iter_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.HandyText.iter_chunks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over the content as chunks of <em>n</em> lines.</p>
 <p>Each yielded line ends with a <code class="docutils literal notranslate"><span class="pre">\n</span></code> character. Lines are not
 broken down the middle, and <code class="docutils literal notranslate"><span class="pre">''</span></code> is never yielded.</p>
@@ -101,7 +95,7 @@ total number of lines is divisible by <em>n</em>.</p>
 
 <dl class="py method">
 <dt id="porcupine.textwidget.HandyText.iter_lines">
-<code class="sig-name descname">iter_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#HandyText.iter_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.HandyText.iter_lines" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">iter_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/textwidget.html#HandyText.iter_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.HandyText.iter_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over the content as lines.</p>
 <p>The trailing <code class="docutils literal notranslate"><span class="pre">\n</span></code> characters of each line are included.</p>
 </dd></dl>
@@ -110,7 +104,7 @@ total number of lines is divisible by <em>n</em>.</p>
 
 <dl class="py class">
 <dt id="porcupine.textwidget.ThemedText">
-<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">ThemedText</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#ThemedText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.ThemedText" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">ThemedText</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#ThemedText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.ThemedText" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference internal" href="#porcupine.textwidget.HandyText" title="porcupine.textwidget.HandyText"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandyText</span></code></a> subclass that uses the Pygments style’s colors.</p>
 <p>You can use this class just like <a class="reference internal" href="#porcupine.textwidget.HandyText" title="porcupine.textwidget.HandyText"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandyText</span></code></a>, it takes care
 of switching the colors by itself. This is useful for things like
@@ -120,14 +114,81 @@ of switching the colors by itself. This is useful for things like
 <p>Syntax highlighting is implemented with Pygments in
 <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/highlight.py">porcupine/plugins/highlight.py</a>.</p>
 </div>
+<dl class="py method">
+<dt id="porcupine.textwidget.ThemedText.set_colors">
+<code class="sig-name descname">set_colors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">foreground</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">background</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/textwidget.html#ThemedText.set_colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.ThemedText.set_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method runs automatically when the Pygments color style is
+changed. By default, it configures some text widget options.</p>
+<p>See <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/overview.py">porcupine/plugins/overview.py</a> for an example of
+overriding <code class="docutils literal notranslate"><span class="pre">set_colors()</span></code>.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt id="porcupine.textwidget.MainText">
-<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">MainText</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">filetype</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#MainText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.MainText" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">MainText</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">tkinter.Widget</span></em>, <em class="sig-param"><span class="n">filetype</span><span class="p">:</span> <span class="n">porcupine.filetypes.FileType</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#MainText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.MainText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Don’t use this. It may be changed later.</p>
 </dd></dl>
 
+<div class="section" id="change-information">
+<h2>Change Information<a class="headerlink" href="#change-information" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="#porcupine.textwidget.HandyText.ContentChanged" title="porcupine.textwidget.HandyText.ContentChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;HandyText.ContentChanged&gt;&gt;</span></code></a> to run a callback when the content of
+the text widget changes. These classes describe what changed:</p>
+<dl class="py class">
+<dt id="porcupine.textwidget.Change">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">Change</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">end</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">old_text_len</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">new_text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#Change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.Change" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#module-dataclasses" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataclass</span></code></a> represents any change in the text widget,
+where <code class="docutils literal notranslate"><span class="pre">old_text_len</span></code> characters between the text widget indexes <code class="docutils literal notranslate"><span class="pre">start</span></code>
+and <code class="docutils literal notranslate"><span class="pre">end</span></code> get replaced with <code class="docutils literal notranslate"><span class="pre">new_text</span></code>. For example, this…</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># let&#39;s say that text widget contains &#39;hello world&#39;</span>
+<span class="n">textwidget</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;1.5&#39;</span><span class="p">,</span> <span class="s1">&#39;toot&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>...changes the <code class="docutils literal notranslate"><span class="pre">'hello'</span></code> to <code class="docutils literal notranslate"><span class="pre">'toot'</span></code>, and that’s represented by a
+<code class="docutils literal notranslate"><span class="pre">Change</span></code> like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Change</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1.5&#39;</span><span class="p">,</span> <span class="n">old_text_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">new_text</span><span class="o">=</span><span class="s1">&#39;toot&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Insertions are represented with <code class="docutils literal notranslate"><span class="pre">Change</span></code> objects having <code class="docutils literal notranslate"><span class="pre">old_text_len=0</span></code>
+and the same <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>. For example,
+<code class="docutils literal notranslate"><span class="pre">textwidget.insert('1.0',</span> <span class="pre">'hello')</span></code> corresponds to this <code class="docutils literal notranslate"><span class="pre">Change</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Change</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">old_text_len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">new_text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For deletions, <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> differ and <code class="docutils literal notranslate"><span class="pre">new_text</span></code> is empty.
+If the first line of a text widget contains at least 5 characters, then
+deleting the first 5 characters looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Change</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1.5&#39;</span><span class="p">,</span> <span class="n">old_text_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">new_text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Unlike you might think, the <code class="docutils literal notranslate"><span class="pre">old_text_len</span></code> is not redundant. Let’s
+say that the text widget contains <code class="docutils literal notranslate"><span class="pre">'toot</span> <span class="pre">world'</span></code> and all that is
+deleted:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Changes</span><span class="p">(</span><span class="n">change_list</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">Change</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1.10&#39;</span><span class="p">,</span> <span class="n">old_text_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">new_text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p>After the deletion, <code class="docutils literal notranslate"><span class="pre">'1.10'</span></code> is no longer a valid index in the text
+widget because it contains 0 characters (and 0 is less than 10).
+In this case, checking only the <code class="docutils literal notranslate"><span class="pre">0</span></code> of <code class="docutils literal notranslate"><span class="pre">1.0</span></code> and the <code class="docutils literal notranslate"><span class="pre">10</span></code> of <code class="docutils literal notranslate"><span class="pre">1.10</span></code>
+could be used to calculate the 10,
+but that doesn’t work right when changing multiple lines.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="porcupine.textwidget.Changes">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">Changes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">change_list</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#porcupine.textwidget.Change" title="porcupine.textwidget.Change">porcupine.textwidget.Change</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/textwidget.html#Changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.Changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#module-dataclasses" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataclass</span></code></a> represents a list of several
+<a class="reference internal" href="#porcupine.textwidget.Change" title="porcupine.textwidget.Change"><code class="xref py py-class docutils literal notranslate"><span class="pre">Change</span></code></a>s applied at once.
+The <code class="docutils literal notranslate"><span class="pre">change_list</span></code> is always ordered so that most recent change is
+<code class="docutils literal notranslate"><span class="pre">change_list[-1]</span></code> and the oldest change is <code class="docutils literal notranslate"><span class="pre">change_list[0]</span></code>.</p>
+<p>This boilerplate class is needed instead of a plain <code class="docutils literal notranslate"><span class="pre">List[Change]</span></code>
+because of how <code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.utils.EventDataclass</span></code> works.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
