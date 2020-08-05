@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine._run &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
+    <title>porcupine._run &#8212; Porcupine API 0.73.0-git-8799322 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,24 +37,30 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">import</span> <span class="nn">webbrowser</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_logs</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">filetypes</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">tabs</span><span class="p">,</span> <span class="n">utils</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># global state makes some things a lot easier</span>
-<span class="n">_root</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">_tab_manager</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">TabManager</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">_init_kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_tab_manager</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">TabManager</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_init_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <span class="c1"># get_main_window() and get_tab_manager() work only if this has been called</span>
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../porcupine.html#porcupine.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../porcupine.html#porcupine.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get everything ready for running Porcupine.</span>
 
 <span class="sd">    The *verbose_logging* option corresponds to the ``--verbose``</span>
@@ -71,6 +77,7 @@
     <span class="n">_logs</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">verbose_logging</span><span class="p">)</span>
     <span class="n">_root</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
     <span class="n">_root</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="s1">&#39;WM_DELETE_WINDOW&#39;</span><span class="p">,</span> <span class="n">quit</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
     <span class="n">filetypes</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
 
     <span class="n">_tab_manager</span> <span class="o">=</span> <span class="n">tabs</span><span class="o">.</span><span class="n">TabManager</span><span class="p">(</span><span class="n">_root</span><span class="p">)</span>
@@ -82,7 +89,7 @@
 
 
 <span class="c1"># TODO: avoid Any typing</span>
-<div class="viewcode-block" id="get_init_kwargs"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">get_init_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_init_kwargs"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">get_init_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Return a dictionary of the keyword arguments that were passed to :func:\</span>
 <span class="sd">`init`.</span>
 
@@ -142,7 +149,7 @@
 
     <span class="k">def</span> <span class="nf">open_files</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">get_filedialog_kwargs</span><span class="p">()</span>
-        <span class="n">paths</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilenames</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">paths</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilenames</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
         <span class="c1"># tkinter returns &#39;&#39; if the user cancels, and i&#39;m arfaid that python</span>
         <span class="c1"># devs might &quot;fix&quot; a future version to return None</span>
@@ -198,16 +205,25 @@
     <span class="c1">#       things like ttk themes and color styles?</span>
     <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;Edit/Porcupine Settings...&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">show_dialog</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">change_font_size</span><span class="p">(</span><span class="n">how</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># TODO: i think there is similar code in a couple other places too</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">change_font_size</span><span class="p">(</span><span class="n">how</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;bigger&#39;</span><span class="p">,</span> <span class="s1">&#39;smaller&#39;</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;reset&#39;</span><span class="p">:</span>
-            <span class="n">config</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">)</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">size</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;bigger&#39;</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;font_size&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;bigger&#39;</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">InvalidValue</span><span class="p">:</span>
-                <span class="k">pass</span>
+            <span class="n">size</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">return</span>
+
+        <span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+    <span class="c1"># trigger change_font_size() with mouse wheel from any text widget</span>
+    <span class="n">utils</span><span class="o">.</span><span class="n">bind_mouse_wheel</span><span class="p">(</span><span class="s1">&#39;Text&#39;</span><span class="p">,</span> <span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">updn</span><span class="p">:</span> <span class="n">change_font_size</span><span class="p">(</span><span class="s1">&#39;bigger&#39;</span> <span class="k">if</span> <span class="n">updn</span> <span class="o">==</span> <span class="s1">&#39;up&#39;</span> <span class="k">else</span> <span class="s1">&#39;smaller&#39;</span><span class="p">)</span>
+    <span class="p">),</span> <span class="n">prefixes</span><span class="o">=</span><span class="s1">&#39;Control-&#39;</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># these work only with filetabs because that way the size change is</span>
     <span class="c1"># noticable</span>

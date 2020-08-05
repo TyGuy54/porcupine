@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.73.0-git-8799322 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -36,7 +36,7 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkfont</span>
-<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">pygments.styles</span>          <span class="c1"># type: ignore</span>
 
@@ -56,7 +56,7 @@
 <span class="c1"># data classes into an event</span>
 <div class="viewcode-block" id="Changes"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.Changes">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Changes</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">EventDataclass</span><span class="p">):</span>
-    <span class="n">change_list</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span></div>
+    <span class="n">change_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="HandyText"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText">[docs]</a><span class="k">class</span> <span class="nc">HandyText</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">):</span>
@@ -107,8 +107,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-                 <span class="n">create_peer_from</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                 <span class="n">create_peer_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">master</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">create_peer_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -125,7 +125,11 @@
             <span class="c1">#</span>
             <span class="c1">#    https://github.com/python/mypy/issues/6552</span>
             <span class="c1">#</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>      <span class="c1"># goodbye stupid tkinter-created widget</span>
+            <span class="c1"># Can&#39;t do self.destroy() because that screws up winfo_children().</span>
+            <span class="c1"># Each tkinter widget has keeps a list of child widgets, and</span>
+            <span class="c1"># self.destroy() would delete the widget from there. Tkinter&#39;s</span>
+            <span class="c1"># winfo_children() also ignores anything not found in those lists.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>  <span class="c1"># destroy tkinter-created widget</span>
             <span class="n">create_peer_from</span><span class="o">.</span><span class="n">peer_create</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>   <span class="c1"># type: ignore</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">forward_event</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">create_peer_from</span><span class="p">)</span>
 
@@ -257,7 +261,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_change_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args_tuple</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">changes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># search for &#39;pathName delete&#39; in text(3tk)... it&#39;s a wall of text,</span>
         <span class="c1"># and this thing has to implement every detail of that wall</span>
@@ -292,8 +296,8 @@
             <span class="c1"># &quot;They [index pairs, aka ranges] are sorted [...].&quot;</span>
             <span class="c1"># TODO: use the fact that (line, column) tuples sort nicely?</span>
             <span class="k">def</span> <span class="nf">sort_by_range_beginnings</span><span class="p">(</span>
-                    <span class="n">range1</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                    <span class="n">range2</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+                    <span class="n">range1</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                    <span class="n">range2</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
                 <span class="n">start1</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range1</span>
                 <span class="n">start2</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range2</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
@@ -310,7 +314,7 @@
             <span class="c1"># outside the given ranges due to text shifted during deletion.&quot;</span>
             <span class="k">def</span> <span class="nf">merge_index_ranges</span><span class="p">(</span>
                     <span class="n">start1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                    <span class="n">start2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+                    <span class="n">start2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
                 <span class="n">start</span> <span class="o">=</span> <span class="n">start1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">)</span> <span class="k">else</span> <span class="n">start2</span>
                 <span class="n">end</span> <span class="o">=</span> <span class="n">end1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span> <span class="k">else</span> <span class="n">end2</span>
                 <span class="k">return</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
@@ -402,7 +406,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="n">new_pos</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;CursorMoved&gt;&gt;&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HandyText.iter_chunks"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText.iter_chunks">[docs]</a>    <span class="k">def</span> <span class="nf">iter_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="HandyText.iter_chunks"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText.iter_chunks">[docs]</a>    <span class="k">def</span> <span class="nf">iter_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over the content as chunks of *n* lines.</span>
 
 <span class="sd">        Each yielded line ends with a ``\n`` character. Lines are not</span>
@@ -425,7 +429,7 @@
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.0&#39;</span> <span class="o">%</span> <span class="n">start</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.0&#39;</span> <span class="o">%</span> <span class="n">end</span><span class="p">)</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">end</span></div>
 
-<div class="viewcode-block" id="HandyText.iter_lines"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText.iter_lines">[docs]</a>    <span class="k">def</span> <span class="nf">iter_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="HandyText.iter_lines"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText.iter_lines">[docs]</a>    <span class="k">def</span> <span class="nf">iter_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over the content as lines.</span>
 
 <span class="sd">        The trailing ``\n`` characters of each line are included.</span>
@@ -448,19 +452,13 @@
 <span class="sd">        :source:`porcupine/plugins/highlight.py`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-            <span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_style</span><span class="p">,</span> <span class="n">run_now</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;SettingChanged:pygments_style&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_style_changed</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_style_changed</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">on_destroy</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span>
-                <span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_style</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Destroy&gt;&#39;</span><span class="p">,</span> <span class="n">on_destroy</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_set_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">style</span> <span class="o">=</span> <span class="n">pygments</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_on_style_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="n">pygments</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
         <span class="n">bg</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">background_color</span>
 
         <span class="c1"># yes, style.default_style can be &#39;#rrggbb&#39;, &#39;&#39; or nonexistent</span>
@@ -500,7 +498,7 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">parent</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span>
             <span class="n">filetype</span><span class="p">:</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">FileType</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_filetype</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span>
 
@@ -522,20 +520,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-v&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paste</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-y&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redo</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-a&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_all</span><span class="p">)</span>
-
-        <span class="n">utils</span><span class="o">.</span><span class="n">bind_mouse_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_ctrl_wheel</span><span class="p">,</span> <span class="n">prefixes</span><span class="o">=</span><span class="s1">&#39;Control-&#39;</span><span class="p">)</span>
-
-    <span class="c1"># TODO: the run plugin contains similar code, maybe reuse it somehow?</span>
-    <span class="k">def</span> <span class="nf">_on_ctrl_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;reset&#39;</span><span class="p">:</span>
-            <span class="n">config</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">config</span><span class="p">[</span><span class="s1">&#39;font_size&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;up&#39;</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">InvalidValue</span><span class="p">:</span>
-            <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">set_filetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">:</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">FileType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span> <span class="o">=</span> <span class="n">filetype</span>

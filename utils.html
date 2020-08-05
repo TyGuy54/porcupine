@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.72.0-git-71fef54 documentation</title>
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.73.0-git-8799322 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -91,13 +91,16 @@ anything from it in my editor.</p>
 
 <dl class="py function">
 <dt id="porcupine.utils.bind_mouse_wheel">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_mouse_wheel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Widget</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[str], None]</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">prefixes</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">bind_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#bind_mouse_wheel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_mouse_wheel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_mouse_wheel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget_or_class_name</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>tkinter.Misc<span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[typing_extensions.Literal[up, down]], None]</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">prefixes</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">add</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#bind_mouse_wheel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_mouse_wheel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bind mouse wheel events to callback.</p>
 <p>The callback will be called like <code class="docutils literal notranslate"><span class="pre">callback(direction)</span></code> where
 <em>direction</em> is <code class="docutils literal notranslate"><span class="pre">'up'</span></code> or <code class="docutils literal notranslate"><span class="pre">'down'</span></code>. The <em>prefixes</em> argument can
 be used to change the binding string. For example,
 <code class="docutils literal notranslate"><span class="pre">prefixes='Control-'</span></code> means that callback will be ran when the
 user holds down Control and rolls the wheel.</p>
+<p><em>add</em> has the same meaning as in tkinter’s <code class="docutils literal notranslate"><span class="pre">bind()</span></code>.</p>
+<p>If <em>widget</em> is a string, then it should be a widget class name for
+<code class="docutils literal notranslate"><span class="pre">bind_class()</span></code>, such as <code class="docutils literal notranslate"><span class="pre">Text</span></code> to bind all text widgets.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function has not been tested on OSX. If you have a Mac,
