@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.filetypes &#8212; Porcupine API 0.73.0-git-8799322 documentation</title>
+    <title>porcupine.filetypes &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -459,7 +459,10 @@
 
 
 <div class="viewcode-block" id="get_filetype_by_name"><a class="viewcode-back" href="../../filetypes.html#porcupine.filetypes.get_filetype_by_name">[docs]</a><span class="k">def</span> <span class="nf">get_filetype_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileType</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Find and return a filetype object by its ``name`` attribute.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find and return a filetype object by its ``name`` attribute.</span>
+<span class="sd">    Raises :class:`KeyError` if the filetype is not found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_filetypes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
 
 
@@ -543,7 +546,10 @@
 
 
 <span class="k">def</span> <span class="nf">_init</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">assert</span> <span class="p">(</span><span class="ow">not</span> <span class="n">_filetypes</span><span class="p">),</span> <span class="s2">&quot;cannot _init() twice&quot;</span>
+    <span class="k">if</span> <span class="n">_filetypes</span><span class="p">:</span>
+        <span class="c1"># already inited, __main__.py needs to init filetypes before gui stuff</span>
+        <span class="k">return</span>
+
     <span class="n">_add_missing_mimetypes</span><span class="p">()</span>
     <span class="n">stupid</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">default_section</span><span class="o">=</span><span class="s1">&#39;Plain Text&#39;</span><span class="p">)</span>
     <span class="n">stupid</span><span class="o">.</span><span class="n">read_string</span><span class="p">(</span><span class="n">_STUPID_DEFAULTS</span><span class="p">)</span>
@@ -709,7 +715,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>

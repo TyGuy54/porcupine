@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget &#8212; Porcupine API 0.73.0-git-8799322 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -36,7 +36,8 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkfont</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">import</span> <span class="nn">pygments.styles</span>          <span class="c1"># type: ignore</span>
 
@@ -45,31 +46,367 @@
 
 <div class="viewcode-block" id="Change"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.Change">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Change</span><span class="p">:</span>
-    <span class="c1"># start and end are &#39;line.column&#39; text index strings</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This :mod:`dataclass &lt;dataclasses&gt;` represents any change in a</span>
+<span class="sd">    :class:`ChangeTrackingText` widget,</span>
+<span class="sd">    where ``old_text_len`` characters between the text widget indexes ``start``</span>
+<span class="sd">    and ``end`` get replaced with ``new_text``. For example, this...</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        # let&#39;s say that text widget contains &#39;hello world&#39;</span>
+<span class="sd">        textwidget.replace(&#39;1.0&#39;, &#39;1.5&#39;, &#39;toot&#39;)</span>
+
+<span class="sd">    \...changes the ``&#39;hello&#39;`` to ``&#39;toot&#39;``, and that&#39;s represented by a</span>
+<span class="sd">    ``Change`` like this::</span>
+
+<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.5&#39;, old_text_len=5, new_text=&#39;toot&#39;)</span>
+
+<span class="sd">    Insertions are represented with ``Change`` objects having ``old_text_len=0``</span>
+<span class="sd">    and the same ``start`` and ``end``. For example,</span>
+<span class="sd">    ``textwidget.insert(&#39;1.0&#39;, &#39;hello&#39;)`` corresponds to this ``Change``::</span>
+
+<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.0&#39;, old_text_len=0, new_text=&#39;hello&#39;)</span>
+
+<span class="sd">    For deletions, ``start`` and ``end`` differ and ``new_text`` is empty.</span>
+<span class="sd">    If the first line of a text widget contains at least 5 characters, then</span>
+<span class="sd">    deleting the first 5 characters looks like this::</span>
+
+<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.5&#39;, old_text_len=5, new_text=&#39;&#39;)</span>
+
+<span class="sd">    Unlike you might think, the ``old_text_len`` is not redundant. Let&#39;s</span>
+<span class="sd">    say that the text widget contains ``&#39;toot world&#39;`` and all that is</span>
+<span class="sd">    deleted::</span>
+
+<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.10&#39;, old_text_len=10, new_text=&#39;&#39;)</span>
+
+<span class="sd">    After the deletion, ``&#39;1.10&#39;`` is no longer a valid index in the text</span>
+<span class="sd">    widget because it contains 0 characters (and 0 is less than 10).</span>
+<span class="sd">    In this case, checking only the ``0`` of ``1.0`` and the ``10`` of ``1.10``</span>
+<span class="sd">    could be used to calculate the 10,</span>
+<span class="sd">    but that doesn&#39;t work right when changing multiple lines.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">start</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">end</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">old_text_len</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">new_text</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<span class="c1"># unfortunately a stupid class like this is necessary for passing a list of</span>
-<span class="c1"># data classes into an event</span>
 <div class="viewcode-block" id="Changes"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.Changes">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Changes</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">EventDataclass</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This :mod:`dataclass &lt;dataclasses&gt;` represents a list of several</span>
+<span class="sd">    :class:`Change`\ s applied at once.</span>
+<span class="sd">    The ``change_list`` is always ordered so that most recent change is</span>
+<span class="sd">    ``change_list[-1]`` and the oldest change is ``change_list[0]``.</span>
+
+<span class="sd">    This boilerplate class is needed instead of a plain ``List[Change]``</span>
+<span class="sd">    because of how :class:`porcupine.utils.EventDataclass` works.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">change_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="HandyText"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText">[docs]</a><span class="k">class</span> <span class="nc">HandyText</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class inherits from ``tkinter.Text`` and adds handy features.</span>
+<span class="k">class</span> <span class="nc">_ChangeTracker</span><span class="p">:</span>
 
-<span class="sd">    All ``kwargs`` are passed to ``tkinter.Text``.</span>
-<span class="sd">    If you want to understand ``create_peer_from``, start by reading the</span>
-<span class="sd">    ``PEER WIDGETS`` section in</span>
-<span class="sd">    `text(3tk) &lt;https://www.tcl.tk/man/tcl8.7/TkCmd/text.htm&gt;`_.</span>
-<span class="sd">    Passing ``create_peer_from=foo`` creates a text widget that is a peer of</span>
-<span class="sd">    another text widget named ``foo``,</span>
-<span class="sd">    which is useful for e.g. :source:`porcupine/plugins/overview.py`.</span>
+    <span class="n">old_cursor_pos</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widget</span> <span class="o">=</span> <span class="n">widget</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_cursor_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
+
+        <span class="c1">#       /\</span>
+        <span class="c1">#      /  \  WARNING: serious tkinter magic coming up</span>
+        <span class="c1">#     / !! \          proceed at your own risk</span>
+        <span class="c1">#    /______\</span>
+        <span class="c1">#</span>
+        <span class="c1"># this irc conversation might give you an idea of how this works:</span>
+        <span class="c1">#</span>
+        <span class="c1">#    &lt;Akuli&gt; __Myst__, why do you want to know how it works?</span>
+        <span class="c1">#    &lt;__Myst__&gt; Akuli: cause it seems cool</span>
+        <span class="c1">#    &lt;Akuli&gt; there&#39;s 0 reason to docment it in the langserver</span>
+        <span class="c1">#    &lt;Akuli&gt; ok i can explain :)</span>
+        <span class="c1">#    &lt;Akuli&gt; in tcl, all statements are command calls</span>
+        <span class="c1">#    &lt;Akuli&gt; set x lol    ;# set variable x to string lol</span>
+        <span class="c1">#    &lt;Akuli&gt; set is a command, x and lol are strings</span>
+        <span class="c1">#    &lt;Akuli&gt; adding stuff to widgets is also command calls</span>
+        <span class="c1">#    &lt;Akuli&gt; .textwidget insert end hello   ;# add hello to the text</span>
+        <span class="c1">#            widget</span>
+        <span class="c1">#    &lt;Akuli&gt; my magic renames the textwidget command to</span>
+        <span class="c1">#            actual_widget_command, and creates a fake text widget</span>
+        <span class="c1">#            command that tkinter calls instead</span>
+        <span class="c1">#    &lt;Akuli&gt; then this fake command checks for all possible widget</span>
+        <span class="c1">#            commands that can move the cursor or change the content</span>
+        <span class="c1">#    &lt;Akuli&gt; making sense?</span>
+        <span class="c1">#    &lt;__Myst__&gt; ooh</span>
+        <span class="c1">#    &lt;__Myst__&gt; so it&#39;s like you&#39;re proxying actual calls to the text</span>
+        <span class="c1">#               widget and calculating change events based on that?</span>
+        <span class="c1">#    &lt;Akuli&gt; yes</span>
+        <span class="c1">#    &lt;__Myst__&gt; very cool</span>
+
+        <span class="c1"># cursor_cb is called whenever the cursor position may have changed,</span>
+        <span class="c1"># and change_cb is called whenever the content of the text widget may</span>
+        <span class="c1"># have changed</span>
+        <span class="n">change_cb_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_cb</span><span class="p">)</span>
+        <span class="n">cursor_cb_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_cb</span><span class="p">)</span>
+
+        <span class="c1"># all widget stuff is implemented in python and in tcl as calls to a</span>
+        <span class="c1"># tcl command named str(self.widget), and replacing that with a custom</span>
+        <span class="c1"># command is a very powerful way to do magic; for example, moving the</span>
+        <span class="c1"># cursor with arrow keys calls the &#39;mark set&#39; widget command :D</span>
+        <span class="n">actual_widget_command</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_actual_widget&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;rename&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">),</span> <span class="n">actual_widget_command</span><span class="p">)</span>
+
+        <span class="c1"># this part is tcl because i couldn&#39;t get a python callback to work</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        proc </span><span class="si">%(fake_widget)s</span><span class="s1"> </span><span class="si">{args}</span><span class="s1"> {</span>
+<span class="s1">            #puts &quot;</span><span class="si">%(fake_widget)s</span><span class="s1"> $args&quot;</span>
+
+<span class="s1">            # subcommand is e.g. insert, delete, replace, index, search, ...</span>
+<span class="s1">            # see text(3tk) for all possible subcommands</span>
+<span class="s1">            set subcommand [lindex $args 0]</span>
+
+<span class="s1">            # issue #5: don&#39;t let the cursor to go to the very top or bottom of</span>
+<span class="s1">            # the view</span>
+<span class="s1">            if {$subcommand == &quot;see&quot;} {</span>
+<span class="s1">                # cleaned_index is always a &quot;LINE.COLUMN&quot; string</span>
+<span class="s1">                set cleaned_index [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args 1]]</span>
+
+<span class="s1">                # from text(3tk): &quot;If index is far out of view, then the</span>
+<span class="s1">                # command centers index in the window.&quot; and we want to center</span>
+<span class="s1">                # it correctly, so first go to the center, then a few</span>
+<span class="s1">                # characters around it, and finally back to center because it</span>
+<span class="s1">                # feels less error-prone that way</span>
+<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see $cleaned_index</span>
+<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see &quot;$cleaned_index - 4 lines&quot;</span>
+<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see &quot;$cleaned_index + 4 lines&quot;</span>
+<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see $cleaned_index</span>
+<span class="s1">                return</span>
+<span class="s1">            }</span>
+
+<span class="s1">            set cursor_may_have_moved 0</span>
+
+<span class="s1">            # only these subcommands can change the text, but they can also</span>
+<span class="s1">            # move the cursor by changing the text before the cursor</span>
+<span class="s1">            if {$subcommand == &quot;delete&quot; ||</span>
+<span class="s1">                    $subcommand == &quot;insert&quot; ||</span>
+<span class="s1">                    $subcommand == &quot;replace&quot;} {</span>
+<span class="s1">                set cursor_may_have_moved 1</span>
+
+<span class="s1">                # this is like _change_cb(*args) in python</span>
+<span class="s1">                </span><span class="si">%(change_cb)s</span><span class="s1"> {*}$args</span>
+<span class="s1">            }</span>
+
+<span class="s1">            # it&#39;s important that this comes after the change cb stuff because</span>
+<span class="s1">            # this way it&#39;s possible to get old_length in self._change_cb()...</span>
+<span class="s1">            # however, it&#39;s also important that this is before the mark set</span>
+<span class="s1">            # stuff because the documented way to access the new index in a</span>
+<span class="s1">            # &lt;&lt;CursorMoved&gt;&gt; binding is getting it directly from the widget</span>
+<span class="s1">            set result [</span><span class="si">%(actual_widget)s</span><span class="s1"> {*}$args]</span>
+
+<span class="s1">            # only[*] &#39;textwidget mark set insert new_location&#39; can change the</span>
+<span class="s1">            # cursor position, because the cursor position is implemented as a</span>
+<span class="s1">            # mark named &quot;insert&quot; and there are no other commands that move</span>
+<span class="s1">            # marks</span>
+<span class="s1">            #</span>
+<span class="s1">            # [*] i lied, hehe &gt;:D MUHAHAHA ... inserting text before the</span>
+<span class="s1">            # cursor also changes it</span>
+<span class="s1">            if {$subcommand == &quot;mark&quot; &amp;&amp;</span>
+<span class="s1">                    [lindex $args 1] == &quot;set&quot; &amp;&amp;</span>
+<span class="s1">                    [lindex $args 2] == &quot;insert&quot;} {</span>
+<span class="s1">                set cursor_may_have_moved 1</span>
+<span class="s1">            }</span>
+
+<span class="s1">            if {$cursor_may_have_moved} {</span>
+<span class="s1">                </span><span class="si">%(cursor_cb)s</span><span class="s1"></span>
+<span class="s1">            }</span>
+
+<span class="s1">            return $result</span>
+<span class="s1">        }</span>
+<span class="s1">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="s1">&#39;fake_widget&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">),</span>
+            <span class="s1">&#39;actual_widget&#39;</span><span class="p">:</span> <span class="n">actual_widget_command</span><span class="p">,</span>
+            <span class="s1">&#39;change_cb&#39;</span><span class="p">:</span> <span class="n">change_cb_command</span><span class="p">,</span>
+            <span class="s1">&#39;cursor_cb&#39;</span><span class="p">:</span> <span class="n">cursor_cb_command</span><span class="p">,</span>
+        <span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_create_change</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Change</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Change</span><span class="p">(</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+            <span class="n">old_text_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)),</span>
+            <span class="n">new_text</span><span class="o">=</span><span class="n">new_text</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_change_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args_tuple</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># search for &#39;pathName delete&#39; in text(3tk)... it&#39;s a wall of text,</span>
+        <span class="c1"># and this thing has to implement every detail of that wall</span>
+        <span class="k">if</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;delete&#39;</span><span class="p">:</span>
+            <span class="c1"># &quot;All indices are first checked for validity before any deletions</span>
+            <span class="c1"># are made.&quot; they are already validated, but this doesn&#39;t hurt</span>
+            <span class="c1"># imo... but note that rest of this code assumes that this is done!</span>
+            <span class="c1"># not everything works in corner cases without this</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args_tuple</span><span class="p">]</span>
+
+            <span class="c1"># tk has a funny abstraction of an invisible newline character at</span>
+            <span class="c1"># the end of file, it&#39;s always there but nothing else uses it, so</span>
+            <span class="c1"># let&#39;s ignore it</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">old_arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">old_arg</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
+                    <span class="n">args</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
+
+            <span class="c1"># &quot;If index2 is not specified then the single character at index1</span>
+            <span class="c1"># is deleted.&quot; and later: &quot;If more indices are given, multiple</span>
+            <span class="c1"># ranges of text will be deleted.&quot; but no mention about combining</span>
+            <span class="c1"># these features, this works like the text widget actually behaves</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> + 1 char&#39;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]))</span>
+
+            <span class="c1"># &quot;If index2 does not specify a position later in the text than</span>
+            <span class="c1"># index1 then no characters are deleted.&quot;</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pairs</span>
+                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)]</span>
+
+            <span class="c1"># &quot;They [index pairs, aka ranges] are sorted [...].&quot;</span>
+            <span class="c1"># TODO: use the fact that (line, column) tuples sort nicely?</span>
+            <span class="k">def</span> <span class="nf">sort_by_range_beginnings</span><span class="p">(</span>
+                    <span class="n">range1</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                    <span class="n">range2</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="n">start1</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range1</span>
+                <span class="n">start2</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range2</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+            <span class="n">pairs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">cmp_to_key</span><span class="p">(</span><span class="n">sort_by_range_beginnings</span><span class="p">))</span>
+
+            <span class="c1"># &quot;If multiple ranges with the same start index are given, then the</span>
+            <span class="c1"># longest range is used. If overlapping ranges are given, then they</span>
+            <span class="c1"># will be merged into spans that do not cause deletion of text</span>
+            <span class="c1"># outside the given ranges due to text shifted during deletion.&quot;</span>
+            <span class="k">def</span> <span class="nf">merge_index_ranges</span><span class="p">(</span>
+                    <span class="n">start1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                    <span class="n">start2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">start1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">)</span> <span class="k">else</span> <span class="n">start2</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">end1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span> <span class="k">else</span> <span class="n">end2</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+
+            <span class="c1"># loop through pairs of pairs</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="n">end1</span><span class="p">),</span> <span class="p">(</span><span class="n">start2</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
+                    <span class="c1"># they overlap</span>
+                    <span class="n">new_pair</span> <span class="o">=</span> <span class="n">merge_index_ranges</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="n">end1</span><span class="p">,</span> <span class="n">start2</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span>
+                    <span class="n">pairs</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_pair</span><span class="p">]</span>
+
+            <span class="c1"># &quot;[...] and the text is removed from the last range to the first</span>
+            <span class="c1"># range so deleted text does not cause an undesired index shifting</span>
+            <span class="c1"># side-effects.&quot;</span>
+            <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+                <span class="n">changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_change</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+        <span class="c1"># the man page&#39;s inserting section is also kind of a wall of</span>
+        <span class="c1"># text, but not as bad as the delete</span>
+        <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;insert&#39;</span><span class="p">:</span>
+            <span class="n">text_index</span><span class="p">,</span> <span class="o">*</span><span class="n">other_args</span> <span class="o">=</span> <span class="n">args_tuple</span>
+            <span class="n">text_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">text_index</span><span class="p">)</span>
+
+            <span class="c1"># &quot;If index refers to the end of the text (the character after the</span>
+            <span class="c1"># last newline) then the new text is inserted just before the last</span>
+            <span class="c1"># newline instead.&quot;</span>
+            <span class="k">if</span> <span class="n">text_index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
+                <span class="n">text_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
+
+            <span class="c1"># we don&#39;t care about the tagList arguments to insert, but we need</span>
+            <span class="c1"># to handle the other arguments nicely anyway: &quot;If multiple</span>
+            <span class="c1"># chars-tagList argument pairs are present, they produce the same</span>
+            <span class="c1"># effect as if a separate pathName insert widget command had been</span>
+            <span class="c1"># issued for each pair, in order. The last tagList argument may be</span>
+            <span class="c1"># omitted.&quot; i&#39;m not sure what &quot;in order&quot; means here, but i tried</span>
+            <span class="c1"># it, and &#39;textwidget.insert(&#39;1.0&#39;, &#39;asd&#39;, [], &#39;toot&#39;, [])&#39; inserts</span>
+            <span class="c1"># &#39;asdtoot&#39;, not &#39;tootasd&#39;</span>
+            <span class="n">new_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other_args</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="n">changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_change</span><span class="p">(</span>
+                <span class="n">text_index</span><span class="p">,</span> <span class="n">text_index</span><span class="p">,</span> <span class="n">new_text</span><span class="p">))</span>
+
+        <span class="c1"># an even smaller wall of text that mostly refers to insert and replace</span>
+        <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">other_args</span> <span class="o">=</span> <span class="n">args_tuple</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+            <span class="n">new_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other_args</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="c1"># more invisible newline garbage</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">end</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
+
+            <span class="c1"># didn&#39;t find in docs, but tcl throws an error for this</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+
+            <span class="n">changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_change</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">new_text</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>   <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;the tcl code called _change_cb with unexpected subcommand: </span><span class="si">{</span><span class="n">subcommand</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># remove changes that don&#39;t actually do anything</span>
+        <span class="n">changes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">change</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="n">changes</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">start</span> <span class="o">!=</span> <span class="n">change</span><span class="o">.</span><span class="n">end</span>
+                <span class="ow">or</span> <span class="n">change</span><span class="o">.</span><span class="n">old_text_len</span> <span class="o">!=</span> <span class="mi">0</span>
+                <span class="ow">or</span> <span class="n">change</span><span class="o">.</span><span class="n">new_text</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># some plugins expect &lt;&lt;ContentChanged&gt;&gt; events to occur after changing</span>
+        <span class="c1"># the content in the editor, but the tcl code in __init__ needs them to</span>
+        <span class="c1"># run before, so here is the solution</span>
+        <span class="c1">#</span>
+        <span class="c1"># TODO: i think event_generate takes an argument describing when to</span>
+        <span class="c1"># trigger the event?</span>
+        <span class="k">if</span> <span class="n">changes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span>
+                <span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Changes</span><span class="p">(</span><span class="n">changes</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_cursor_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># more implicit newline stuff</span>
+        <span class="n">new_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_pos</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
+            <span class="n">new_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_pos</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_cursor_pos</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_cursor_pos</span> <span class="o">=</span> <span class="n">new_pos</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;CursorMoved&gt;&gt;&#39;</span><span class="p">)</span>
+
+
+<span class="n">_change_tracked_widgets</span><span class="p">:</span> <span class="s1">&#39;weakref.WeakSet[tkinter.Text]&#39;</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakSet</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="track_changes"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.track_changes">[docs]</a><span class="k">def</span> <span class="nf">track_changes</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make the text widget emit virtual events whenever its content is modified</span>
+<span class="sd">    or the cursor moves.</span>
+
+<span class="sd">    Don&#39;t call this function more than once for the same text widget. Also,</span>
+<span class="sd">    don&#39;t call it yourself for the ``textwidget`` of a</span>
+<span class="sd">    :class:`~porcupine.tabs.FileTab`, because Porcupine does it automatically.</span>
+<span class="sd">    You will get a :class:`RuntimeError` if you screw this up.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Some widget options such as ``undo`` must be set before calling this</span>
+<span class="sd">        function. Otherwise the changes might not be detected. I don&#39;t know</span>
+<span class="sd">        why that happens and whether it affects other options than ``undo``.</span>
+
+<span class="sd">    After calling ``track_changes(widget)``, the text widget has these virtual</span>
+<span class="sd">    events:</span>
 
 <span class="sd">    .. virtualevent:: ContentChanged</span>
 
@@ -105,359 +442,102 @@
 <span class="sd">        ``textwidget.index(&#39;insert&#39;)`` to find the current cursor</span>
 <span class="sd">        position.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">_change_tracked_widgets</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;track_changes() called twice for same text widget&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-                 <span class="n">create_peer_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">master</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1"># all peers except the one we&#39;re trying to track should already be tracked</span>
+    <span class="n">peers</span> <span class="o">=</span> <span class="p">{</span><span class="n">widget</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">nameobj</span><span class="p">)</span> <span class="k">for</span> <span class="n">nameobj</span> <span class="ow">in</span> <span class="n">widget</span><span class="o">.</span><span class="n">peer_names</span><span class="p">()}</span>
+    <span class="k">assert</span> <span class="n">widget</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">peers</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">peers</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_change_tracked_widgets</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;track_changes() must be called before create_peer_widget()&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">create_peer_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Peer widgets are weird in tkinter. Text.peer_create takes in a</span>
-            <span class="c1"># widget Tcl name, and then creates a peer widget with that name.</span>
-            <span class="c1"># But if you want to create a tkinter widget, then you need to let</span>
-            <span class="c1"># the tkinter widget to create a Tcl widget with a name chosen by</span>
-            <span class="c1"># tkinter. That has happened above with the super() call. However,</span>
-            <span class="c1"># rest of what happens in this __init__ method must do stuff to the</span>
-            <span class="c1"># peer widget, rather than the widget that tkinter created.</span>
-            <span class="c1">#</span>
-            <span class="c1"># peer_create type is ignored because there&#39;s no good way to deal</span>
-            <span class="c1"># with kwargs in mypy yet:</span>
-            <span class="c1">#</span>
-            <span class="c1">#    https://github.com/python/mypy/issues/6552</span>
-            <span class="c1">#</span>
-            <span class="c1"># Can&#39;t do self.destroy() because that screws up winfo_children().</span>
-            <span class="c1"># Each tkinter widget has keeps a list of child widgets, and</span>
-            <span class="c1"># self.destroy() would delete the widget from there. Tkinter&#39;s</span>
-            <span class="c1"># winfo_children() also ignores anything not found in those lists.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>  <span class="c1"># destroy tkinter-created widget</span>
-            <span class="n">create_peer_from</span><span class="o">.</span><span class="n">peer_create</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>   <span class="c1"># type: ignore</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">forward_event</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">create_peer_from</span><span class="p">)</span>
-
-        <span class="c1">#       /\</span>
-        <span class="c1">#      /  \  WARNING: serious tkinter magic coming up</span>
-        <span class="c1">#     / !! \          proceed at your own risk</span>
-        <span class="c1">#    /______\</span>
-        <span class="c1">#</span>
-        <span class="c1"># this irc conversation might give you an idea of how this works:</span>
-        <span class="c1">#</span>
-        <span class="c1">#    &lt;Akuli&gt; __Myst__, why do you want to know how it works?</span>
-        <span class="c1">#    &lt;__Myst__&gt; Akuli: cause it seems cool</span>
-        <span class="c1">#    &lt;Akuli&gt; there&#39;s 0 reason to docment it in the langserver</span>
-        <span class="c1">#    &lt;Akuli&gt; ok i can explain :)</span>
-        <span class="c1">#    &lt;Akuli&gt; in tcl, all statements are command calls</span>
-        <span class="c1">#    &lt;Akuli&gt; set x lol    ;# set variable x to string lol</span>
-        <span class="c1">#    &lt;Akuli&gt; set is a command, x and lol are strings</span>
-        <span class="c1">#    &lt;Akuli&gt; adding stuff to widgets is also command calls</span>
-        <span class="c1">#    &lt;Akuli&gt; .textwidget insert end hello   ;# add hello to the text</span>
-        <span class="c1">#            widget</span>
-        <span class="c1">#    &lt;Akuli&gt; my magic renames the textwidget command to</span>
-        <span class="c1">#            actual_widget_command, and creates a fake text widget</span>
-        <span class="c1">#            command that tkinter calls instead</span>
-        <span class="c1">#    &lt;Akuli&gt; then this fake command checks for all possible widget</span>
-        <span class="c1">#            commands that can move the cursor or change the content</span>
-        <span class="c1">#    &lt;Akuli&gt; making sense?</span>
-        <span class="c1">#    &lt;__Myst__&gt; ooh</span>
-        <span class="c1">#    &lt;__Myst__&gt; so it&#39;s like you&#39;re proxying actual calls to the text</span>
-        <span class="c1">#               widget and calculating change events based on that?</span>
-        <span class="c1">#    &lt;Akuli&gt; yes</span>
-        <span class="c1">#    &lt;__Myst__&gt; very cool</span>
-
-        <span class="c1"># cursor_cb is called whenever the cursor position may have changed,</span>
-        <span class="c1"># and change_cb is called whenever the content of the text widget may</span>
-        <span class="c1"># have changed</span>
-        <span class="n">change_cb_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_cb</span><span class="p">)</span>
-        <span class="n">cursor_cb_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_cb</span><span class="p">)</span>
-
-        <span class="c1"># all widget stuff is implemented in python and in tcl as calls to a</span>
-        <span class="c1"># tcl command named str(self), and replacing that with a custom command</span>
-        <span class="c1"># is a very powerful way to do magic; for example, moving the cursor</span>
-        <span class="c1"># with arrow keys calls the &#39;mark set&#39; widget command :D</span>
-        <span class="n">actual_widget_command</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_actual_widget&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;rename&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">actual_widget_command</span><span class="p">)</span>
-
-        <span class="c1"># this part is tcl because i couldn&#39;t get a python callback to work</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">        proc </span><span class="si">%(fake_widget)s</span><span class="s1"> </span><span class="si">{args}</span><span class="s1"> {</span>
-<span class="s1">            #puts $args</span>
-
-<span class="s1">            # subcommand is e.g. insert, delete, replace, index, search, ...</span>
-<span class="s1">            # see text(3tk) for all possible subcommands</span>
-<span class="s1">            set subcommand [lindex $args 0]</span>
-
-<span class="s1">            # issue #5: don&#39;t let the cursor to go to the very top or bottom of</span>
-<span class="s1">            # the view</span>
-<span class="s1">            if {$subcommand == &quot;see&quot;} {</span>
-<span class="s1">                # cleaned_index is always a &quot;LINE.COLUMN&quot; string</span>
-<span class="s1">                set cleaned_index [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args 1]]</span>
-
-<span class="s1">                # from text(3tk): &quot;If index is far out of view, then the</span>
-<span class="s1">                # command centers index in the window.&quot; and we want to center</span>
-<span class="s1">                # it correctly, so first go to the center, then a few</span>
-<span class="s1">                # characters around it, and finally back to center because it</span>
-<span class="s1">                # feels less error-prone that way</span>
-<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see $cleaned_index</span>
-<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see &quot;$cleaned_index - 4 lines&quot;</span>
-<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see &quot;$cleaned_index + 4 lines&quot;</span>
-<span class="s1">                </span><span class="si">%(actual_widget)s</span><span class="s1"> see $cleaned_index</span>
-<span class="s1">                return</span>
-<span class="s1">            }</span>
-
-<span class="s1">            set cursor_may_have_moved 0</span>
-
-<span class="s1">            # only these subcommands can change the text, but they can also</span>
-<span class="s1">            # move the cursor by changing the text before the cursor</span>
-<span class="s1">            if {$subcommand == &quot;delete&quot; ||</span>
-<span class="s1">                    $subcommand == &quot;insert&quot; ||</span>
-<span class="s1">                    $subcommand == &quot;replace&quot;} {</span>
-<span class="s1">                set cursor_may_have_moved 1</span>
-
-<span class="s1">                # this is like self._change_cb(*args) in python</span>
-<span class="s1">                </span><span class="si">%(change_cb)s</span><span class="s1"> {*}$args</span>
-<span class="s1">            }</span>
-
-<span class="s1">            # it&#39;s important that this comes after the change cb stuff because</span>
-<span class="s1">            # this way it&#39;s possible to get old_length in self._change_cb()...</span>
-<span class="s1">            # however, it&#39;s also important that this is before the mark set</span>
-<span class="s1">            # stuff because the documented way to access the new index in a</span>
-<span class="s1">            # &lt;&lt;CursorMoved&gt;&gt; binding is getting it directly from the widget</span>
-<span class="s1">            set result [</span><span class="si">%(actual_widget)s</span><span class="s1"> {*}$args]</span>
-
-<span class="s1">            # only[*] &#39;textwidget mark set insert new_location&#39; can change the</span>
-<span class="s1">            # cursor position, because the cursor position is implemented as a</span>
-<span class="s1">            # mark named &quot;insert&quot; and there are no other commands that move</span>
-<span class="s1">            # marks</span>
-<span class="s1">            #</span>
-<span class="s1">            # [*] i lied, hehe &gt;:D MUHAHAHA ... inserting text before the</span>
-<span class="s1">            # cursor also changes it</span>
-<span class="s1">            if {$subcommand == &quot;mark&quot; &amp;&amp;</span>
-<span class="s1">                    [lindex $args 1] == &quot;set&quot; &amp;&amp;</span>
-<span class="s1">                    [lindex $args 2] == &quot;insert&quot;} {</span>
-<span class="s1">                set cursor_may_have_moved 1</span>
-<span class="s1">            }</span>
-
-<span class="s1">            if {$cursor_may_have_moved} {</span>
-<span class="s1">                </span><span class="si">%(cursor_cb)s</span><span class="s1"></span>
-<span class="s1">            }</span>
-
-<span class="s1">            return $result</span>
-<span class="s1">        }</span>
-<span class="s1">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span>
-            <span class="s1">&#39;fake_widget&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-            <span class="s1">&#39;actual_widget&#39;</span><span class="p">:</span> <span class="n">actual_widget_command</span><span class="p">,</span>
-            <span class="s1">&#39;change_cb&#39;</span><span class="p">:</span> <span class="n">change_cb_command</span><span class="p">,</span>
-            <span class="s1">&#39;cursor_cb&#39;</span><span class="p">:</span> <span class="n">cursor_cb_command</span><span class="p">,</span>
-        <span class="p">})</span>
-
-        <span class="c1"># see _cursor_cb</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_create_change</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Change</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Change</span><span class="p">(</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-            <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
-            <span class="n">old_text_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)),</span>
-            <span class="n">new_text</span><span class="o">=</span><span class="n">new_text</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_change_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args_tuple</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="c1"># search for &#39;pathName delete&#39; in text(3tk)... it&#39;s a wall of text,</span>
-        <span class="c1"># and this thing has to implement every detail of that wall</span>
-        <span class="k">if</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;delete&#39;</span><span class="p">:</span>
-            <span class="c1"># &quot;All indices are first checked for validity before any deletions</span>
-            <span class="c1"># are made.&quot; they are already validated, but this doesn&#39;t hurt</span>
-            <span class="c1"># imo... but note that rest of this code assumes that this is done!</span>
-            <span class="c1"># not everything works in corner cases without this</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args_tuple</span><span class="p">]</span>
-
-            <span class="c1"># tk has a funny abstraction of an invisible newline character at</span>
-            <span class="c1"># the end of file, it&#39;s always there but nothing else uses it, so</span>
-            <span class="c1"># let&#39;s ignore it</span>
-            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">old_arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">old_arg</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
-                    <span class="n">args</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
-
-            <span class="c1"># &quot;If index2 is not specified then the single character at index1</span>
-            <span class="c1"># is deleted.&quot; and later: &quot;If more indices are given, multiple</span>
-            <span class="c1"># ranges of text will be deleted.&quot; but no mention about combining</span>
-            <span class="c1"># these features, this works like the text widget actually behaves</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> + 1 char&#39;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
-            <span class="n">pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]))</span>
-
-            <span class="c1"># &quot;If index2 does not specify a position later in the text than</span>
-            <span class="c1"># index1 then no characters are deleted.&quot;</span>
-            <span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pairs</span>
-                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)]</span>
-
-            <span class="c1"># &quot;They [index pairs, aka ranges] are sorted [...].&quot;</span>
-            <span class="c1"># TODO: use the fact that (line, column) tuples sort nicely?</span>
-            <span class="k">def</span> <span class="nf">sort_by_range_beginnings</span><span class="p">(</span>
-                    <span class="n">range1</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                    <span class="n">range2</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-                <span class="n">start1</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range1</span>
-                <span class="n">start2</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range2</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-                <span class="k">return</span> <span class="mi">0</span>
-
-            <span class="n">pairs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">cmp_to_key</span><span class="p">(</span><span class="n">sort_by_range_beginnings</span><span class="p">))</span>
-
-            <span class="c1"># &quot;If multiple ranges with the same start index are given, then the</span>
-            <span class="c1"># longest range is used. If overlapping ranges are given, then they</span>
-            <span class="c1"># will be merged into spans that do not cause deletion of text</span>
-            <span class="c1"># outside the given ranges due to text shifted during deletion.&quot;</span>
-            <span class="k">def</span> <span class="nf">merge_index_ranges</span><span class="p">(</span>
-                    <span class="n">start1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                    <span class="n">start2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="n">start1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">)</span> <span class="k">else</span> <span class="n">start2</span>
-                <span class="n">end</span> <span class="o">=</span> <span class="n">end1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span> <span class="k">else</span> <span class="n">end2</span>
-                <span class="k">return</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
-
-            <span class="c1"># loop through pairs of pairs</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                <span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="n">end1</span><span class="p">),</span> <span class="p">(</span><span class="n">start2</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
-                    <span class="c1"># they overlap</span>
-                    <span class="n">new_pair</span> <span class="o">=</span> <span class="n">merge_index_ranges</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="n">end1</span><span class="p">,</span> <span class="n">start2</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span>
-                    <span class="n">pairs</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_pair</span><span class="p">]</span>
-
-            <span class="c1"># &quot;[...] and the text is removed from the last range to the first</span>
-            <span class="c1"># range so deleted text does not cause an undesired index shifting</span>
-            <span class="c1"># side-effects.&quot;</span>
-            <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
-                <span class="n">changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_change</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-
-        <span class="c1"># the man page&#39;s inserting section is also kind of a wall of</span>
-        <span class="c1"># text, but not as bad as the delete</span>
-        <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;insert&#39;</span><span class="p">:</span>
-            <span class="n">text_index</span><span class="p">,</span> <span class="o">*</span><span class="n">other_args</span> <span class="o">=</span> <span class="n">args_tuple</span>
-            <span class="n">text_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">text_index</span><span class="p">)</span>
-
-            <span class="c1"># &quot;If index refers to the end of the text (the character after the</span>
-            <span class="c1"># last newline) then the new text is inserted just before the last</span>
-            <span class="c1"># newline instead.&quot;</span>
-            <span class="k">if</span> <span class="n">text_index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
-                <span class="n">text_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
-
-            <span class="c1"># we don&#39;t care about the tagList arguments to insert, but we need</span>
-            <span class="c1"># to handle the other arguments nicely anyway: &quot;If multiple</span>
-            <span class="c1"># chars-tagList argument pairs are present, they produce the same</span>
-            <span class="c1"># effect as if a separate pathName insert widget command had been</span>
-            <span class="c1"># issued for each pair, in order. The last tagList argument may be</span>
-            <span class="c1"># omitted.&quot; i&#39;m not sure what &quot;in order&quot; means here, but i tried</span>
-            <span class="c1"># it, and &#39;textwidget.insert(&#39;1.0&#39;, &#39;asd&#39;, [], &#39;toot&#39;, [])&#39; inserts</span>
-            <span class="c1"># &#39;asdtoot&#39;, not &#39;tootasd&#39;</span>
-            <span class="n">new_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other_args</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-
-            <span class="n">changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_change</span><span class="p">(</span>
-                <span class="n">text_index</span><span class="p">,</span> <span class="n">text_index</span><span class="p">,</span> <span class="n">new_text</span><span class="p">))</span>
-
-        <span class="c1"># an even smaller wall of text that mostly refers to insert and replace</span>
-        <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
-            <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">other_args</span> <span class="o">=</span> <span class="n">args_tuple</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
-            <span class="n">new_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other_args</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-
-            <span class="c1"># more invisible newline garbage</span>
-            <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">end</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
-                <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
-
-            <span class="c1"># didn&#39;t find in docs, but tcl throws an error for this</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
-
-            <span class="n">changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_change</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">new_text</span><span class="p">))</span>
-
-        <span class="k">else</span><span class="p">:</span>   <span class="c1"># pragma: no cover</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;the tcl code called _change_cb with unexpected subcommand: &quot;</span>
-                <span class="o">+</span> <span class="n">subcommand</span><span class="p">)</span>       <span class="c1"># noqa</span>
-
-        <span class="c1"># remove changes that don&#39;t actually do anything</span>
-        <span class="n">changes</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">change</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="n">changes</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">start</span> <span class="o">!=</span> <span class="n">change</span><span class="o">.</span><span class="n">end</span>
-                <span class="ow">or</span> <span class="n">change</span><span class="o">.</span><span class="n">old_text_len</span> <span class="o">!=</span> <span class="mi">0</span>
-                <span class="ow">or</span> <span class="n">change</span><span class="o">.</span><span class="n">new_text</span><span class="p">)</span>
-        <span class="p">]</span>
-
-        <span class="c1"># some plugins expect &lt;&lt;ContentChanged&gt;&gt; events to occur after changing</span>
-        <span class="c1"># the content in the editor, but the tcl code in __init__ needs them to</span>
-        <span class="c1"># run before, so here is the solution</span>
-        <span class="k">if</span> <span class="n">changes</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span>
-                <span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Changes</span><span class="p">(</span><span class="n">changes</span><span class="p">)))</span>
-
-    <span class="k">def</span> <span class="nf">_cursor_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># more implicit newline stuff</span>
-        <span class="n">new_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">new_pos</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
-            <span class="n">new_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">new_pos</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="n">new_pos</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;CursorMoved&gt;&gt;&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="HandyText.iter_chunks"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText.iter_chunks">[docs]</a>    <span class="k">def</span> <span class="nf">iter_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over the content as chunks of *n* lines.</span>
-
-<span class="sd">        Each yielded line ends with a ``\n`` character. Lines are not</span>
-<span class="sd">        broken down the middle, and ``&#39;&#39;`` is never yielded.</span>
-
-<span class="sd">        Note that the last chunk is less than *n* lines long unless the</span>
-<span class="sd">        total number of lines is divisible by *n*.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span>     <span class="c1"># this is not a mistake, line numbers start at 1</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">n</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.0&#39;</span> <span class="o">%</span> <span class="n">end</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
-                <span class="c1"># &#39;%d.0&#39; % start can be &#39;end - 1 char&#39; in a corner</span>
-                <span class="c1"># case, let&#39;s not yield an empty string</span>
-                <span class="n">last_chunk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.0&#39;</span> <span class="o">%</span> <span class="n">start</span><span class="p">,</span> <span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">last_chunk</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">last_chunk</span>
-                <span class="k">break</span>
-
-            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.0&#39;</span> <span class="o">%</span> <span class="n">start</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.0&#39;</span> <span class="o">%</span> <span class="n">end</span><span class="p">)</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">end</span></div>
-
-<div class="viewcode-block" id="HandyText.iter_lines"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.HandyText.iter_lines">[docs]</a>    <span class="k">def</span> <span class="nf">iter_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over the content as lines.</span>
-
-<span class="sd">        The trailing ``\n`` characters of each line are included.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_chunks</span><span class="p">():</span>
-            <span class="k">yield from</span> <span class="n">chunk</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+    <span class="n">_change_tracked_widgets</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+    <span class="n">_ChangeTracker</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span></div>
 
 
-<span class="c1"># this can be used for implementing other themed things too, e.g. the</span>
-<span class="c1"># line number plugin</span>
-<div class="viewcode-block" id="ThemedText"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.ThemedText">[docs]</a><span class="k">class</span> <span class="nc">ThemedText</span><span class="p">(</span><span class="n">HandyText</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :class:`.HandyText` subclass that uses the Pygments style&#39;s colors.</span>
+<div class="viewcode-block" id="create_peer_widget"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.create_peer_widget">[docs]</a><span class="k">def</span> <span class="nf">create_peer_widget</span><span class="p">(</span>
+    <span class="n">original_text_widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span>
+    <span class="n">the_widget_that_becomes_a_peer</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make sure that *the_widget_that_becomes_a_peer* always has the same content</span>
+<span class="sd">    as *original_text_widget*.</span>
 
-<span class="sd">    You can use this class just like :class:`.HandyText`, it takes care</span>
-<span class="sd">    of switching the colors by itself. This is useful for things like</span>
-<span class="sd">    :source:`porcupine/plugins/linenumbers.py`.</span>
+<span class="sd">    For details, see the ``PEER WIDGETS`` section in</span>
+<span class="sd">    `text(3tk) &lt;https://www.tcl.tk/man/tcl8.7/TkCmd/text.htm&gt;`_.</span>
+<span class="sd">    This is useful for e.g. :source:`porcupine/plugins/overview.py`.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This does **not** create a red text widget::</span>
+
+<span class="sd">            the_widget_that_becomes_a_peer = tkinter.Text(master, background=&#39;red&#39;)</span>
+<span class="sd">            create_peer_widget(original_text_widget, the_widget_that_becomes_a_peer)</span>
+
+<span class="sd">        This works better::</span>
+
+<span class="sd">            the_widget_that_becomes_a_peer = tkinter.Text(master)</span>
+<span class="sd">            create_peer_widget(original_text_widget, the_widget_that_becomes_a_peer)</span>
+<span class="sd">            the_widget_that_becomes_a_peer[&#39;background&#39;] = &#39;red&#39;</span>
+
+<span class="sd">        All widget options of *the_widget_that_becomes_a_peer* are lost when</span>
+<span class="sd">        this function is called. I tried to make this function preserve the</span>
+<span class="sd">        widget options but that caused weird problems.</span>
+
+<span class="sd">    Notes about using :func:`create_peer_widget` and :func:`track_changes`</span>
+<span class="sd">    together:</span>
+
+<span class="sd">        * Bind to the ``&lt;&lt;ContentChanged&gt;&gt;`` event of *original_text_widget*,</span>
+<span class="sd">          not *the_widget_that_becomes_a_peer*. **Make sure to get this right**</span>
+<span class="sd">          to avoid issues with ``&lt;&lt;ContentChanged&gt;&gt;`` sometimes not triggering.</span>
+<span class="sd">          If you create peers of peers, then bind to the most original widget,</span>
+<span class="sd">          not any of its peers.</span>
+<span class="sd">        * First call :func:`track_changes` and then :func:`create_peer_widget`.</span>
+<span class="sd">          You will get a :class:`RuntimeError` if you screw this up.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Peer widgets are weird in tkinter. Text.peer_create takes in a</span>
+    <span class="c1"># widget Tcl name, and then creates a peer widget with that name.</span>
+    <span class="c1"># But if you want to create a tkinter widget, then you need to let</span>
+    <span class="c1"># the tkinter widget to create a Tcl widget with a name chosen by</span>
+    <span class="c1"># tkinter. That has happened above with the super() call. However,</span>
+    <span class="c1"># rest of what happens in this __init__ method must do stuff to the</span>
+    <span class="c1"># peer widget, rather than the widget that tkinter created.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Can&#39;t do .destroy() because that screws up winfo_children(). Each tkinter</span>
+    <span class="c1"># widget knows its child widgets, and .destroy() would make tkinter no</span>
+    <span class="c1"># longer know it. Tkinter&#39;s winfo_children() also ignores anything not</span>
+    <span class="c1"># known to tkinter.</span>
+    <span class="c1">#</span>
+    <span class="c1"># issues related to type ignore comments:</span>
+    <span class="c1">#    https://github.com/python/mypy/issues/6552</span>
+    <span class="c1">#    https://github.com/python/typeshed/issues/4409</span>
+    <span class="n">the_widget_that_becomes_a_peer</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
+    <span class="n">original_text_widget</span><span class="o">.</span><span class="n">peer_create</span><span class="p">(</span><span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">original_text_widget</span> <span class="ow">in</span> <span class="n">_change_tracked_widgets</span><span class="p">:</span>
+        <span class="n">track_changes</span><span class="p">(</span><span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">forward_event</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">,</span> <span class="n">original_text_widget</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="use_pygments_theme"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.use_pygments_theme">[docs]</a><span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span>
+    <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure *widget* to use the colors of the Pygments theme whenever the</span>
+<span class="sd">    currently selected theme changes (see :mod:`porcupine.settings`).</span>
+<span class="sd">    Porcupine does that automatically for the ``textwidget`` of each</span>
+<span class="sd">    :class:`~porcupine.tabs.FileTab`.</span>
+
+<span class="sd">    If the callback is specified, it will be called like</span>
+<span class="sd">    ``callback(foreground_color, background_color)``</span>
+<span class="sd">    instead of configuring the widget.</span>
 
 <span class="sd">    .. seealso::</span>
-<span class="sd">        Syntax highlighting is implemented with Pygments in</span>
+<span class="sd">        This function is used in :source:`porcupine/plugins/linenumbers.py`.</span>
+<span class="sd">        Syntax highlighting is implemented in</span>
 <span class="sd">        :source:`porcupine/plugins/highlight.py`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;SettingChanged:pygments_style&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_style_changed</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_on_style_changed</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_on_style_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">on_style_changed</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">style</span> <span class="o">=</span> <span class="n">pygments</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
         <span class="n">bg</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">background_color</span>
 
@@ -471,26 +551,20 @@
         <span class="c1">#    &#39;???&#39;, &#39;???&#39;, &#39;&#39;, &#39;#cccccc&#39;, &#39;&#39;, &#39;&#39;, &#39;???&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;,</span>
         <span class="c1">#    &#39;#222222&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;???&#39;, &#39;&#39;]</span>
         <span class="n">fg</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">style</span><span class="p">,</span> <span class="s1">&#39;default_style&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">utils</span><span class="o">.</span><span class="n">invert_color</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_colors</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;fg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>
+            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;bg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span>
+            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;insertbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>  <span class="c1"># cursor color</span>
+            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;selectforeground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span>
+            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;selectbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span>
 
-    <span class="c1"># TODO: document this</span>
-<div class="viewcode-block" id="ThemedText.set_colors"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.ThemedText.set_colors">[docs]</a>    <span class="k">def</span> <span class="nf">set_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">foreground</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">background</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method runs automatically when the Pygments color style is</span>
-<span class="sd">        changed. By default, it configures some text widget options.</span>
-
-<span class="sd">        See :source:`porcupine/plugins/overview.py` for an example of</span>
-<span class="sd">        overriding ``set_colors()``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;fg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">foreground</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;bg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">background</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;insertbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">foreground</span>  <span class="c1"># cursor color</span>
-
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;selectforeground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">background</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;selectbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">foreground</span></div></div>
+    <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;SettingChanged:pygments_style&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">on_style_changed</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">on_style_changed</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="MainText"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.MainText">[docs]</a><span class="k">class</span> <span class="nc">MainText</span><span class="p">(</span><span class="n">ThemedText</span><span class="p">):</span>
+<div class="viewcode-block" id="MainText"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.MainText">[docs]</a><span class="k">class</span> <span class="nc">MainText</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Don&#39;t use this. It may be changed later.&quot;&quot;&quot;</span>
 
     <span class="c1"># the filetype is needed for setting the tab width and indenting</span>
@@ -500,26 +574,29 @@
             <span class="n">filetype</span><span class="p">:</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">FileType</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">track_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">use_pygments_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">set_filetype</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span>
 
         <span class="c1"># FIXME: lots of things have been turned into plugins, but</span>
         <span class="c1"># there&#39;s still wayyyy too much stuff in here...</span>
         <span class="n">partial</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span>     <span class="c1"># pep8 line length</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;BackSpace&gt;&#39;</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-BackSpace&gt;&#39;</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-Delete&gt;&#39;</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;BackSpace&gt;&#39;</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-BackSpace&gt;&#39;</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-Delete&gt;&#39;</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Shift-Control-Delete&gt;&#39;</span><span class="p">,</span>
-                  <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                  <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Shift-Control-BackSpace&gt;&#39;</span><span class="p">,</span>
-                  <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                  <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;parenright&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_closing_brace</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;bracketright&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_closing_brace</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;braceright&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_closing_brace</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># most other things work by default, but these don&#39;t</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-v&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paste</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-y&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redo</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-a&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_all</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-v&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paste</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-y&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redo</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-a&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_all</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_filetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">:</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">FileType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span> <span class="o">=</span> <span class="n">filetype</span>
@@ -618,25 +695,20 @@
         <span class="n">lineno</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">location</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> linestart&#39;</span> <span class="o">%</span> <span class="n">location</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> lineend&#39;</span> <span class="o">%</span> <span class="n">location</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span><span class="o">.</span><span class="n">indent_size</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">column</span> <span class="o">-</span> <span class="p">(</span><span class="n">column</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span><span class="o">.</span><span class="n">indent_size</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="n">column</span><span class="p">:</span>    <span class="c1"># prefer deleting from left side</span>
-                <span class="n">start</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span><span class="o">.</span><span class="n">indent_size</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span><span class="o">.</span><span class="n">indent_size</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">column</span> <span class="o">-</span> <span class="p">(</span><span class="n">column</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span><span class="o">.</span><span class="n">indent_size</span><span class="p">)</span>   <span class="c1"># round down to indent_size multiple</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="n">column</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>    <span class="c1"># prefer deleting from left side</span>
+            <span class="n">start</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span><span class="o">.</span><span class="n">indent_size</span>
+        <span class="k">assert</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="mi">0</span>
 
-        <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>    <span class="c1"># don&#39;t go past end of line</span>
-        <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># delete undersized indents</span>
-            <span class="n">whitespaces</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">whitespaces</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="c1"># try to delete as much of full indent as possible without going past</span>
+        <span class="c1"># end of line or deleting non-whitespace</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span><span class="o">.</span><span class="n">indent_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+        <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+            <span class="n">end</span> <span class="o">-=</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>   <span class="c1"># &#39;&#39;.isspace() is False</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lineno</span><span class="p">,</span> <span class="n">start</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lineno</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
-        <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">assert</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">end</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">start</span> <span class="o">!=</span> <span class="n">end</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_redo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Redo&gt;&gt;&#39;</span><span class="p">)</span>
@@ -684,7 +756,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>

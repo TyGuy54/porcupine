@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index &#8212; Porcupine API 0.73.0-git-8799322 documentation</title>
+    <title>Index &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -55,6 +55,7 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  
 </div>
@@ -65,9 +66,9 @@
 </li>
       <li><a href="actions.html#porcupine.actions.Action.ActionEnabled">&lt;&lt;ActionEnabled&gt;&gt; (porcupine.actions.Action virtual event)</a>
 </li>
-      <li><a href="textwidget.html#porcupine.textwidget.HandyText.ContentChanged">&lt;&lt;ContentChanged&gt;&gt; (porcupine.textwidget.HandyText virtual event)</a>
+      <li><a href="textwidget.html#porcupine.textwidget.ContentChanged">&lt;&lt;ContentChanged&gt;&gt; (virtual event)</a>
 </li>
-      <li><a href="textwidget.html#porcupine.textwidget.HandyText.CursorMoved">&lt;&lt;CursorMoved&gt;&gt; (porcupine.textwidget.HandyText virtual event)</a>
+      <li><a href="textwidget.html#porcupine.textwidget.CursorMoved">&lt;&lt;CursorMoved&gt;&gt; (virtual event)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.FiletypeChanged">&lt;&lt;FiletypeChanged&gt;&gt; (porcupine.tabs.FileTab virtual event)</a>
 </li>
@@ -167,6 +168,8 @@
 </li>
       <li><a href="dirs.html#porcupine.dirs.configdir">configdir (in module porcupine.dirs)</a>
 </li>
+      <li><a href="textwidget.html#porcupine.textwidget.create_peer_widget">create_peer_widget() (in module porcupine.textwidget)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -253,12 +256,10 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="textwidget.html#porcupine.textwidget.HandyText">HandyText (class in porcupine.textwidget)</a>
+      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.has_command">has_command() (porcupine.filetypes.somefiletype method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.has_command">has_command() (porcupine.filetypes.somefiletype method)</a>
-</li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.hide">hide() (porcupine.tabs.TabManager method)</a>
 </li>
   </ul></td>
@@ -273,17 +274,13 @@
 </li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.insert">insert() (porcupine.tabs.TabManager method)</a>
 </li>
-      <li><a href="dirs.html#porcupine.dirs.installdir">installdir (in module porcupine.dirs)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dirs.html#porcupine.dirs.installdir">installdir (in module porcupine.dirs)</a>
+</li>
       <li><a href="utils.html#porcupine.utils.invert_color">invert_color() (in module porcupine.utils)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.is_saved">is_saved() (porcupine.tabs.FileTab method)</a>
-</li>
-      <li><a href="textwidget.html#porcupine.textwidget.HandyText.iter_chunks">iter_chunks() (porcupine.textwidget.HandyText method)</a>
-</li>
-      <li><a href="textwidget.html#porcupine.textwidget.HandyText.iter_lines">iter_lines() (porcupine.textwidget.HandyText method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -514,11 +511,9 @@
 </li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.select_another_tab">select_another_tab() (porcupine.tabs.TabManager method)</a>
 </li>
-      <li><a href="settings.html#porcupine.settings.set">set() (in module porcupine.settings)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="textwidget.html#porcupine.textwidget.ThemedText.set_colors">set_colors() (porcupine.textwidget.ThemedText method)</a>
+      <li><a href="settings.html#porcupine.settings.set">set() (in module porcupine.settings)</a>
 </li>
       <li><a href="utils.html#porcupine.utils.set_tooltip">set_tooltip() (in module porcupine.utils)</a>
 </li>
@@ -554,11 +549,19 @@
 </li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.textwidget">textwidget (porcupine.tabs.FileTab attribute)</a>
 </li>
-      <li><a href="textwidget.html#porcupine.textwidget.ThemedText">ThemedText (class in porcupine.textwidget)</a>
-</li>
       <li><a href="tabs.html#porcupine.tabs.Tab.title">title (porcupine.tabs.Tab attribute)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.Tab.top_frame">top_frame (porcupine.tabs.Tab attribute)</a>
+</li>
+      <li><a href="textwidget.html#porcupine.textwidget.track_changes">track_changes() (in module porcupine.textwidget)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="textwidget.html#porcupine.textwidget.use_pygments_theme">use_pygments_theme() (in module porcupine.textwidget)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -600,7 +603,7 @@
 <li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils &#8212; Porcupine API 0.73.0-git-8799322 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -282,7 +282,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tipwindow</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tipwindow</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">()</span>
             <span class="n">tipwindow</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s1">&#39;+</span><span class="si">%d</span><span class="s1">+</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mousex</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousey</span><span class="o">-</span><span class="mi">10</span><span class="p">))</span>
-            <span class="n">tipwindow</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Motion&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">)</span>
+            <span class="n">tipwindow</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Motion&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">tipwindow</span><span class="o">.</span><span class="n">overrideredirect</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># If you modify this, make sure to always define either no</span>
@@ -361,7 +361,7 @@
 
     <span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span>
 
-    <span class="k">def</span> <span class="nf">data_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">BaseWidget</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">data_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If a widget was passed as ``data`` to ``event_generate()``, then this</span>
 <span class="sd">        returns that widget. Otherwise this raises an error.</span>
@@ -496,9 +496,9 @@
 <span class="sd">    The event objects support the same additional attributes as those</span>
 <span class="sd">    from :func:`bind_with_data`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">not_bound_commands</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+    <span class="n">not_bound_commands</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span>
     <span class="n">tcl_command</span> <span class="o">=</span> <span class="n">bind_with_data</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">bound_commands</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+    <span class="n">bound_commands</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span>
     <span class="k">assert</span> <span class="n">bound_commands</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">not_bound_commands</span><span class="p">)</span>
     <span class="n">new_things</span> <span class="o">=</span> <span class="n">bound_commands</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">not_bound_commands</span><span class="p">):]</span>
 
@@ -506,9 +506,9 @@
         <span class="k">yield</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="c1"># other stuff might be bound too while this thing was yielding</span>
-        <span class="n">bound_and_stuff</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+        <span class="n">bound_and_stuff</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span>
         <span class="k">assert</span> <span class="n">bound_and_stuff</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">new_things</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">bound_and_stuff</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">new_things</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">bound_and_stuff</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">new_things</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>  <span class="c1"># bindcheck: ignore</span>
 
         <span class="c1"># unbind() does this too to avoid memory leaks</span>
         <span class="n">widget</span><span class="o">.</span><span class="n">deletecommand</span><span class="p">(</span><span class="n">tcl_command</span><span class="p">)</span></div>
@@ -549,8 +549,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">shift_tab</span> <span class="o">=</span> <span class="s1">&#39;&lt;Shift-Tab&gt;&#39;</span>
 
-    <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Tab&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>
-    <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">shift_tab</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span></div>
+    <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Tab&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>   <span class="c1"># bindcheck: ignore</span>
+    <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">shift_tab</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span></div>
 
 
 <div class="viewcode-block" id="bind_mouse_wheel"><a class="viewcode-back" href="../../utils.html#porcupine.utils.bind_mouse_wheel">[docs]</a><span class="k">def</span> <span class="nf">bind_mouse_wheel</span><span class="p">(</span>
@@ -631,7 +631,7 @@
 
     <span class="c1"># even non-ttk widgets can handle &lt;&lt;ThemeChanged&gt;&gt;</span>
     <span class="c1"># TODO: make sure that this works</span>
-    <span class="n">text</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ThemeChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">update_colors</span><span class="p">)</span>
+    <span class="n">text</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ThemeChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">update_colors</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">update_colors</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">text</span>
@@ -862,7 +862,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Handy <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> subclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
