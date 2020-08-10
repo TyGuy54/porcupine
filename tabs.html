@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
+    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.75.0-git-1734293 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -327,8 +327,8 @@ subclass and make this focus the tab’s main widget if needed.</p>
 <p>The filetab will have <em>content</em> in it by default when it’s opened. If
 <em>path</em> is given, the file will be saved there when Ctrl+S is
 pressed. Otherwise this becomes a “New File” tab.</p>
-<p>If you want to read a file and open a new tab from it, use
-<a class="reference internal" href="#porcupine.tabs.FileTab.open_file" title="porcupine.tabs.FileTab.open_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open_file()</span></code></a>. It uses things like the user’s encoding settings.</p>
+<p>If you want to open a new tab for editing an existing file,
+use <a class="reference internal" href="#porcupine.tabs.FileTab.open_file" title="porcupine.tabs.FileTab.open_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open_file()</span></code></a>.</p>
 <dl class="py virtualevent">
 <dt id="porcupine.tabs.FileTab.PathChanged">
 <em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;PathChanged&gt;&gt;</code><a class="headerlink" href="#porcupine.tabs.FileTab.PathChanged" title="Permalink to this definition">¶</a></dt>
@@ -336,11 +336,30 @@ pressed. Otherwise this becomes a “New File” tab.</p>
 <code class="docutils literal notranslate"><span class="pre">event.widget.path</span></code> to get the new path.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="porcupine.tabs.FileTab.settings">
+<code class="sig-name descname">settings</code><em class="property">: <a class="reference internal" href="settings.html#porcupine.settings.Settings" title="porcupine.settings.Settings">porcupine.settings.Settings</a></em><a class="headerlink" href="#porcupine.tabs.FileTab.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>This setting object is for settings loaded from <a class="reference internal" href="filetypes.html#module-porcupine.filetypes" title="porcupine.filetypes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code></a>,
+but they can be changed file-specifically too.
+It contains the following settings by default (but plugins add more
+settings with <a class="reference internal" href="settings.html#porcupine.settings.Settings.add_option" title="porcupine.settings.Settings.add_option"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_option()</span></code></a>):</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">pygments_lexer</span></code>: a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">pygments.lexer.Lexer</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">tabs2spaces</span></code>: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">indent_size</span></code>: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">encoding</span></code>: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</div></blockquote>
+<p>See <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/default_filetypes.toml">porcupine/default_filetypes.toml</a> for a description of
+each option.</p>
+</dd></dl>
+
 <dl class="py virtualevent">
-<dt id="porcupine.tabs.FileTab.FiletypeChanged">
-<em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;FiletypeChanged&gt;&gt;</code><a class="headerlink" href="#porcupine.tabs.FileTab.FiletypeChanged" title="Permalink to this definition">¶</a></dt>
-<dd><p>Like <a class="reference internal" href="#porcupine.tabs.FileTab.PathChanged" title="porcupine.tabs.FileTab.PathChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;PathChanged&gt;&gt;</span></code></a>, but for <a class="reference internal" href="#porcupine.tabs.FileTab.filetype" title="porcupine.tabs.FileTab.filetype"><code class="xref py py-attr docutils literal notranslate"><span class="pre">filetype</span></code></a>. Use
-<code class="docutils literal notranslate"><span class="pre">event.widget.filetype</span></code> to access the new file type.</p>
+<dt id="porcupine.tabs.FileTab.TabSettingChanged-foo">
+<span id="porcupine.tabs.FileTab.TabSettingChanged:foo"></span><em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;TabSettingChanged:foo&gt;&gt;</code><a class="headerlink" href="#porcupine.tabs.FileTab.TabSettingChanged-foo" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the <code class="docutils literal notranslate"><span class="pre">title</span></code> of <a class="reference internal" href="#porcupine.tabs.FileTab.settings" title="porcupine.tabs.FileTab.settings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code></a> is set,
+the tab receives (but the child widgets of the tab don’t receive)
+a virtual event named <code class="docutils literal notranslate"><span class="pre">&lt;&lt;TabSettingChanged:title&gt;&gt;</span></code>.
+This works similarly for other tab settings.</p>
 </dd></dl>
 
 <dl class="py virtualevent">
@@ -379,16 +398,6 @@ an absolute path.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>The <a class="reference internal" href="#porcupine.tabs.FileTab.PathChanged" title="porcupine.tabs.FileTab.PathChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;PathChanged&gt;&gt;</span></code></a> virtual event.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="porcupine.tabs.FileTab.filetype">
-<code class="sig-name descname">filetype</code><em class="property">: porcupine.filetypes.FileType</em><a class="headerlink" href="#porcupine.tabs.FileTab.filetype" title="Permalink to this definition">¶</a></dt>
-<dd><p>A filetype object from <a class="reference internal" href="filetypes.html#module-porcupine.filetypes" title="porcupine.filetypes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code></a>.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>The <a class="reference internal" href="#porcupine.tabs.FileTab.FiletypeChanged" title="porcupine.tabs.FileTab.FiletypeChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;FiletypeChanged&gt;&gt;</span></code></a> virtual event.</p>
 </div>
 </dd></dl>
 
@@ -469,7 +478,7 @@ cancelled the dialog.</p>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>

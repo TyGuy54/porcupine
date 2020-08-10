@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
+    <title>Index &#8212; Porcupine API 0.75.0-git-1734293 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -48,7 +48,6 @@
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
- | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
@@ -70,12 +69,10 @@
 </li>
       <li><a href="textwidget.html#porcupine.textwidget.CursorMoved">&lt;&lt;CursorMoved&gt;&gt; (virtual event)</a>
 </li>
-      <li><a href="tabs.html#porcupine.tabs.FileTab.FiletypeChanged">&lt;&lt;FiletypeChanged&gt;&gt; (porcupine.tabs.FileTab virtual event)</a>
+      <li><a href="tabs.html#porcupine.tabs.TabManager.NewTab">&lt;&lt;NewTab&gt;&gt; (porcupine.tabs.TabManager virtual event)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tabs.html#porcupine.tabs.TabManager.NewTab">&lt;&lt;NewTab&gt;&gt; (porcupine.tabs.TabManager virtual event)</a>
-</li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.NotebookTabChanged">&lt;&lt;NotebookTabChanged&gt;&gt; (porcupine.tabs.TabManager virtual event)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.PathChanged">&lt;&lt;PathChanged&gt;&gt; (porcupine.tabs.FileTab virtual event)</a>
@@ -85,6 +82,8 @@
       <li><a href="settings.html#porcupine.settings.SettingChanged-foo">&lt;&lt;SettingChanged:foo&gt;&gt; (virtual event)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.Tab.StatusChanged">&lt;&lt;StatusChanged&gt;&gt; (porcupine.tabs.Tab virtual event)</a>
+</li>
+      <li><a href="tabs.html#porcupine.tabs.FileTab.TabSettingChanged-foo">&lt;&lt;TabSettingChanged:foo&gt;&gt; (porcupine.tabs.FileTab virtual event)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -110,12 +109,16 @@
 </li>
       <li><a href="actions.html#porcupine.actions.add_command">add_command() (in module porcupine.actions)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="settings.html#porcupine.settings.add_entry">add_entry() (in module porcupine.settings)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="settings.html#porcupine.settings.add_option">add_option() (in module porcupine.settings)</a>
+
+      <ul>
+        <li><a href="settings.html#porcupine.settings.Settings.add_option">(porcupine.settings.Settings method)</a>
 </li>
+      </ul></li>
       <li><a href="settings.html#porcupine.settings.add_section">add_section() (in module porcupine.settings)</a>
 </li>
       <li><a href="settings.html#porcupine.settings.add_spinbox">add_spinbox() (in module porcupine.settings)</a>
@@ -192,16 +195,12 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.filename_patterns">filename_patterns (porcupine.filetypes.somefiletype attribute)</a>
-</li>
       <li><a href="tabs.html#porcupine.tabs.FileTab">FileTab (class in porcupine.tabs)</a>
 </li>
-      <li><a href="tabs.html#porcupine.tabs.FileTab.filetype">filetype (porcupine.tabs.FileTab attribute)</a>
+      <li><a href="pluginloader.html#porcupine.pluginloader.find_plugins">find_plugins() (in module porcupine.pluginloader)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pluginloader.html#porcupine.pluginloader.find_plugins">find_plugins() (in module porcupine.pluginloader)</a>
-</li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.forget">forget() (porcupine.tabs.TabManager method)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.Tab.from_state">from_state() (porcupine.tabs.Tab class method)</a>
@@ -217,14 +216,12 @@
       <ul>
         <li><a href="settings.html#porcupine.settings.get">(in module porcupine.settings)</a>
 </li>
+        <li><a href="settings.html#porcupine.settings.Settings.get">(porcupine.settings.Settings method)</a>
+</li>
       </ul></li>
       <li><a href="actions.html#porcupine.actions.get_action">get_action() (in module porcupine.actions)</a>
 </li>
       <li><a href="actions.html#porcupine.actions.get_all_actions">get_all_actions() (in module porcupine.actions)</a>
-</li>
-      <li><a href="filetypes.html#porcupine.filetypes.get_all_filetypes">get_all_filetypes() (in module porcupine.filetypes)</a>
-</li>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.get_command">get_command() (porcupine.filetypes.somefiletype method)</a>
 </li>
       <li><a href="filetypes.html#porcupine.filetypes.get_filedialog_kwargs">get_filedialog_kwargs() (in module porcupine.filetypes)</a>
 </li>
@@ -232,11 +229,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="filetypes.html#porcupine.filetypes.get_filetype_names">get_filetype_names() (in module porcupine.filetypes)</a>
+</li>
       <li><a href="porcupine.html#porcupine.get_init_kwargs">get_init_kwargs() (in module porcupine)</a>
-</li>
-      <li><a href="utils.html#porcupine.utils.get_keyboard_shortcut">get_keyboard_shortcut() (in module porcupine.utils)</a>
-</li>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.get_lexer">get_lexer() (porcupine.filetypes.somefiletype method)</a>
 </li>
       <li><a href="pluginloader.html#porcupine.pluginloader.get_loaded_plugins">get_loaded_plugins() (in module porcupine.pluginloader)</a>
 </li>
@@ -256,10 +251,6 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.has_command">has_command() (porcupine.filetypes.somefiletype method)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tabs.html#porcupine.tabs.TabManager.hide">hide() (porcupine.tabs.TabManager method)</a>
 </li>
   </ul></td>
@@ -268,8 +259,6 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.indent_size">indent_size (porcupine.filetypes.somefiletype attribute)</a>
-</li>
       <li><a href="porcupine.html#porcupine.init">init() (in module porcupine)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.insert">insert() (porcupine.tabs.TabManager method)</a>
@@ -296,16 +285,10 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.langserver_command">langserver_command (porcupine.filetypes.somefiletype attribute)</a>
-</li>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.langserver_language_id">langserver_language_id (porcupine.filetypes.somefiletype attribute)</a>
+      <li><a href="tabs.html#porcupine.tabs.Tab.left_frame">left_frame (porcupine.tabs.Tab attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.langserver_port">langserver_port (porcupine.filetypes.somefiletype attribute)</a>
-</li>
-      <li><a href="tabs.html#porcupine.tabs.Tab.left_frame">left_frame (porcupine.tabs.Tab attribute)</a>
-</li>
       <li><a href="pluginloader.html#porcupine.pluginloader.load">load() (in module porcupine.pluginloader)</a>
 </li>
   </ul></td>
@@ -319,10 +302,6 @@
       <li><a href="tabs.html#porcupine.tabs.FileTab.mark_saved">mark_saved() (porcupine.tabs.FileTab method)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.Tab.master">master (porcupine.tabs.Tab attribute)</a>
-</li>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.max_line_length">max_line_length (porcupine.filetypes.somefiletype attribute)</a>
-</li>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.mimetypes">mimetypes (porcupine.filetypes.somefiletype attribute)</a>
 </li>
       <li>
     module
@@ -352,14 +331,6 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tabs.html#porcupine.tabs.TabManager.move_selected_tab">move_selected_tab() (porcupine.tabs.TabManager method)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="N">N</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.name">name (porcupine.filetypes.somefiletype attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -511,15 +482,19 @@
 </li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.select_another_tab">select_another_tab() (porcupine.tabs.TabManager method)</a>
 </li>
+      <li><a href="settings.html#porcupine.settings.set">set() (in module porcupine.settings)</a>
+
+      <ul>
+        <li><a href="settings.html#porcupine.settings.Settings.set">(porcupine.settings.Settings method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="settings.html#porcupine.settings.set">set() (in module porcupine.settings)</a>
-</li>
       <li><a href="utils.html#porcupine.utils.set_tooltip">set_tooltip() (in module porcupine.utils)</a>
 </li>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.shebang_regex">shebang_regex (porcupine.filetypes.somefiletype attribute)</a>
+      <li><a href="settings.html#porcupine.settings.Settings">Settings (class in porcupine.settings)</a>
 </li>
-      <li><a href="utils.html#porcupine.utils.short_python_command">short_python_command (in module porcupine.utils)</a>
+      <li><a href="tabs.html#porcupine.tabs.FileTab.settings">settings (porcupine.tabs.FileTab attribute)</a>
 </li>
       <li><a href="settings.html#porcupine.settings.show_dialog">show_dialog() (in module porcupine.settings)</a>
 </li>
@@ -541,11 +516,9 @@
 </li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.tabs">tabs() (porcupine.tabs.TabManager method)</a>
 </li>
-      <li><a href="filetypes.html#porcupine.filetypes.somefiletype.tabs2spaces">tabs2spaces (porcupine.filetypes.somefiletype attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utils.html#porcupine.utils.temporary_bind">temporary_bind() (in module porcupine.utils)</a>
+      <li><a href="utils.html#porcupine.utils.TemporaryBind">TemporaryBind (class in porcupine.utils)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.textwidget">textwidget (porcupine.tabs.FileTab attribute)</a>
 </li>
@@ -606,7 +579,7 @@
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>

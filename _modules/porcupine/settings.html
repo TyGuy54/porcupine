@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.75.0-git-1734293 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -33,82 +33,208 @@
             
   <h1>Source code for porcupine.settings</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">atexit</span>
-<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">builtins</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">weakref</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">import</span> <span class="nn">porcupine</span>
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">porcupine.filetypes</span> <span class="kn">import</span> <span class="n">get_all_filetypes</span>
+<span class="kn">from</span> <span class="nn">porcupine.filetypes</span> <span class="kn">import</span> <span class="n">get_filetype_names</span>
 
 
-<span class="n">_Val</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_Val&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_Option</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">_Val</span><span class="p">]):</span>
+<span class="k">def</span> <span class="nf">_type_check</span><span class="p">(</span><span class="n">tybe</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># dacite tricks needed for validating e.g. objects of type Optional[pathlib.Path]</span>
+    <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+    <span class="k">class</span> <span class="nc">ValueContainer</span><span class="p">:</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">tybe</span>  <span class="c1"># type: ignore</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">_Val</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">utils</span><span class="o">.</span><span class="n">dict_to_dataclass</span><span class="p">(</span><span class="n">ValueContainer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">})</span>
+
+
+<span class="k">class</span> <span class="nc">_Option</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">tybe</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_type_check</span><span class="p">(</span><span class="n">tybe</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">_Val</span> <span class="o">=</span> <span class="n">default</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">:</span> <span class="n">_Val</span> <span class="o">=</span> <span class="n">default</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span> <span class="s1">&#39;weakref.WeakSet[tkinter.StringVar]&#39;</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakSet</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># don&#39;t create change events when nothing changes (helps avoid infinite recursion)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-
-        <span class="n">event_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;&lt;SettingChanged:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&gt;&gt;&#39;</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> was set to </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">, generating </span><span class="si">{</span><span class="n">event_name</span><span class="si">}</span><span class="s2"> events&quot;</span><span class="p">)</span>
-
-        <span class="n">not_notified_yet</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()]</span>
-        <span class="k">while</span> <span class="n">not_notified_yet</span><span class="p">:</span>
-            <span class="n">widget</span> <span class="o">=</span> <span class="n">not_notified_yet</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-            <span class="n">widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
-            <span class="n">not_notified_yet</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">winfo_children</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">tybe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">converter</span>
 
 
-<span class="k">def</span> <span class="nf">_get_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_get_json_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">dirs</span><span class="o">.</span><span class="n">configdir</span> <span class="o">/</span> <span class="s1">&#39;settings.json&#39;</span>
 
 
-<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<div class="viewcode-block" id="Settings"><a class="viewcode-back" href="../../settings.html#porcupine.settings.Settings">[docs]</a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
 
-<span class="c1"># _json_file_contents may contain stuff that isn&#39;t in _options yet</span>
-<span class="n">_json_file_contents</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">_options</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">_Option</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">_Option</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">change_event_widget</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">],</span>
+            <span class="n">change_event_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># &#39;&lt;&lt;Foo:{}&gt;&gt;&#39;</span>
+        <span class="k">assert</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">change_event_format</span>
+        <span class="k">assert</span> <span class="n">change_event_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">change_event_format</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_Option</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_event_widget</span> <span class="o">=</span> <span class="n">change_event_widget</span>  <span class="c1"># None to notify all widgets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_event_format</span> <span class="o">=</span> <span class="n">change_event_format</span>
+
+<div class="viewcode-block" id="Settings.add_option"><a class="viewcode-back" href="../../settings.html#porcupine.settings.Settings.add_option">[docs]</a>    <span class="k">def</span> <span class="nf">add_option</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">default</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">converter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a custom option.</span>
+
+<span class="sd">        The type of *default* determines how :func:`set` and :func:`get` behave.</span>
+<span class="sd">        For example, if *default* is a string, then</span>
+<span class="sd">        calling :func:`set` with a value that isn&#39;t a string or</span>
+<span class="sd">        calling :func:`get` with the type set to something else than ``str``</span>
+<span class="sd">        is an error. You can also provide a custom type with the *type*</span>
+<span class="sd">        argument, e.g. ``add_option(&#39;foo&#39;, None, Optional[pathlib.Path])``.</span>
+
+<span class="sd">        If you are adding a global option (see :class:`Settings` for non-global</span>
+<span class="sd">        options), use only JSON-safe types. Let me know if this limitation is</span>
+<span class="sd">        too annoying.</span>
+
+<span class="sd">        If you are **not** adding a global option, you</span>
+<span class="sd">        can also specify a *converter* that takes the value in the</span>
+<span class="sd">        configuration file as an argument and returns an instance of *type*.</span>
+<span class="sd">        For example, ``pygments_lexer`` is set to a string like</span>
+<span class="sd">        &quot;pygments.lexers.Foo&quot; in the config file, even though it appears as a</span>
+<span class="sd">        class in the settings object. That&#39;s implemented similarly to this::</span>
+
+<span class="sd">            def import_lexer_class(name: str) -&gt; something:</span>
+<span class="sd">                ...</span>
+
+<span class="sd">            filetab.settings.add_option(&#39;pygments_lexer&#39;, ..., converter=import_lexer_class)</span>
+
+<span class="sd">        By default, the converter returns its argument unchanged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">option_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;there&#39;s already an option named </span><span class="si">{</span><span class="n">option_name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># using type as variable name, wanna access built-in named &#39;type&#39;</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="n">builtins</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">option</span> <span class="o">=</span> <span class="n">_Option</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">option</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">option_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>   <span class="c1"># nothing relevant in config file, use default</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Error handling here because it&#39;s not possible to fail early when</span>
+            <span class="c1"># an option goes to _unknown_options, and bad data in a config file</span>
+            <span class="c1"># shouldn&#39;t cause add_option() and the rest of a plugin&#39;s setup()</span>
+            <span class="c1"># to fail.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">converter</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="c1"># can be an error from converter</span>
+                <span class="n">_log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;setting </span><span class="si">{</span><span class="n">option_name</span><span class="si">!r}</span><span class="s2"> to </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> failed&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Settings.set"><a class="viewcode-back" href="../../settings.html#porcupine.settings.Settings.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">from_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set the value of an opiton.</span>
+
+<span class="sd">        Set ``from_config=True`` if the value comes from a configuration</span>
+<span class="sd">        file (see :func:`add_option`). That does two things:</span>
+
+<span class="sd">            * The converter given to :func:`add_option` will be used.</span>
+<span class="sd">            * If the option hasn&#39;t been added with :func:`add_option` yet, then</span>
+<span class="sd">              the value won&#39;t be set immediatelly, but instead it gets set</span>
+<span class="sd">              later when the option is added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">option_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="ow">and</span> <span class="n">from_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+
+        <span class="n">option</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">from_config</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">_type_check</span><span class="p">(</span><span class="n">option</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># don&#39;t create change events when nothing changes (helps avoid infinite recursion)</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">option</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="n">event_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_event_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">option_name</span><span class="p">)</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">option_name</span><span class="si">}</span><span class="s2"> was set to </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">, generating </span><span class="si">{</span><span class="n">event_name</span><span class="si">}</span><span class="s2"> events&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_event_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">not_notified_yet</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()]</span>
+            <span class="k">while</span> <span class="n">not_notified_yet</span><span class="p">:</span>
+                <span class="n">widget</span> <span class="o">=</span> <span class="n">not_notified_yet</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="n">widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
+                <span class="n">not_notified_yet</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">winfo_children</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_change_event_widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span></div>
+
+    <span class="c1"># I don&#39;t like how this requires overloads for every type</span>
+    <span class="c1"># https://stackoverflow.com/q/61471700</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
+
+<div class="viewcode-block" id="Settings.get"><a class="viewcode-back" href="../../settings.html#porcupine.settings.Settings.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the current value of an option.</span>
+<span class="sd">        *type* should be ``str`` or ``int`` depending on what type the option is.</span>
+<span class="sd">        You can also specify ``object`` to allow any type.</span>
+
+<span class="sd">        This method works correctly for :class:`str` and :class:`int`,</span>
+<span class="sd">        but sometimes it returns Any because mypy sucks::</span>
+
+<span class="sd">            foo = settings.get(&#39;something&#39;, str)</span>
+<span class="sd">            reveal_type(foo)  # str</span>
+
+<span class="sd">            shitty_bar = settings.get(&#39;something&#39;, Optional[pathlib.Path])</span>
+<span class="sd">            reveal_type(shitty_bar)  # Any</span>
+
+<span class="sd">        Use a type annotation to work around this (and make sure to write the</span>
+<span class="sd">        same type two times)::</span>
+
+<span class="sd">            good_bar: Optional[pathlib.Path] = settings.get(&#39;something&#39;, Optional[pathlib.Path])</span>
+<span class="sd">            reveal_type(good_bar)  # Optional[pathlib.Path]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">_type_check</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># mutating wouldn&#39;t trigger change events</span></div></div>
 
 
-<span class="c1"># add &#39;from builtins import set as builtin_set&#39; if needed</span>
-<div class="viewcode-block" id="set"><a class="viewcode-back" href="../../settings.html#porcupine.settings.set">[docs]</a><span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Set the value of an opiton.&quot;&quot;&quot;</span>
-    <span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../settings.html#porcupine.settings.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tybe</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_Val</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_Val</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return the current value of an option.</span>
-<span class="sd">    *tybe* should be ``str`` or ``int`` depending on what type the option is.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">tybe</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;use </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> instead of </span><span class="si">{</span><span class="n">tybe</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></div>
+<span class="n">_global_settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;SettingChanged:</span><span class="si">{}</span><span class="s1">&gt;&gt;&#39;</span><span class="p">)</span>
+<span class="n">add_option</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">add_option</span>
+<span class="nb">set</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">set</span>     <span class="c1"># shadows the built-in set data structure</span>
+<span class="n">get</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">get</span>
 
 
 <div class="viewcode-block" id="reset"><a class="viewcode-back" href="../../settings.html#porcupine.settings.reset">[docs]</a><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Set an option to its default value given to :func:`add_option`.&quot;&quot;&quot;</span>
-    <span class="n">option</span> <span class="o">=</span> <span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span>
-    <span class="n">option</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">option</span><span class="o">.</span><span class="n">default</span><span class="p">)</span></div>
+    <span class="nb">set</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="reset_all"><a class="viewcode-back" href="../../settings.html#porcupine.settings.reset_all">[docs]</a><span class="k">def</span> <span class="nf">reset_all</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -116,40 +242,9 @@
 <span class="sd">    Reset all settings, including the ones not shown in the setting dialog.</span>
 <span class="sd">    Clicking the reset button of the setting dialog runs this function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_json_file_contents</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_options</span><span class="p">:</span>
+    <span class="n">_global_settings</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
         <span class="n">reset</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="add_option"><a class="viewcode-back" href="../../settings.html#porcupine.settings.add_option">[docs]</a><span class="k">def</span> <span class="nf">add_option</span><span class="p">(</span><span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Add a custom option.</span>
-
-<span class="sd">    The type of *default* determines how :func:`set` and :func:`get` behave.</span>
-<span class="sd">    For example, if *default* is a string, then</span>
-<span class="sd">    calling :func:`set` with a value that isn&#39;t a string or</span>
-<span class="sd">    calling :func:`get` with the type set to something else than ``str``</span>
-<span class="sd">    is an error.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">option_name</span> <span class="ow">in</span> <span class="n">_options</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;there&#39;s already an option named </span><span class="si">{</span><span class="n">option_name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="c1"># TODO: create mypy issues about need for Any-typing</span>
-    <span class="n">option</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">_Option</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
-    <span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">option</span>
-    <span class="k">if</span> <span class="n">option_name</span> <span class="ow">in</span> <span class="n">_json_file_contents</span><span class="p">:</span>
-        <span class="c1"># this errors if _json_file_contents has wrong type value</span>
-        <span class="c1"># TODO: add test</span>
-        <span class="n">option</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">_json_file_contents</span><span class="p">[</span><span class="n">option_name</span><span class="p">])</span></div>
-
-
-<span class="k">def</span> <span class="nf">_load_from_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">assert</span> <span class="ow">not</span> <span class="n">_options</span>    <span class="c1"># add_option() uses _json_file_contents</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">_get_path</span><span class="p">()</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">_json_file_contents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="save"><a class="viewcode-back" href="../../settings.html#porcupine.settings.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -158,19 +253,69 @@
 <span class="sd">    Note that :func:`porcupine.run` always calls this before it returns,</span>
 <span class="sd">    so usually you don&#39;t need to worry about calling this yourself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_json_file_contents</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">_options</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="n">currently_known_defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">default</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="n">writing</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># don&#39;t wipe unknown stuff from config file</span>
+    <span class="n">writing</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">currently_known_defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     <span class="p">})</span>
 
     <span class="c1"># don&#39;t store anything that doesn&#39;t differ from defaults</span>
-    <span class="c1"># also don&#39;t wipe unknown stuff from config file</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_json_file_contents</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">_options</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-        <span class="k">if</span> <span class="n">_json_file_contents</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">==</span> <span class="n">_options</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">_json_file_contents</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span> <span class="ow">in</span> <span class="n">currently_known_defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">writing</span> <span class="ow">and</span> <span class="n">writing</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">==</span> <span class="n">default</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">writing</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
-    <span class="k">with</span> <span class="n">_get_path</span><span class="p">()</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">_json_file_contents</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+    <span class="k">with</span> <span class="n">_get_json_path</span><span class="p">()</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">writing</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_load_from_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_get_json_path</span><span class="p">()</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">from_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_init_global_settings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_load_from_file</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;reading </span><span class="si">{</span><span class="n">_get_json_path</span><span class="p">()</span><span class="si">}</span><span class="s2"> failed&quot;</span><span class="p">)</span>
+
+    <span class="n">fixedfont</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TkFixedFont&#39;</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># negative sizes have a special meaning in Tk, and i don&#39;t care much</span>
+        <span class="c1"># about it for porcupine, using stupid hard-coded default instead</span>
+        <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># fixedfont[&#39;family&#39;] is typically e.g. &#39;Monospace&#39;, that&#39;s not included in</span>
+    <span class="c1"># tkinter.font.families() because it refers to another font family that is</span>
+    <span class="c1"># in tkinter.font.families()</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="o">.</span><span class="n">actual</span><span class="p">(</span><span class="s1">&#39;family&#39;</span><span class="p">))</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s1">&#39;Python&#39;</span><span class="p">)</span>
+
+    <span class="c1"># keep TkFixedFont up to date with settings</span>
+    <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># can&#39;t bind to get_tab_manager() as recommended in docs because tab</span>
+        <span class="c1"># manager isn&#39;t ready yet when settings get inited</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="o">==</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">():</span>
+            <span class="n">fixedfont</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+
+    <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;SettingChanged:font_family&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">update_fixedfont</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;SettingChanged:font_size&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">update_fixedfont</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">update_fixedfont</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_create_notebook</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Notebook</span><span class="p">:</span>
@@ -233,11 +378,14 @@
     <span class="k">return</span> <span class="n">_cache</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
+<span class="n">_StrOrInt</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_StrOrInt&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">_create_validation_triangle</span><span class="p">(</span>
     <span class="n">widget</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span>
     <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">tybe</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_Val</span><span class="p">],</span>
-    <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">_Val</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+    <span class="n">tybe</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_StrOrInt</span><span class="p">],</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">_StrOrInt</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">:</span>
 
     <span class="n">triangle</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">master</span><span class="p">)</span>
@@ -246,7 +394,7 @@
     <span class="k">def</span> <span class="nf">var_changed</span><span class="p">(</span><span class="o">*</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">value_string</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
-        <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_Val</span><span class="p">]</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_StrOrInt</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">tybe</span><span class="p">(</span><span class="n">value_string</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>   <span class="c1"># e.g. int(&#39;foo&#39;)</span>
@@ -262,7 +410,7 @@
             <span class="nb">set</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">setting_changed</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="nb">object</span><span class="p">)))</span>
 
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;&lt;SettingChanged:</span><span class="si">{</span><span class="n">option_name</span><span class="si">}</span><span class="s1">&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">setting_changed</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">var</span><span class="o">.</span><span class="n">trace_add</span><span class="p">(</span><span class="s1">&#39;write&#39;</span><span class="p">,</span> <span class="n">var_changed</span><span class="p">)</span>
@@ -423,20 +571,12 @@
     <span class="k">return</span> <span class="n">label</span>
 
 
-<span class="k">def</span> <span class="nf">_encoding_exists</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">codecs</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-
 <span class="k">def</span> <span class="nf">_edit_filetypes_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># porcupine/tabs.py imports this file</span>
     <span class="c1"># these local imports feel so evil xD  MUHAHAHAA!!!</span>
     <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">tabs</span>
 
-    <span class="n">path</span> <span class="o">=</span> <span class="n">dirs</span><span class="o">.</span><span class="n">configdir</span> <span class="o">/</span> <span class="s1">&#39;filetypes.ini&#39;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">dirs</span><span class="o">.</span><span class="n">configdir</span> <span class="o">/</span> <span class="s1">&#39;filetypes.toml&#39;</span>
     <span class="n">manager</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span>
     <span class="n">manager</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
     <span class="n">get_notebook</span><span class="p">()</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">()</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
@@ -453,15 +593,14 @@
 
     <span class="n">add_combobox</span><span class="p">(</span><span class="n">general</span><span class="p">,</span> <span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="s2">&quot;Font family:&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">font_families</span><span class="p">)</span>
     <span class="n">add_spinbox</span><span class="p">(</span><span class="n">general</span><span class="p">,</span> <span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="s2">&quot;Font size:&quot;</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-    <span class="n">add_entry</span><span class="p">(</span><span class="n">general</span><span class="p">,</span> <span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="s2">&quot;File encoding:&quot;</span><span class="p">,</span> <span class="n">_encoding_exists</span><span class="p">)</span>
 
     <span class="n">filetypes</span> <span class="o">=</span> <span class="n">add_section</span><span class="p">(</span><span class="s1">&#39;File Types&#39;</span><span class="p">)</span>
     <span class="n">add_label</span><span class="p">(</span><span class="n">filetypes</span><span class="p">,</span> <span class="p">(</span>
         <span class="s2">&quot;Currently there&#39;s no GUI for changing filetype specific settings, &quot;</span>
-        <span class="s2">&quot;but they&#39;re stored in filetypes.ini and you can edit it yourself.&quot;</span>
+        <span class="s2">&quot;but you can edit it the configuration file.&quot;</span>
     <span class="p">))</span>
     <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-        <span class="n">filetypes</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Edit filetypes.ini&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">_edit_filetypes_config</span><span class="p">,</span>
+        <span class="n">filetypes</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Edit filetypes.toml&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">_edit_filetypes_config</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="n">add_label</span><span class="p">(</span><span class="n">filetypes</span><span class="p">,</span> <span class="p">(</span>
@@ -470,10 +609,9 @@
         <span class="s2">&quot;can change the filetype after creating the file by clicking &quot;</span>
         <span class="s2">&quot;Filetypes in the menu bar.&quot;</span><span class="p">))</span>
 
-    <span class="c1"># filetypes aren&#39;t loaded yet when this is called, get_all_filetypes()</span>
-    <span class="c1"># returns empty list</span>
+    <span class="c1"># filetypes aren&#39;t loaded yet when this is called</span>
     <span class="k">def</span> <span class="nf">add_filetype_choosing_combobox</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">filetype_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ft</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ft</span> <span class="ow">in</span> <span class="n">get_all_filetypes</span><span class="p">())</span>
+        <span class="n">filetype_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">get_filetype_names</span><span class="p">())</span>
         <span class="n">add_combobox</span><span class="p">(</span><span class="n">filetypes</span><span class="p">,</span> <span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s2">&quot;Default filetype for new files:&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">filetype_names</span><span class="p">)</span>
 
     <span class="n">filetypes</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="n">add_filetype_choosing_combobox</span><span class="p">)</span>
@@ -484,37 +622,7 @@
     <span class="k">if</span> <span class="n">_notebook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;can&#39;t call _init() twice&quot;</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">_load_from_file</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;reading </span><span class="si">{</span><span class="n">_get_path</span><span class="p">()</span><span class="si">}</span><span class="s2"> failed&quot;</span><span class="p">)</span>
-
-    <span class="n">fixedfont</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TkFixedFont&#39;</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1"># negative sizes have a special meaning in Tk, and i don&#39;t care much</span>
-        <span class="c1"># about it for porcupine, using stupid hard-coded default instead</span>
-        <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
-
-    <span class="c1"># fixedfont[&#39;family&#39;] is typically e.g. &#39;Monospace&#39;, that&#39;s not included in</span>
-    <span class="c1"># tkinter.font.families() because it refers to another font family that is</span>
-    <span class="c1"># in tkinter.font.families()</span>
-    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="o">.</span><span class="n">actual</span><span class="p">(</span><span class="s1">&#39;family&#39;</span><span class="p">))</span>
-    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
-    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>    <span class="c1"># TODO: file-specific encodings</span>
-    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
-    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s1">&#39;Plain Text&#39;</span><span class="p">)</span>
-
-    <span class="c1"># keep TkFixedFont up to date with settings</span>
-    <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># can&#39;t bind to get_tab_manager() as recommended in docs because tab</span>
-        <span class="c1"># manager isn&#39;t ready yet when settings get inited</span>
-        <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="o">==</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">():</span>
-            <span class="n">fixedfont</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
-
-    <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;SettingChanged:font_family&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">update_fixedfont</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;SettingChanged:font_size&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">update_fixedfont</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">update_fixedfont</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-
+    <span class="n">_init_global_settings</span><span class="p">()</span>
     <span class="n">_notebook</span> <span class="o">=</span> <span class="n">_create_notebook</span><span class="p">()</span>
     <span class="n">_fill_notebook_with_defaults</span><span class="p">()</span>
 </pre></div>
@@ -545,7 +653,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>

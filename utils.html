@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.74.0-git-747e960 documentation</title>
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.75.0-git-1734293 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -52,22 +52,6 @@ starting a new command prompt from Python.</p>
 <code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">python_executable</code><a class="headerlink" href="#porcupine.utils.python_executable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Like <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.executable" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.executable</span></code></a>, but this should also be correct on
 <code class="docutils literal notranslate"><span class="pre">pythonw.exe</span></code>.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt id="porcupine.utils.short_python_command">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">short_python_command</code><a class="headerlink" href="#porcupine.utils.short_python_command" title="Permalink to this definition">¶</a></dt>
-<dd><p>A short command for running the Python that Porcupine is running on.</p>
-<p>This may contain arguments. For example, this might be <code class="docutils literal notranslate"><span class="pre">'py</span> <span class="pre">-3'</span></code> on a
-Windows system that has both Python 2 and Python 3 installed, and Python 2
-is the default.</p>
-<p>Note that this is quoted already if it needs quoting, and should <em>not</em> be
-quoted more. For example, this code is <strong>bad</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">utils</span><span class="o">.</span><span class="n">short_python_command</span><span class="p">,</span> <span class="s1">&#39;blah&#39;</span><span class="p">,</span> <span class="s1">&#39;blah&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>Use <a class="reference internal" href="#porcupine.utils.python_executable" title="porcupine.utils.python_executable"><code class="xref py py-data docutils literal notranslate"><span class="pre">python_executable</span></code></a> if you want to do a <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.call" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">subprocess.call()</span></code></a> or
-something like that.</p>
 </dd></dl>
 
 </div>
@@ -150,24 +134,6 @@ of type <code class="xref py py-class docutils literal notranslate"><span class=
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.utils.get_keyboard_shortcut">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">get_keyboard_shortcut</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">binding</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="reference internal" href="_modules/porcupine/utils.html#get_keyboard_shortcut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.get_keyboard_shortcut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a Tk binding string to a format that most people are used to.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;Control-c&gt;&#39;</span><span class="p">)</span>
-<span class="go">&#39;Ctrl+C&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;Control-C&gt;&#39;</span><span class="p">)</span>
-<span class="go">&#39;Ctrl+Shift+C&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;Control-0&gt;&#39;</span><span class="p">)</span>
-<span class="go">&#39;Ctrl+Zero&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;Control-1&gt;&#39;</span><span class="p">)</span>
-<span class="go">&#39;Ctrl+1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">get_keyboard_shortcut</span><span class="p">(</span><span class="s1">&#39;&lt;F11&gt;&#39;</span><span class="p">)</span>
-<span class="go">&#39;F11&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt id="porcupine.utils.run_in_thread">
 <code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">run_in_thread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocking_function</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable[[bool, Union[str, T]], None]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#run_in_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.run_in_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run <code class="docutils literal notranslate"><span class="pre">blocking_function()</span></code> in another thread.</p>
@@ -178,6 +144,37 @@ is the error message as a string. If no errors are raised,
 return value from <em>blocking_function</em>. The <em>done_callback</em> is always
 called from Tk’s main loop, so it can do things with Tkinter widgets
 unlike <em>blocking_function</em>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="porcupine.utils.TemporaryBind">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">TemporaryBind</code><span class="sig-paren">(</span><em class="sig-param">widget: tkinter.BaseWidget, sequence: str, func: Callable[[porcupine.utils.EventWithData], Optional[typing_extensions.Literal[break]]]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#TemporaryBind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.TemporaryBind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind and unbind a callback.</p>
+<p>It’s possible (and in Porcupine plugins, highly recommended) to use
+<code class="docutils literal notranslate"><span class="pre">add=True</span></code> when binding. This way more than one function can be
+bound to the same key sequence at the same time.</p>
+<p>Unfortunately tkinter provodes no good way to unbind functions bound
+with <code class="docutils literal notranslate"><span class="pre">add=True</span></code> one by one, and the <code class="docutils literal notranslate"><span class="pre">unbind()</span></code> method always
+unbinds <em>everything</em> (see the source code). This function only
+unbinds the function it bound, and doesn’t touch anything else.</p>
+<p>Use this as a context manager, like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">TemporaryBind</span><span class="p">(</span><span class="n">some_widget</span><span class="p">,</span> <span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="n">on_click</span><span class="p">):</span>
+    <span class="c1"># now clicking the widget runs on_click() and whatever was</span>
+    <span class="c1"># bound before (unless on_click() returns &#39;break&#39;)</span>
+    <span class="o">...</span>
+<span class="c1"># now on_click() doesn&#39;t run when the widget is clicked, but</span>
+<span class="c1"># everything else still runs</span>
+</pre></div>
+</div>
+<p>Or call the <code class="docutils literal notranslate"><span class="pre">.unbind()</span></code> method when you want to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">binding</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">TemporaryBind</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="n">binding</span><span class="o">.</span><span class="n">unbind</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Calls to this function may be nested, and other things can be bound
+inside the <code class="docutils literal notranslate"><span class="pre">with</span></code> block as long as <code class="docutils literal notranslate"><span class="pre">add=True</span></code> is used.</p>
+<p>The event objects are just like with <a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -231,13 +228,6 @@ and on Windows it adds double quotes in a similar way. This is useful for
 running commands in the Windows command prompt or a POSIX-compatible shell.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="don-t-use-this-functions">
-<h2>Don’t-use-this functions<a class="headerlink" href="#don-t-use-this-functions" title="Permalink to this headline">¶</a></h2>
-<p>I might remove these functions later, and they are there because some part of
-Porcupine still uses them, the function does something that was difficult to
-implement or I’m planning on rewriting the whole function in an incompabile way
-later.</p>
 <dl class="py function">
 <dt id="porcupine.utils.errordialog">
 <code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">errordialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">message</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">monospace_text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#errordialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.errordialog" title="Permalink to this definition">¶</a></dt>
@@ -253,32 +243,6 @@ the message in a <code class="docutils literal notranslate"><span class="pre">tk
                       <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="porcupine.utils.temporary_bind">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">temporary_bind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.BaseWidget</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>tkinter.Event<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Iterator[None]<a class="reference internal" href="_modules/porcupine/utils.html#temporary_bind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.temporary_bind" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bind and unbind a callback.</p>
-<p>It’s possible (and in Porcupine plugins, highly recommended) to use
-<code class="docutils literal notranslate"><span class="pre">add=True</span></code> when binding. This way more than one function can be
-bound to the same key sequence at the same time.</p>
-<p>Unfortunately tkinter provodes no good way to unbind functions bound
-with <code class="docutils literal notranslate"><span class="pre">add=True</span></code> one by one, and the <code class="docutils literal notranslate"><span class="pre">unbind()</span></code> method always
-unbinds <em>everything</em> (see the source code). This function only
-unbinds the function it bound, and doesn’t touch anything else.</p>
-<p>Use this as a context manager, like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">temporary_bind</span><span class="p">(</span><span class="n">some_widget</span><span class="p">,</span> <span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="n">on_click</span><span class="p">):</span>
-    <span class="c1"># now clicking the widget runs on_click() and whatever was</span>
-    <span class="c1"># bound before (unless on_click() returns &#39;break&#39;)</span>
-    <span class="o">...</span>
-<span class="c1"># now on_click() doesn&#39;t run when the widget is clicked, but</span>
-<span class="c1"># everything else still runs</span>
-</pre></div>
-</div>
-<p>Calls to this function may be nested, and other things can be bound
-inside the <code class="docutils literal notranslate"><span class="pre">with</span></code> block as long as <code class="docutils literal notranslate"><span class="pre">add=True</span></code> is used.</p>
-<p>The event objects support the same additional attributes as those
-from <a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a>.</p>
 </dd></dl>
 
 </div>
@@ -311,7 +275,7 @@ from <a class="reference internal" href="#porcupine.utils.bind_with_data" title=
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — <code class="docutils literal notranslate"><span class="pre">filetypes.ini</span></code> stuff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
