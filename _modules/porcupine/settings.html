@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings &#8212; Porcupine API 0.76.2-git-cc31e29 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.76.3-git-3a97b09 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,10 +34,12 @@
   <h1>Source code for porcupine.settings</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">atexit</span>
 <span class="kn">import</span> <span class="nn">builtins</span>
-<span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
@@ -51,6 +53,53 @@
 
 
 <span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LineEnding"><a class="viewcode-back" href="../../settings.html#porcupine.settings.LineEnding">[docs]</a><span class="k">class</span> <span class="nc">LineEnding</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This :mod:`enum` has these members representing different ways to write</span>
+<span class="sd">    newline characters to files:</span>
+
+<span class="sd">    .. data:: CR</span>
+
+<span class="sd">        ``\r``, aka &quot;Mac line endings&quot;.</span>
+
+<span class="sd">    .. data:: LF</span>
+
+<span class="sd">        ``\n``, aka &quot;Linux/Unix line endings&quot;.</span>
+
+<span class="sd">    .. data:: CRLF</span>
+
+<span class="sd">        ``\r\n``, aka &quot;Windows line endings&quot;.</span>
+
+<span class="sd">    Python&#39;s :func:`open` function translates all of these to the string</span>
+<span class="sd">    ``&#39;\n&#39;`` when reading files and uses a platform-specific default when</span>
+<span class="sd">    writing files.</span>
+
+<span class="sd">    There are 3 ways to represent line endings in Porcupine, and</span>
+<span class="sd">    different things want the line ending represented in different ways:</span>
+
+<span class="sd">        * The strings ``&#39;\r&#39;``, ``&#39;\n&#39;`` and ``&#39;\r\n&#39;``. For example,</span>
+<span class="sd">          :func:`open` line endings are specified like this.</span>
+<span class="sd">        * The strings ``&#39;CR&#39;``, ``&#39;LF&#39;`` and ``&#39;CRLF&#39;``. Line endings are</span>
+<span class="sd">          typically defined this way in configuration files, such as</span>
+<span class="sd">          `editorconfig &lt;https://editorconfig.org/&gt;`_ files.</span>
+<span class="sd">        * This enum. I recommend using this to avoid typos.</span>
+<span class="sd">          For example, ``LineEnding[some_string_from_user]`` (see below)</span>
+<span class="sd">          raises an error if the string is invalid.</span>
+
+<span class="sd">    Convert between this enum and the different kinds of strings like this:</span>
+
+<span class="sd">        * Enum to backslashy string: ``LineEnding.CRLF.value == &#39;\r\n&#39;``</span>
+<span class="sd">        * Enum to human readable string: ``LineEnding.CRLF.name == &#39;CRLF&#39;``</span>
+<span class="sd">        * Backslashy string to enum: ``LineEnding(&#39;\r\n&#39;) == LineEnding.CRLF``</span>
+<span class="sd">        * Human readable string to enum: ``LineEnding[&#39;CRLF&#39;] == LineEnding.CRLF``</span>
+
+<span class="sd">    Use ``LineEnding(os.linesep)`` to get the platform-specific default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CR</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span>
+    <span class="n">LF</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">CRLF</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span></div>
 
 
 <span class="k">def</span> <span class="nf">_type_check</span><span class="p">(</span><span class="n">tybe</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
@@ -200,6 +249,8 @@
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
     <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">LineEnding</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineEnding</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
+    <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
@@ -240,17 +291,15 @@
 
 <div class="viewcode-block" id="Settings.debug_dump"><a class="viewcode-back" href="../../settings.html#porcupine.settings.Settings.debug_dump">[docs]</a>    <span class="k">def</span> <span class="nf">debug_dump</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Print all settings and their values. This is useful for debugging.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Known options (add_option called):&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="si">!r}</span><span class="s1">    (type: </span><span class="si">{</span><span class="n">option</span><span class="o">.</span><span class="n">type</span><span class="si">!r}</span><span class="s1">)&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span><span class="si">}</span><span class="s2"> known options (add_option called)&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="si">!r}</span><span class="s1">    (type: </span><span class="si">{</span><span class="n">option</span><span class="o">.</span><span class="n">type</span><span class="si">!r}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unknown options (add_option not called):&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">()</span></div></div>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="p">)</span><span class="si">}</span><span class="s2"> unknown options (add_option not called)&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span></div></div>
 
 
 <span class="n">_global_settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;SettingChanged:</span><span class="si">{}</span><span class="s1">&gt;&gt;&#39;</span><span class="p">)</span>
@@ -273,6 +322,13 @@
     <span class="n">_global_settings</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
         <span class="n">reset</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_value_to_save</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="c1"># Enum options are stored as name strings, e.g. &#39;CRLF&#39; for LineEnding.CRLF</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">return</span> <span class="n">obj</span>
 
 
 <div class="viewcode-block" id="save"><a class="viewcode-back" href="../../settings.html#porcupine.settings.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -300,7 +356,10 @@
             <span class="k">del</span> <span class="n">writing</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">with</span> <span class="n">_get_json_path</span><span class="p">()</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">writing</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">_value_to_save</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">writing</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">},</span> <span class="n">file</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_load_from_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -340,6 +399,7 @@
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">_check_pygments_style</span><span class="p">)</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s1">&#39;Python&#39;</span><span class="p">)</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;disabled_plugins&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_line_ending&#39;</span><span class="p">,</span> <span class="n">LineEnding</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">),</span> <span class="n">converter</span><span class="o">=</span><span class="n">LineEnding</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">)</span>
 
     <span class="c1"># keep TkFixedFont up to date with settings</span>
     <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -442,10 +502,10 @@
             <span class="n">triangle</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;triangle&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">triangle</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_blank_triangle_sized_image</span><span class="p">()</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">from_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">setting_changed</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="nb">object</span><span class="p">)))</span>
+        <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_value_to_save</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="nb">object</span><span class="p">))))</span>
 
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;&lt;SettingChanged:</span><span class="si">{</span><span class="n">option_name</span><span class="si">}</span><span class="s1">&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">setting_changed</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">var</span><span class="o">.</span><span class="n">trace_add</span><span class="p">(</span><span class="s1">&#39;write&#39;</span><span class="p">,</span> <span class="n">var_changed</span><span class="p">)</span>
@@ -553,9 +613,10 @@
 <span class="sd">    The content of the combobox is checked whenever it changes.</span>
 <span class="sd">    If it&#39;s in ``combobox[&#39;values&#39;]``</span>
 <span class="sd">    (given with the ``values=list_of_strings`` keyword argument or changed</span>
-<span class="sd">    later by configuring the returned combobox),</span>
-<span class="sd">    then the option given by *option_name* is set to the combobox content.</span>
-<span class="sd">    Otherwise |triangle| is shown.</span>
+<span class="sd">    later by configuring the returned combobox), then the option given by</span>
+<span class="sd">    *option_name* is set to the content of the combobox. The converter passed</span>
+<span class="sd">    to :func:`add_option` will be used. If the content of the combobox is not</span>
+<span class="sd">    in ``combobox[&#39;values&#39;]``, then |triangle| is shown.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">combo</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="o">**</span><span class="n">combobox_kwargs</span><span class="p">)</span>
     <span class="n">triangle</span> <span class="o">=</span> <span class="n">_create_validation_triangle</span><span class="p">(</span>
@@ -628,6 +689,9 @@
 
     <span class="n">add_combobox</span><span class="p">(</span><span class="n">general</span><span class="p">,</span> <span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="s2">&quot;Font family:&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">font_families</span><span class="p">)</span>
     <span class="n">add_spinbox</span><span class="p">(</span><span class="n">general</span><span class="p">,</span> <span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="s2">&quot;Font size:&quot;</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">add_combobox</span><span class="p">(</span>
+        <span class="n">general</span><span class="p">,</span> <span class="s1">&#39;default_line_ending&#39;</span><span class="p">,</span> <span class="s2">&quot;Default line ending:&quot;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">ending</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ending</span> <span class="ow">in</span> <span class="n">LineEnding</span><span class="p">])</span>
 
     <span class="n">filetypes</span> <span class="o">=</span> <span class="n">add_section</span><span class="p">(</span><span class="s1">&#39;File Types&#39;</span><span class="p">)</span>
     <span class="n">add_label</span><span class="p">(</span><span class="n">filetypes</span><span class="p">,</span> <span class="p">(</span>

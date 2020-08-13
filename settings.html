@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.76.2-git-cc31e29 documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.76.3-git-3a97b09 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -125,7 +125,63 @@ Use this option like this:</p>
 <blockquote>
 <div><p>Names of plugins that the user has disabled. See <a class="reference internal" href="pluginloader.html#module-porcupine.pluginloader" title="porcupine.pluginloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code></a>.</p>
 </div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">default_line_end</span></code>: <a class="reference internal" href="#porcupine.settings.LineEnding" title="porcupine.settings.LineEnding"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineEnding</span></code></a></p>
+<blockquote>
+<div><p>The default line ending for new files.</p>
 </div></blockquote>
+</div></blockquote>
+<dl class="py class">
+<dt id="porcupine.settings.LineEnding">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">LineEnding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#LineEnding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.LineEnding" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code></a> has these members representing different ways to write
+newline characters to files:</p>
+<dl class="py data">
+<dt id="porcupine.settings.LineEnding.CR">
+<code class="sig-name descname">CR</code><a class="headerlink" href="#porcupine.settings.LineEnding.CR" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">\r</span></code>, aka “Mac line endings”.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.settings.LineEnding.LF">
+<code class="sig-name descname">LF</code><a class="headerlink" href="#porcupine.settings.LineEnding.LF" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">\n</span></code>, aka “Linux/Unix line endings”.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.settings.LineEnding.CRLF">
+<code class="sig-name descname">CRLF</code><a class="headerlink" href="#porcupine.settings.LineEnding.CRLF" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">\r\n</span></code>, aka “Windows line endings”.</p>
+</dd></dl>
+
+<p>Python’s <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> function translates all of these to the string
+<code class="docutils literal notranslate"><span class="pre">'\n'</span></code> when reading files and uses a platform-specific default when
+writing files.</p>
+<p>There are 3 ways to represent line endings in Porcupine, and
+different things want the line ending represented in different ways:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The strings <code class="docutils literal notranslate"><span class="pre">'\r'</span></code>, <code class="docutils literal notranslate"><span class="pre">'\n'</span></code> and <code class="docutils literal notranslate"><span class="pre">'\r\n'</span></code>. For example,
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> line endings are specified like this.</p></li>
+<li><p>The strings <code class="docutils literal notranslate"><span class="pre">'CR'</span></code>, <code class="docutils literal notranslate"><span class="pre">'LF'</span></code> and <code class="docutils literal notranslate"><span class="pre">'CRLF'</span></code>. Line endings are
+typically defined this way in configuration files, such as
+<a class="reference external" href="https://editorconfig.org/">editorconfig</a> files.</p></li>
+<li><p>This enum. I recommend using this to avoid typos.
+For example, <code class="docutils literal notranslate"><span class="pre">LineEnding[some_string_from_user]</span></code> (see below)
+raises an error if the string is invalid.</p></li>
+</ul>
+</div></blockquote>
+<p>Convert between this enum and the different kinds of strings like this:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Enum to backslashy string: <code class="docutils literal notranslate"><span class="pre">LineEnding.CRLF.value</span> <span class="pre">==</span> <span class="pre">'\r\n'</span></code></p></li>
+<li><p>Enum to human readable string: <code class="docutils literal notranslate"><span class="pre">LineEnding.CRLF.name</span> <span class="pre">==</span> <span class="pre">'CRLF'</span></code></p></li>
+<li><p>Backslashy string to enum: <code class="docutils literal notranslate"><span class="pre">LineEnding('\r\n')</span> <span class="pre">==</span> <span class="pre">LineEnding.CRLF</span></code></p></li>
+<li><p>Human readable string to enum: <code class="docutils literal notranslate"><span class="pre">LineEnding['CRLF']</span> <span class="pre">==</span> <span class="pre">LineEnding.CRLF</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Use <code class="docutils literal notranslate"><span class="pre">LineEnding(os.linesep)</span></code> to get the platform-specific default.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="custom-options">
 <h2>Custom Options<a class="headerlink" href="#custom-options" title="Permalink to this headline">¶</a></h2>
@@ -256,7 +312,8 @@ contains widgets for changing the settings. Column 2 is used for displaying
 <p>You can add widgets to the section yourself or use the following functions.
 All of these assume that the <em>section</em> argument comes from <a class="reference internal" href="#porcupine.settings.add_section" title="porcupine.settings.add_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_section()</span></code></a>
 and return the added widget.
-A label that displays <em>text</em> is added to column 0 (see the ascii art above).</p>
+A label that displays <em>text</em> is added to column 0 (see the ascii art above).
+When setting the values, the converter passed to <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> is used.</p>
 <dl class="py function">
 <dt id="porcupine.settings.add_entry">
 <code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">validate_callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">entry_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Entry<a class="reference internal" href="_modules/porcupine/settings.html#add_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_entry" title="Permalink to this definition">¶</a></dt>
@@ -279,9 +336,10 @@ Usually you should pass at least <code class="docutils literal notranslate"><spa
 <p>The content of the combobox is checked whenever it changes.
 If it’s in <code class="docutils literal notranslate"><span class="pre">combobox['values']</span></code>
 (given with the <code class="docutils literal notranslate"><span class="pre">values=list_of_strings</span></code> keyword argument or changed
-later by configuring the returned combobox),
-then the option given by <em>option_name</em> is set to the combobox content.
-Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
+later by configuring the returned combobox), then the option given by
+<em>option_name</em> is set to the content of the combobox. The converter passed
+to <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> will be used. If the content of the combobox is not
+in <code class="docutils literal notranslate"><span class="pre">combobox['values']</span></code>, then <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 </dd></dl>
 
 <dl class="py function">
