@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -43,6 +43,8 @@
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
 
+<span class="kn">import</span> <span class="nn">pygments.styles</span>   <span class="c1"># type: ignore</span>
+
 <span class="kn">import</span> <span class="nn">porcupine</span>
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">porcupine.filetypes</span> <span class="kn">import</span> <span class="n">get_filetype_names</span>
@@ -51,19 +53,19 @@
 <span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_type_check</span><span class="p">(</span><span class="n">tybe</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_type_check</span><span class="p">(</span><span class="n">tybe</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
     <span class="c1"># dacite tricks needed for validating e.g. objects of type Optional[pathlib.Path]</span>
     <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
     <span class="k">class</span> <span class="nc">ValueContainer</span><span class="p">:</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">tybe</span>  <span class="c1"># type: ignore</span>
 
-    <span class="n">utils</span><span class="o">.</span><span class="n">dict_to_dataclass</span><span class="p">(</span><span class="n">ValueContainer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_to_dataclass</span><span class="p">(</span><span class="n">ValueContainer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">})</span><span class="o">.</span><span class="n">value</span>
 
 
 <span class="k">class</span> <span class="nc">_Option</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">tybe</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">_type_check</span><span class="p">(</span><span class="n">tybe</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="n">_type_check</span><span class="p">(</span><span class="n">tybe</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
@@ -122,7 +124,11 @@
 <span class="sd">            def import_lexer_class(name: str) -&gt; something:</span>
 <span class="sd">                ...</span>
 
-<span class="sd">            filetab.settings.add_option(&#39;pygments_lexer&#39;, ..., converter=import_lexer_class)</span>
+<span class="sd">            filetab.settings.add_option(</span>
+<span class="sd">                &#39;pygments_lexer&#39;,</span>
+<span class="sd">                pygments.lexers.TextLexer,</span>
+<span class="sd">                ...</span>
+<span class="sd">                converter=import_lexer_class)</span>
 
 <span class="sd">        By default, the converter returns its argument unchanged.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -170,7 +176,7 @@
         <span class="n">option</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">from_config</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">_type_check</span><span class="p">(</span><span class="n">option</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">_type_check</span><span class="p">(</span><span class="n">option</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
         <span class="c1"># don&#39;t create change events when nothing changes (helps avoid infinite recursion)</span>
         <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
@@ -220,16 +226,38 @@
 
 <span class="sd">            good_bar: Optional[pathlib.Path] = settings.get(&#39;something&#39;, Optional[pathlib.Path])</span>
 <span class="sd">            reveal_type(good_bar)  # Optional[pathlib.Path]</span>
+
+<span class="sd">        Options of mutable types are returned as copies, so things like</span>
+<span class="sd">        ``settings.get(&#39;something&#39;, List[str])`` always return a new list.</span>
+<span class="sd">        If you want to change a setting like that, you need to first get a copy</span>
+<span class="sd">        of the current value, then modify the copy, and finally :func:`set` it</span>
+<span class="sd">        back. This is an easy way to make sure that change events run every</span>
+<span class="sd">        time the value changes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-        <span class="n">_type_check</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># mutating wouldn&#39;t trigger change events</span></div></div>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_type_check</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># mutating wouldn&#39;t trigger change events</span></div>
+
+<div class="viewcode-block" id="Settings.debug_dump"><a class="viewcode-back" href="../../settings.html#porcupine.settings.Settings.debug_dump">[docs]</a>    <span class="k">def</span> <span class="nf">debug_dump</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Print all settings and their values. This is useful for debugging.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Known options (add_option called):&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="si">!r}</span><span class="s1">    (type: </span><span class="si">{</span><span class="n">option</span><span class="o">.</span><span class="n">type</span><span class="si">!r}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unknown options (add_option not called):&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span></div></div>
 
 
 <span class="n">_global_settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;SettingChanged:</span><span class="si">{}</span><span class="s1">&gt;&gt;&#39;</span><span class="p">)</span>
 <span class="n">add_option</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">add_option</span>
 <span class="nb">set</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">set</span>     <span class="c1"># shadows the built-in set data structure</span>
 <span class="n">get</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">get</span>
+<span class="n">debug_dump</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">debug_dump</span>
 
 
 <div class="viewcode-block" id="reset"><a class="viewcode-back" href="../../settings.html#porcupine.settings.reset">[docs]</a><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -286,6 +314,12 @@
         <span class="nb">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">from_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
+<span class="c1"># pygments styles can be uninstalled, must not end up with invalid pygments style that way</span>
+<span class="k">def</span> <span class="nf">_check_pygments_style</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">pygments</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>   <span class="c1"># may raise error that will get logged</span>
+    <span class="k">return</span> <span class="n">name</span>
+
+
 <span class="k">def</span> <span class="nf">_init_global_settings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_load_from_file</span><span class="p">()</span>
@@ -303,8 +337,9 @@
     <span class="c1"># in tkinter.font.families()</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="o">.</span><span class="n">actual</span><span class="p">(</span><span class="s1">&#39;family&#39;</span><span class="p">))</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
-    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">_check_pygments_style</span><span class="p">)</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s1">&#39;Python&#39;</span><span class="p">)</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;disabled_plugins&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span>
 
     <span class="c1"># keep TkFixedFont up to date with settings</span>
     <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -535,7 +570,7 @@
     <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Add a :class:`utils.Spinbox` to the setting dialog.</span>
 
 <span class="sd">    All ``**spinbox_kwargs`` go to :class:`utils.Spinbox`.</span>
@@ -648,7 +683,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>

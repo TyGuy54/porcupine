@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="porcupine.tabs — The tab manager and tabs in it" href="tabs.html" />
+    <link rel="prev" title="porcupine — The top level Porcupine package" href="porcupine.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-porcupine.menubar">
+<span id="porcupine-menubar-the-menu-bar-at-the-top-of-the-porcupine-window"></span><h1><a class="reference internal" href="#module-porcupine.menubar" title="porcupine.menubar"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code></a> — The menu bar at the top of the Porcupine window<a class="headerlink" href="#module-porcupine.menubar" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference internal" href="plugin-intro.html#plugin-intro"><span class="std std-ref">the plugin writing introduction</span></a> and pretty much
+any <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins">plugin that Porcupine comes with</a> for example usage.</p>
+<dl class="py function">
+<dt id="porcupine.menubar.get_menu">
+<code class="sig-prename descclassname">porcupine.menubar.</code><code class="sig-name descname">get_menu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; tkinter.Menu<a class="reference internal" href="_modules/porcupine/menubar.html#get_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.menubar.get_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a menu widget, creating menus as necessary.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">get_menu(&quot;Tools/Python&quot;)</span></code> returns a submenu labelled
+<em>Python</em> from a menu named <em>Tools</em>. The <em>Tools</em> menu is created if it
+doesn’t already exist.</p>
+<p>If <em>path</em> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the menubar itself is returned.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.menubar.set_enabled_based_on_tab">
+<code class="sig-prename descclassname">porcupine.menubar.</code><code class="sig-name descname">set_enabled_based_on_tab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Optional<span class="p">[</span><a class="reference internal" href="tabs.html#porcupine.tabs.Tab" title="porcupine.tabs.Tab">porcupine.tabs.Tab</a><span class="p">]</span><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/menubar.html#set_enabled_based_on_tab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.menubar.set_enabled_based_on_tab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use this for disabling menu items depending on the currently selected tab.</p>
+<p>When the selected <a class="reference internal" href="tabs.html#porcupine.tabs.Tab" title="porcupine.tabs.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a> changes, <code class="docutils literal notranslate"><span class="pre">callback</span></code> will
+be called with the selected tab as an argument, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if there are
+no tabs. If the callback returns <code class="docutils literal notranslate"><span class="pre">False</span></code>, then the menu item given by
+<em>path</em> is disabled (so that it looks grayed out and can’t be clicked).</p>
+<p>The <em>path</em> works similarly to <a class="reference internal" href="#porcupine.menubar.get_menu" title="porcupine.menubar.get_menu"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_menu()</span></code></a>, except that it refers to a
+menu item rather than a submenu. For example, <code class="docutils literal notranslate"><span class="pre">&quot;Tools/Python/Black&quot;</span></code>
+means a menu item labelled <em>Black</em> in the <em>Tools/Python</em> menu.</p>
+<p>For example, this creates a menu item <code class="docutils literal notranslate"><span class="pre">Foo/Bar</span></code> and disables it whenever
+the currently selected tab is not a <a class="reference internal" href="tabs.html#porcupine.tabs.FileTab" title="porcupine.tabs.FileTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.tabs.FileTab</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">menubar</span><span class="p">,</span> <span class="n">tabs</span>
+
+<span class="k">def</span> <span class="nf">do_something</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;Foo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Bar&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">do_something</span><span class="p">)</span>
+    <span class="n">set_enabled_based_on_tab</span><span class="p">(</span><span class="s2">&quot;Foo/Bar&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">tab</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py virtualevent">
+<dt id="porcupine.menubar.Menubar-Foo-Bar-Baz">
+<span id="porcupine.menubar.Menubar:Foo/Bar/Baz"></span><em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;Menubar:Foo/Bar/Baz&gt;&gt;</code><a class="headerlink" href="#porcupine.menubar.Menubar-Foo-Bar-Baz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generating an event like this on the main window (see
+<a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a>)runs the callback of a menu item named
+<code class="docutils literal notranslate"><span class="pre">Baz</span></code> in a menu named <code class="docutils literal notranslate"><span class="pre">Foo/Bar</span></code> (see <a class="reference internal" href="#porcupine.menubar.get_menu" title="porcupine.menubar.get_menu"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_menu()</span></code></a>).</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">event_add()</span></code> method of any tkinter widget to associate a
+keyboard shortcut with the menu item. For example, Porcupine runs code like
+this when it starts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
+<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/New File&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-n&gt;&#39;</span><span class="p">)</span>
+<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/Open&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-o&gt;&#39;</span><span class="p">)</span>
+<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/Save&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-s&gt;&#39;</span><span class="p">)</span>
+<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/Save As&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-S&gt;&#39;</span><span class="p">)</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Call <a class="reference internal" href="#porcupine.menubar.update_keyboard_shortcuts" title="porcupine.menubar.update_keyboard_shortcuts"><code class="xref py py-func docutils literal notranslate"><span class="pre">update_keyboard_shortcuts()</span></code></a> after doing that.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.menubar.update_keyboard_shortcuts">
+<code class="sig-prename descclassname">porcupine.menubar.</code><code class="sig-name descname">update_keyboard_shortcuts</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/menubar.html#update_keyboard_shortcuts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.menubar.update_keyboard_shortcuts" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function does two things to the <em>New File</em> menu item in the <em>File</em>
+menu, and similarly to all other menu items in all menus:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Show <em>Ctrl+N</em> next to <em>New File</em>.</p></li>
+<li><p>Ensure that the menu item’s callback runs when Ctrl+N is pressed.</p></li>
+</ul>
+</div></blockquote>
+<p>This has to be called when menus or keyboard shortcuts have been modified.
+It’s called automatically when plugins have been set up.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Porcupine API</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plugin-intro.html">Introduction to Writing Plugins</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="porcupine.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
+      <li>Next: <a href="tabs.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Akuli.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/menubar.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

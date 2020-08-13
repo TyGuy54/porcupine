@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="porcupine.textwidget — Things for tkinter.Text widgets" href="textwidget.html" />
-    <link rel="prev" title="porcupine.actions — Add stuff to the menubar" href="actions.html" />
+    <link rel="prev" title="porcupine.menubar — The menu bar at the top of the Porcupine window" href="menubar.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -53,6 +53,27 @@ this should be <a class="reference internal" href="#porcupine.tabs.Tab" title="p
 <code class="docutils literal notranslate"><span class="pre">event.data_widget()</span></code> to access the tab that was added.</p>
 <p>Bind to the <code class="docutils literal notranslate"><span class="pre">&lt;Destroy&gt;</span></code> event of the tab if you want to clean
 up something when the tab is closed.</p>
+</dd></dl>
+
+<dl class="py virtualevent">
+<dt id="porcupine.tabs.TabManager.WillOpenFile">
+<em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;WillOpenFile&gt;&gt;</code><a class="headerlink" href="#porcupine.tabs.TabManager.WillOpenFile" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#porcupine.tabs.FileTab.open_file" title="porcupine.tabs.FileTab.open_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FileTab.open_file()</span></code></a> generates this event when an <strong>existing</strong>
+file is about to be opened. Unlike <a class="reference internal" href="#porcupine.tabs.TabManager.NewTab" title="porcupine.tabs.TabManager.NewTab"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;NewTab&gt;&gt;</span></code></a>, this never runs
+for tabs created without <a class="reference internal" href="#porcupine.tabs.FileTab.open_file" title="porcupine.tabs.FileTab.open_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open_file()</span></code></a>, such as the tabs
+created by clicking “New File” in the menu.</p>
+<p>Use <a class="reference internal" href="utils.html#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a> and <code class="docutils literal notranslate"><span class="pre">event.data_widget()</span></code>
+to access the related <a class="reference internal" href="#porcupine.tabs.FileTab" title="porcupine.tabs.FileTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTab</span></code></a>.</p>
+<p>This event runs before the file is read, so if you want your plugin to
+e.g. decide which encoding will be used, then this is the virtual event
+that you should use. See <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/editorconfig.py">porcupine/plugins/editorconfig.py</a>
+for an example.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#porcupine.tabs.TabManager.WillOpenFile" title="porcupine.tabs.TabManager.WillOpenFile"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;WillOpenFile&gt;&gt;</span></code></a> doesn’t run for files created by clicking
+“New File” and then “Save as”. Use  <a class="reference internal" href="#porcupine.tabs.TabManager.NewTab" title="porcupine.tabs.TabManager.NewTab"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;NewTab&gt;&gt;</span></code></a> and
+<a class="reference internal" href="#porcupine.tabs.FileTab.PathChanged" title="porcupine.tabs.FileTab.PathChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;PathChanged&gt;&gt;</span></code></a> to handle those.</p>
+</div>
 </dd></dl>
 
 <dl class="py virtualevent">
@@ -114,8 +135,8 @@ doing what is usually done with these methods.</p>
 <dd><p>Append a <a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a> to this tab manager.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">tab.equivalent(existing_tab)</span></code> returns True for any
 <code class="docutils literal notranslate"><span class="pre">existing_tab</span></code> that is already in the tab manager, then that
-existing tab is returned. Otherwise <em>tab</em> is added to the tab
-manager and returned.</p>
+existing tab is returned and the tab passed in as an argument is
+destroyed. Otherwise <em>tab</em> is added to the tab manager and returned.</p>
 <p>If <em>select</em> is True, then the returned tab is selected
 with <a class="reference internal" href="#porcupine.tabs.TabManager.select" title="porcupine.tabs.TabManager.select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select()</span></code></a>.</p>
 <div class="admonition seealso">
@@ -180,7 +201,7 @@ tkinter.</p>
 <p>You can easily create custom kinds of tabs by inheriting from this
 class. Here’s a very minimal but complete example plugin:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">actions</span><span class="p">,</span> <span class="n">get_tab_manager</span><span class="p">,</span> <span class="n">tabs</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">get_tab_manager</span><span class="p">,</span> <span class="n">menubar</span><span class="p">,</span> <span class="n">tabs</span>
 
 <span class="k">class</span> <span class="nc">HelloTab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">Tab</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">):</span>
@@ -192,7 +213,7 @@ class. Here’s a very minimal but complete example plugin:</p>
     <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">HelloTab</span><span class="p">(</span><span class="n">get_tab_manager</span><span class="p">()))</span>
 
 <span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
-    <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s1">&#39;Hello/New Hello Tab&#39;</span><span class="p">,</span> <span class="n">new_hello_tab</span><span class="p">)</span>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;New Hello Tab&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">new_hello_tab</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that you need to use the pack geometry manager when creating
@@ -288,6 +309,11 @@ a subclass. For example:</p>
             <span class="k">return</span> <span class="kc">False</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that your tab can’t be changed so that it becomes
+equivalent with another tab that is already in the tab manager.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -322,7 +348,7 @@ subclass and make this focus the tab’s main widget if needed.</p>
 
 <dl class="py class">
 <dt id="porcupine.tabs.FileTab">
-<em class="property">class </em><code class="sig-prename descclassname">porcupine.tabs.</code><code class="sig-name descname">FileTab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">manager</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#porcupine.tabs.TabManager" title="porcupine.tabs.TabManager">porcupine.tabs.TabManager</a></span></em>, <em class="sig-param"><span class="n">content</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.8)">pathlib.Path</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/tabs.html#FileTab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.tabs.FileTab" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.tabs.</code><code class="sig-name descname">FileTab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">manager</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#porcupine.tabs.TabManager" title="porcupine.tabs.TabManager">porcupine.tabs.TabManager</a></span></em>, <em class="sig-param"><span class="n">content</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.8)">pathlib.Path</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filetype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/tabs.html#FileTab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.tabs.FileTab" title="Permalink to this definition">¶</a></dt>
 <dd><p>A subclass of <a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a> that represents an opened file.</p>
 <p>The filetab will have <em>content</em> in it by default when it’s opened. If
 <em>path</em> is given, the file will be saved there when Ctrl+S is
@@ -334,6 +360,9 @@ use <a class="reference internal" href="#porcupine.tabs.FileTab.open_file" title
 <em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;PathChanged&gt;&gt;</code><a class="headerlink" href="#porcupine.tabs.FileTab.PathChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>This runs when <a class="reference internal" href="#porcupine.tabs.FileTab.path" title="porcupine.tabs.FileTab.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">path</span></code></a> is set to a new value. Use
 <code class="docutils literal notranslate"><span class="pre">event.widget.path</span></code> to get the new path.</p>
+<p>When the file is saved with <a class="reference internal" href="#porcupine.tabs.FileTab.save_as" title="porcupine.tabs.FileTab.save_as"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_as()</span></code></a>, the <a class="reference internal" href="#porcupine.tabs.FileTab.PathChanged" title="porcupine.tabs.FileTab.PathChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;PathChanged&gt;&gt;</span></code></a>
+event callbacks run before the file is written, so you can e.g. change
+the encoding setting in a <a class="reference internal" href="#porcupine.tabs.FileTab.PathChanged" title="porcupine.tabs.FileTab.PathChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;PathChanged&gt;&gt;</span></code></a> callback.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -473,7 +502,7 @@ cancelled the dialog.</p>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
@@ -488,7 +517,7 @@ cancelled the dialog.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="actions.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+      <li>Previous: <a href="menubar.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
       <li>Next: <a href="textwidget.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
   </ul></li>
 </ul>

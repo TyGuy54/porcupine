@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -71,13 +71,13 @@ are installed in a different place:</p>
 <h2>Hello World!<a class="headerlink" href="#hello-world" title="Permalink to this headline">¶</a></h2>
 <p>Create a <code class="docutils literal notranslate"><span class="pre">hello.py</span></code> to your plugin directory, and add this code to it:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span>
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">actions</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">menubar</span>
 
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
     <span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
-    <span class="n">actions</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;Hello/Hello World&quot;</span><span class="p">,</span> <span class="n">hello</span><span class="p">)</span>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">hello</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Restart Porcupine. You should see a new <em>Hello</em> menu in the menubar with a
@@ -86,9 +86,12 @@ function.</p>
 <p>Some details:</p>
 <blockquote>
 <div><ul>
-<li><p>You can also add actions to menus that Porcupine created, like
-<code class="docutils literal notranslate"><span class="pre">actions.add_command(&quot;Run/Hello&quot;,</span> <span class="pre">hello)</span></code>. See <a class="reference internal" href="actions.html#module-porcupine.actions" title="porcupine.actions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code></a>
-for more documentation about actions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">menubar.get_menu(&quot;Hello&quot;)</span></code> creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Menu</span></code> widget labelled
+<em>Hello</em> into the menubar and returns it. If there was already a menu labelled
+<em>Hello</em> in the menubar, then that would be returned instead. To create
+submenus instead, you can give a slash-separated string, such as
+<code class="docutils literal notranslate"><span class="pre">&quot;Tools/Python&quot;</span></code> for submenu menu named <em>Python</em> inside the <em>Tools</em> menu.
+See <a class="reference internal" href="menubar.html#module-porcupine.menubar" title="porcupine.menubar"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code></a> for more details.</p></li>
 <li><p>Usually plugins are files, but directories with an <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> in them
 work as well.</p></li>
 <li><p>Plugins can be imported like <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">porcupine.plugins.hello</span></code>.
@@ -124,13 +127,10 @@ with plugins. Open a command prompt or terminal and run this command on it:</p>
 </pre></div>
 </div>
 <p>If the <code class="docutils literal notranslate"><span class="pre">porcu</span></code> command doesn’t work you can use <code class="docutils literal notranslate"><span class="pre">pyw</span> <span class="pre">-m</span> <span class="pre">porcupine</span></code> or
-<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">porcupine</span></code> instead of <code class="docutils literal notranslate"><span class="pre">porcu</span></code> as shown
-<a class="reference external" href="https://github.com/Akuli/porcupine/wiki/Installing-and-Running-Porcupine#installing-porcupine">here</a>.</p>
-<p>This will run Porcupine without any plugins, and in fact, it’s just an empty
-window with <em>nothing</em> inside it! However, actions are a part of Porcupine (even
-though <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/menubar.py">the menubar</a> that usually
-displays them is a plugin), so you can e.g. press Ctrl+N to create a new file
-or Ctrl+S to save it.</p>
+<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">porcupine</span></code> instead of <code class="docutils literal notranslate"><span class="pre">porcu</span></code> as shown in
+<a class="reference external" href="https://github.com/Akuli/porcupine#installing-porcupine">Porcupine’s README</a>.</p>
+<p>This will run Porcupine without any plugins, and it’s a window with only the
+menubar in it. You can still create and open files though.</p>
 </div>
 <div class="section" id="porcupine-s-widgets">
 <h2>Porcupine’s Widgets<a class="headerlink" href="#porcupine-s-widgets" title="Permalink to this headline">¶</a></h2>
@@ -144,7 +144,9 @@ or Ctrl+S to save it.</p>
 but it might be a <code class="docutils literal notranslate"><span class="pre">Toplevel</span></code> widget in a future version of Porcupine. You
 can access this widget with <a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a>.</p>
 </dd>
-<dt>❷ Tab Manager</dt><dd><p>This widget contains tabs (as in browser tabs, not <code class="docutils literal notranslate"><span class="pre">\t</span></code> characters), and
+<dt>❷ Menu Bar</dt><dd><p>You can access this widget with <a class="reference internal" href="menubar.html#porcupine.menubar.get_menu" title="porcupine.menubar.get_menu"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.menubar.get_menu()</span></code></a>.</p>
+</dd>
+<dt>❸ Tab Manager</dt><dd><p>This widget contains tabs (as in browser tabs, not <code class="docutils literal notranslate"><span class="pre">\t</span></code> characters), and
 <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/welcome.py">the welcome plugin</a> displays a
 welcome message in it when there are no tabs. This widget is a
 <a class="reference internal" href="tabs.html#porcupine.tabs.TabManager" title="porcupine.tabs.TabManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.tabs.TabManager</span></code></a> and can be accessed with
@@ -214,7 +216,7 @@ won’t delete it.</p>
 <div class="section" id="binding-key-presses">
 <h3>Binding Key Presses<a class="headerlink" href="#binding-key-presses" title="Permalink to this headline">¶</a></h3>
 <p>If you want to bind a key press <strong>globally</strong> you should use
-<a class="reference internal" href="actions.html#module-porcupine.actions" title="porcupine.actions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code></a> in most cases, but you can also bind on the main
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> in most cases, but you can also bind on the main
 window, like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
@@ -267,7 +269,7 @@ notified of those tab presses that this plugin was able to autocomplete with
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">tabs</span><span class="p">,</span> <span class="n">utils</span>
 
 <span class="c1"># this plugin handles all tab presses and returns &#39;break&#39; from them, you</span>
-<span class="c1"># need this if you bind &lt;Tab&gt;</span>
+<span class="c1"># need this if you bind &lt;Tab&gt; on the text widget</span>
 <span class="n">setup_before</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tabs2spaces&#39;</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">on_tab</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">shift_pressed</span><span class="p">):</span>
@@ -282,7 +284,7 @@ notified of those tab presses that this plugin was able to autocomplete with
 
 <span class="k">def</span> <span class="nf">on_new_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">):</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">bind_tab_key</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">on_tab</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">bind_tab_key</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">on_tab</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>See <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/indent_block.py">porcupine/plugins/indent_block.py</a> for a complete example plugin.</p>
@@ -320,7 +322,7 @@ notified of those tab presses that this plugin was able to autocomplete with
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>

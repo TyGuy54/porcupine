@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.filetypes &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>porcupine.filetypes &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
             
   <h1>Source code for porcupine.filetypes</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Stuff related to filetypes.toml.&quot;&quot;&quot;</span>
-<span class="c1"># TODO: replace all this with editorconfig</span>
+<span class="c1"># TODO: turn this into a plugin?</span>
 
 <span class="kn">import</span> <span class="nn">fnmatch</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -54,13 +54,6 @@
 <span class="n">_filetypes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
 
-<span class="k">def</span> <span class="nf">_no_detecting_stuff</span><span class="p">(</span><span class="n">filetype</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">filetype</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">del</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;filename_patterns&#39;</span><span class="p">]</span>
-    <span class="k">del</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;shebang_regex&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">result</span>
-
-
 <span class="k">def</span> <span class="nf">_get_filetype_from_matches</span><span class="p">(</span>
     <span class="n">matches</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
     <span class="n">they_match_what</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -72,7 +65,7 @@
     <span class="k">if</span> <span class="n">rest</span><span class="p">:</span>
         <span class="n">names</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;multiple file types match </span><span class="si">{</span><span class="n">they_match_what</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_no_detecting_stuff</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
 
 
 <span class="k">def</span> <span class="nf">_guess_by_filename</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
@@ -115,10 +108,11 @@
         <span class="c1"># is utf-8</span>
         <span class="k">with</span> <span class="n">filepath</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="c1"># don&#39;t read the entire file if it&#39;s huge</span>
-            <span class="n">shebang_line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+            <span class="n">shebang_line</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
-        <span class="k">pass</span>
-    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shebang_line</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">shebang_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">filetype</span> <span class="o">=</span> <span class="n">_guess_by_shebang</span><span class="p">(</span><span class="n">shebang_line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">filetype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">filetype</span>
@@ -135,6 +129,7 @@
 
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">&#39;pygments_lexer&#39;</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">lexer</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">(</span><span class="n">lexer</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+        <span class="s1">&#39;langserver&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">}</span></div>
 
 
@@ -224,8 +219,8 @@
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">updates</span> <span class="ow">in</span> <span class="n">user_filetypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">_filetypes</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
 
-    <span class="c1"># everything except filename_patterns and shebang_regex is handled by Settings objects</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="n">_filetypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># everything except filename_patterns and shebang_regex is handled by Settings objects</span>
         <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;filename_patterns&#39;</span> <span class="ow">in</span> <span class="n">filetype</span> <span class="ow">and</span>
                 <span class="ow">not</span> <span class="n">_is_list_of_strings</span><span class="p">(</span><span class="n">filetype</span><span class="p">[</span><span class="s1">&#39;filename_patterns&#39;</span><span class="p">])):</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;filename_patterns is not a list of strings in [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] section&quot;</span><span class="p">)</span>
@@ -240,6 +235,10 @@
 
         <span class="n">filetype</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;filename_patterns&#39;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">filetype</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;shebang_regex&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;this regex matches nothing^&#39;</span><span class="p">)</span>
+
+        <span class="c1"># if no langserver configured, then don&#39;t leave langserver from</span>
+        <span class="c1"># previous filetype around when switching filetype</span>
+        <span class="n">filetype</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;langserver&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -263,7 +262,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>

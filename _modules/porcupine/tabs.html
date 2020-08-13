@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -69,6 +69,26 @@
 
 <span class="sd">        Bind to the ``&lt;Destroy&gt;`` event of the tab if you want to clean</span>
 <span class="sd">        up something when the tab is closed.</span>
+
+<span class="sd">    .. virtualevent:: WillOpenFile</span>
+
+<span class="sd">        :meth:`FileTab.open_file` generates this event when an **existing**</span>
+<span class="sd">        file is about to be opened. Unlike :virtevt:`~NewTab`, this never runs</span>
+<span class="sd">        for tabs created without :meth:`~FileTab.open_file`, such as the tabs</span>
+<span class="sd">        created by clicking &quot;New File&quot; in the menu.</span>
+
+<span class="sd">        Use :func:`~porcupine.utils.bind_with_data` and ``event.data_widget()``</span>
+<span class="sd">        to access the related :class:`FileTab`.</span>
+
+<span class="sd">        This event runs before the file is read, so if you want your plugin to</span>
+<span class="sd">        e.g. decide which encoding will be used, then this is the virtual event</span>
+<span class="sd">        that you should use. See :source:`porcupine/plugins/editorconfig.py`</span>
+<span class="sd">        for an example.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            :virtevt:`WillOpenFile` doesn&#39;t run for files created by clicking</span>
+<span class="sd">            &quot;New File&quot; and then &quot;Save as&quot;. Use  :virtevt:`NewTab` and</span>
+<span class="sd">            :virtevt:`~FileTab.PathChanged` to handle those.</span>
 
 <span class="sd">    .. virtualevent:: NotebookTabChanged</span>
 
@@ -202,8 +222,8 @@
 
 <span class="sd">        If ``tab.equivalent(existing_tab)`` returns True for any</span>
 <span class="sd">        ``existing_tab`` that is already in the tab manager, then that</span>
-<span class="sd">        existing tab is returned. Otherwise *tab* is added to the tab</span>
-<span class="sd">        manager and returned.</span>
+<span class="sd">        existing tab is returned and the tab passed in as an argument is</span>
+<span class="sd">        destroyed. Otherwise *tab* is added to the tab manager and returned.</span>
 
 <span class="sd">        If *select* is True, then the returned tab is selected</span>
 <span class="sd">        with :meth:`~select`.</span>
@@ -216,6 +236,7 @@
             <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">equivalent</span><span class="p">(</span><span class="n">existing_tab</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">select</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">existing_tab</span><span class="p">)</span>
+                <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">existing_tab</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">tab</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;closebutton&#39;</span><span class="p">),</span>
@@ -314,7 +335,7 @@
 <span class="sd">    class. Here&#39;s a very minimal but complete example plugin::</span>
 
 <span class="sd">        from tkinter import ttk</span>
-<span class="sd">        from porcupine import actions, get_tab_manager, tabs</span>
+<span class="sd">        from porcupine import get_tab_manager, menubar, tabs</span>
 
 <span class="sd">        class HelloTab(tabs.Tab):</span>
 <span class="sd">            def __init__(self, manager):</span>
@@ -326,7 +347,7 @@
 <span class="sd">            get_tab_manager().add_tab(HelloTab(get_tab_manager()))</span>
 
 <span class="sd">        def setup():</span>
-<span class="sd">            actions.add_command(&#39;Hello/New Hello Tab&#39;, new_hello_tab)</span>
+<span class="sd">            menubar.get_menu(&quot;Hello&quot;).add_command(label=&quot;New Hello Tab&quot;, command=new_hello_tab)</span>
 
 <span class="sd">    Note that you need to use the pack geometry manager when creating</span>
 <span class="sd">    custom tabs. If you want to use grid or place you can create a frame</span>
@@ -449,6 +470,10 @@
 <span class="sd">                        # MyCoolTabs are never equivalent to other kinds</span>
 <span class="sd">                        # of tabs</span>
 <span class="sd">                        return False</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            Make sure that your tab can&#39;t be changed so that it becomes</span>
+<span class="sd">            equivalent with another tab that is already in the tab manager.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
@@ -509,6 +534,10 @@
 
 <span class="sd">        This runs when :attr:`~path` is set to a new value. Use</span>
 <span class="sd">        ``event.widget.path`` to get the new path.</span>
+
+<span class="sd">        When the file is saved with :meth:`save_as`, the :virtevt:`PathChanged`</span>
+<span class="sd">        event callbacks run before the file is written, so you can e.g. change</span>
+<span class="sd">        the encoding setting in a :virtevt:`PathChanged` callback.</span>
 
 <span class="sd">    .. attribute:: settings</span>
 <span class="sd">        :type: porcupine.settings.Settings</span>
@@ -571,11 +600,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">:</span> <span class="n">TabManager</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                 <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                 <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">filetype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">manager</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;TabSettingChanged:</span><span class="si">{}</span><span class="s1">&gt;&gt;&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
@@ -587,7 +620,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;tabs2spaces&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;indent_size&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">filetype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filetype_to_settings</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># we need to set width and height to 1 to make sure it&#39;s never too</span>
@@ -625,9 +661,11 @@
 <span class="sd">        file fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;WillOpenFile&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tab</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+        <span class="n">tab</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">edit_reset</span><span class="p">()</span>
 
         <span class="n">tab</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">tab</span></div>
@@ -674,6 +712,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">new_path</span>
         <span class="k">if</span> <span class="n">it_changes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_guess_filetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -690,7 +729,9 @@
     <span class="k">def</span> <span class="nf">filetype_to_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;applying filetype settings: </span><span class="si">{</span><span class="n">filetype</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filetype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">from_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># Ignore stuff used only for guessing the correct filetype</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;filename_patterns&#39;</span><span class="p">,</span> <span class="s1">&#39;shebang_regex&#39;</span><span class="p">}:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">from_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># TODO: plugin</span>
     <span class="k">def</span> <span class="nf">_update_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -775,12 +816,24 @@
 <span class="sd">        cancelled the dialog.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># type ignored because mypy **kwargs support isn&#39;t great</span>
-        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span>    <span class="c1"># type: ignore</span>
+        <span class="n">path_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span>    <span class="c1"># type: ignore</span>
             <span class="o">**</span><span class="n">filetypes</span><span class="o">.</span><span class="n">get_filedialog_kwargs</span><span class="p">())</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>     <span class="c1"># it may be &#39;&#39; because tkinter</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path_string</span><span class="p">:</span>     <span class="c1"># it may be &#39;&#39; because tkinter</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
+
+        <span class="c1"># see equivalent()</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FileTab</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">path</span>
+               <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">tabs</span><span class="p">()</span>
+               <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">):</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span>
+                <span class="s2">&quot;Save As&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is already opened. &quot;</span>
+                <span class="s2">&quot;Please close it before overwriting it with another file.&quot;</span><span class="p">,</span>
+                <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">())</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
@@ -837,7 +890,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -77,6 +77,18 @@ same type two times):</p>
 <span class="n">reveal_type</span><span class="p">(</span><span class="n">good_bar</span><span class="p">)</span>  <span class="c1"># Optional[pathlib.Path]</span>
 </pre></div>
 </div>
+<p>Options of mutable types are returned as copies, so things like
+<code class="docutils literal notranslate"><span class="pre">settings.get('something',</span> <span class="pre">List[str])</span></code> always return a new list.
+If you want to change a setting like that, you need to first get a copy
+of the current value, then modify the copy, and finally <a class="reference internal" href="#porcupine.settings.set" title="porcupine.settings.set"><code class="xref py py-func docutils literal notranslate"><span class="pre">set()</span></code></a> it
+back. This is an easy way to make sure that change events run every
+time the value changes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.settings.debug_dump">
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">debug_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="headerlink" href="#porcupine.settings.debug_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print all settings and their values. This is useful for debugging.</p>
 </dd></dl>
 
 <p>Porcupine has these options by default (but you can add your own options too, see below):</p>
@@ -109,6 +121,10 @@ Use this option like this:</p>
 </div>
 </dd>
 </dl>
+<p><code class="docutils literal notranslate"><span class="pre">disabled_plugins</span></code>: List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+<blockquote>
+<div><p>Names of plugins that the user has disabled. See <a class="reference internal" href="pluginloader.html#module-porcupine.pluginloader" title="porcupine.pluginloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code></a>.</p>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="custom-options">
@@ -137,7 +153,11 @@ class in the settings object. That’s implemented similarly to this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">import_lexer_class</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">something</span><span class="p">:</span>
     <span class="o">...</span>
 
-<span class="n">filetab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_lexer&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">import_lexer_class</span><span class="p">)</span>
+<span class="n">filetab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
+    <span class="s1">&#39;pygments_lexer&#39;</span><span class="p">,</span>
+    <span class="n">pygments</span><span class="o">.</span><span class="n">lexers</span><span class="o">.</span><span class="n">TextLexer</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="n">converter</span><span class="o">=</span><span class="n">import_lexer_class</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>By default, the converter returns its argument unchanged.</p>
@@ -373,8 +393,13 @@ such as the documentation of an attribute with type <a class="reference internal
 <dl class="py method">
 <dt id="porcupine.settings.Settings.add_option">
 <code class="sig-name descname">add_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span></em>, <em class="sig-param"><span class="n">default</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#Settings.add_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.Settings.add_option" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="porcupine.settings.Settings.debug_dump">
+<code class="sig-name descname">debug_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#Settings.debug_dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.Settings.debug_dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>These methods are just like the
-<a class="reference internal" href="#porcupine.settings.set" title="porcupine.settings.set"><code class="xref py py-func docutils literal notranslate"><span class="pre">set()</span></code></a>, <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> and <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> functions,
+<a class="reference internal" href="#porcupine.settings.set" title="porcupine.settings.set"><code class="xref py py-func docutils literal notranslate"><span class="pre">set()</span></code></a>, <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a>, <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> and <a class="reference internal" href="#porcupine.settings.debug_dump" title="porcupine.settings.debug_dump"><code class="xref py py-func docutils literal notranslate"><span class="pre">debug_dump()</span></code></a> functions,
 but they do things with the <a class="reference internal" href="#porcupine.settings.Settings" title="porcupine.settings.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a> instance, not with the global settings.</p>
 </dd></dl>
 
@@ -405,7 +430,7 @@ but they do things with the <a class="reference internal" href="#porcupine.setti
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -38,7 +38,7 @@
 <p>On startup, Porcupine loads plugins roughly like this (after calling
 <a class="reference internal" href="porcupine.html#porcupine.init" title="porcupine.init"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.init()</span></code></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">pluginloader</span>
-<span class="n">pluginloader</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pluginloader</span><span class="o">.</span><span class="n">find_plugins</span><span class="p">())</span>
+<span class="n">pluginloader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </pre></div>
 </div>
 <p><a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/__main__.py">The real code</a> is a little more complicated
@@ -47,16 +47,97 @@ you get the idea.</p>
 <p>In this documentation, a plugin name means no file extension or
 <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.</span></code> prefix, e.g. <code class="docutils literal notranslate"><span class="pre">highlight</span></code> instead of <code class="docutils literal notranslate"><span class="pre">highlight.py</span></code>
 or <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.highlight</span></code>.</p>
-<dl class="py function">
-<dt id="porcupine.pluginloader.find_plugins">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">find_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#find_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.find_plugins" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return names of plugins that can be loaded.</p>
-<p>Note that loading some of the returned plugins may fail.</p>
+<dl class="py class">
+<dt id="porcupine.pluginloader.Status">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">Status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#Status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.Status" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Enum</span></code></a> represents the status of the plugin in the
+currently running Porcupine process.</p>
+<dl class="py data">
+<dt id="porcupine.pluginloader.Status.LOADING">
+<code class="sig-name descname">LOADING</code><a class="headerlink" href="#porcupine.pluginloader.Status.LOADING" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#porcupine.pluginloader.load" title="porcupine.pluginloader.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a> function is currently running, and it doesn’t know yet
+what the final status of the plugin will be.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.pluginloader.Status.ACTIVE">
+<code class="sig-name descname">ACTIVE</code><a class="headerlink" href="#porcupine.pluginloader.Status.ACTIVE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The plugin was imported and its <code class="docutils literal notranslate"><span class="pre">setup()</span></code> function was called successfully.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.pluginloader.Status.DISABLED_BY_SETTINGS">
+<code class="sig-name descname">DISABLED_BY_SETTINGS</code><a class="headerlink" href="#porcupine.pluginloader.Status.DISABLED_BY_SETTINGS" title="Permalink to this definition">¶</a></dt>
+<dd><p>The plugin wasn’t loaded because it’s in the <code class="docutils literal notranslate"><span class="pre">disabled_plugins</span></code>
+setting. See <a class="reference internal" href="settings.html#module-porcupine.settings" title="porcupine.settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.pluginloader.Status.DISABLED_ON_COMMAND_LINE">
+<code class="sig-name descname">DISABLED_ON_COMMAND_LINE</code><a class="headerlink" href="#porcupine.pluginloader.Status.DISABLED_ON_COMMAND_LINE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The plugin wasn’t loaded because it was listed in a
+<code class="docutils literal notranslate"><span class="pre">--without-plugins</span></code> argument given to Porcupine.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.pluginloader.Status.IMPORT_FAILED">
+<code class="sig-name descname">IMPORT_FAILED</code><a class="headerlink" href="#porcupine.pluginloader.Status.IMPORT_FAILED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Importing the plugin raised an error.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.pluginloader.Status.SETUP_FAILED">
+<code class="sig-name descname">SETUP_FAILED</code><a class="headerlink" href="#porcupine.pluginloader.Status.SETUP_FAILED" title="Permalink to this definition">¶</a></dt>
+<dd><p>The plugin was imported successfully, but calling its <code class="docutils literal notranslate"><span class="pre">setup()</span></code>
+function raised an error.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.pluginloader.Status.CIRCULAR_DEPENDENCY_ERROR">
+<code class="sig-name descname">CIRCULAR_DEPENDENCY_ERROR</code><a class="headerlink" href="#porcupine.pluginloader.Status.CIRCULAR_DEPENDENCY_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plugins with this status were imported, but their <code class="docutils literal notranslate"><span class="pre">setup_before</span></code> and
+<code class="docutils literal notranslate"><span class="pre">setup_after</span></code> lists make it impossible to determine the correct order
+for calling their <code class="docutils literal notranslate"><span class="pre">setup()</span></code> function. For example, if plugin <em>A</em>
+should be set up before <em>B</em>, <em>B</em> should be set up before <em>C</em> and <em>C</em>
+should be set up before <em>A</em>, then <em>A</em>, <em>B</em> and <em>C</em> will all fail with
+<code class="docutils literal notranslate"><span class="pre">CIRCULAR_DEPENDENCY_ERROR</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="porcupine.pluginloader.PluginInfo">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">PluginInfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">came_with_porcupine</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span></em>, <em class="sig-param"><span class="n">status</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.Status" title="porcupine.pluginloader.Status">porcupine.pluginloader.Status</a></span></em>, <em class="sig-param"><span class="n">module</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">setup_before</span><span class="p">:</span> <span class="n">Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">setup_after</span><span class="p">:</span> <span class="n">Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#PluginInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.PluginInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#module-dataclasses" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataclass</span></code></a> represents a plugin.</p>
+<p>It’s usually better to use <code class="docutils literal notranslate"><span class="pre">info.setup_before</span></code>
+instead of accessing <code class="docutils literal notranslate"><span class="pre">info.module.setup_before</span></code> directly.
+Not all plugins define a <code class="docutils literal notranslate"><span class="pre">setup_before</span></code> variable, and if it’s not present,
+then <code class="docutils literal notranslate"><span class="pre">info.setup_before</span></code> is an empty set.
+This also applies to <code class="docutils literal notranslate"><span class="pre">setup_after</span></code>.</p>
+<p>The value of <em>error</em> depends on <em>status</em>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <em>status</em> is <code class="docutils literal notranslate"><span class="pre">LOADING</span></code>, <code class="docutils literal notranslate"><span class="pre">ACTIVE</span></code>, <code class="docutils literal notranslate"><span class="pre">DISABLED_BY_SETTINGS</span></code> or
+<code class="docutils literal notranslate"><span class="pre">DISABLED_ON_COMMAND_LINE</span></code>, then <em>error</em> is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p>If <em>status</em> is <code class="docutils literal notranslate"><span class="pre">IMPORT_FAILED</span></code> or <code class="docutils literal notranslate"><span class="pre">SETUP_FAILED</span></code>, then <em>error</em>
+is a Python error message, starting with
+<code class="docutils literal notranslate"><span class="pre">Traceback</span> <span class="pre">(most</span> <span class="pre">recent</span> <span class="pre">call</span> <span class="pre">last):</span></code>.</p></li>
+<li><p>If <em>status</em> is <code class="docutils literal notranslate"><span class="pre">CIRCULAR_DEPENDENCY_ERROR</span></code>, then <em>error</em> is a
+user-readable one-line message.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.pluginloader.plugin_infos">
+<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">plugin_infos</code><em class="property">: Sequence<span class="p">[</span>PluginInfo<span class="p">]</span></em><a class="headerlink" href="#porcupine.pluginloader.plugin_infos" title="Permalink to this definition">¶</a></dt>
+<dd><p>This contains infos for all the plugins that the plugin loader knows about,
+including plugins that failed to load and disabled plugins.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.pluginloader.load">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plugin_names</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shuffle</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/pluginloader.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">shuffle</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">disabled_on_command_line</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/pluginloader.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load plugins.</p>
 <p>The plugins are always ordered using their <code class="docutils literal notranslate"><span class="pre">setup_before</span></code> and
 <code class="docutils literal notranslate"><span class="pre">setup_after</span></code> lists. The <em>shuffle</em> argument determines what is
@@ -65,19 +146,9 @@ to each other. By default, they are sorted alphabetically, so
 things like menu items are always in the same order. Setting
 <code class="docutils literal notranslate"><span class="pre">shuffle=True</span></code> means that a random order is used instead; this is
 useful for making sure that the plugins don’t rely on the sorting.</p>
-<p>Any exceptions from the plugins are caught and logged, so there’s no
-need to wrap calls to this function in <code class="docutils literal notranslate"><span class="pre">try,except</span></code>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="porcupine.pluginloader.get_loaded_plugins">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">get_loaded_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#get_loaded_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.get_loaded_plugins" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of plugin names that have been loaded successfully.</p>
-<p>This is useful for writing plugins that need to start a new Porcupine
-process and load the same plugins in the new process. See
-<a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/poppingtabs.py">porcupine/plugins/poppingtabs.py</a> for an example.</p>
-<p>The returned list is in loading order, and mutating the returned list
-doesn’t break anything.</p>
+<p>Plugins specified as <em>disabled_on_command_line</em> won’t be loaded.</p>
+<p>Exceptions are caught and logged, so there’s no need to wrap calls to this
+function in <code class="docutils literal notranslate"><span class="pre">try,except</span></code>.</p>
 </dd></dl>
 
 </div>
@@ -104,7 +175,7 @@ doesn’t break anything.</p>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader &#8212; Porcupine API 0.75.1-git-a1d5547 documentation</title>
+    <title>porcupine.pluginloader &#8212; Porcupine API 0.76.1-git-e8190d3 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,35 +37,115 @@
 <span class="c1"># plugins using Porcupine, so Porcupine must run if the plugins are</span>
 <span class="c1"># broken</span>
 
-<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">importlib.machinery</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">import</span> <span class="nn">toposort</span>     <span class="c1"># type: ignore</span>
 
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">menubar</span><span class="p">,</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">porcupine.plugins</span> <span class="kn">import</span> <span class="n">__path__</span> <span class="k">as</span> <span class="n">plugin_paths</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="find_plugins"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.find_plugins">[docs]</a><span class="k">def</span> <span class="nf">find_plugins</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Return names of plugins that can be loaded.</span>
+<div class="viewcode-block" id="Status"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.Status">[docs]</a><span class="k">class</span> <span class="nc">Status</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This :mod:`Enum &lt;enum&gt;` represents the status of the plugin in the</span>
+<span class="sd">    currently running Porcupine process.</span>
 
-<span class="sd">    Note that loading some of the returned plugins may fail.</span>
+<span class="sd">    .. data:: LOADING</span>
+
+<span class="sd">        The :func:`load` function is currently running, and it doesn&#39;t know yet</span>
+<span class="sd">        what the final status of the plugin will be.</span>
+
+<span class="sd">    .. data:: ACTIVE</span>
+
+<span class="sd">        The plugin was imported and its ``setup()`` function was called successfully.</span>
+
+<span class="sd">    .. data:: DISABLED_BY_SETTINGS</span>
+
+<span class="sd">        The plugin wasn&#39;t loaded because it&#39;s in the ``disabled_plugins``</span>
+<span class="sd">        setting. See :mod:`porcupine.settings`.</span>
+
+<span class="sd">    .. data:: DISABLED_ON_COMMAND_LINE</span>
+
+<span class="sd">        The plugin wasn&#39;t loaded because it was listed in a</span>
+<span class="sd">        ``--without-plugins`` argument given to Porcupine.</span>
+
+<span class="sd">    .. data:: IMPORT_FAILED</span>
+
+<span class="sd">        Importing the plugin raised an error.</span>
+
+<span class="sd">    .. data:: SETUP_FAILED</span>
+
+<span class="sd">        The plugin was imported successfully, but calling its ``setup()``</span>
+<span class="sd">        function raised an error.</span>
+
+<span class="sd">    .. data:: CIRCULAR_DEPENDENCY_ERROR</span>
+
+<span class="sd">        Plugins with this status were imported, but their ``setup_before`` and</span>
+<span class="sd">        ``setup_after`` lists make it impossible to determine the correct order</span>
+<span class="sd">        for calling their ``setup()`` function. For example, if plugin *A*</span>
+<span class="sd">        should be set up before *B*, *B* should be set up before *C* and *C*</span>
+<span class="sd">        should be set up before *A*, then *A*, *B* and *C* will all fail with</span>
+<span class="sd">        ``CIRCULAR_DEPENDENCY_ERROR``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="n">name</span> <span class="k">for</span> <span class="n">finder</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_pkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">(</span><span class="n">plugin_paths</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
-    <span class="p">}</span></div>
+    <span class="n">LOADING</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>    <span class="c1">#: bla</span>
+    <span class="n">ACTIVE</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>    <span class="c1">#: bla</span>
+    <span class="n">DISABLED_BY_SETTINGS</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>    <span class="c1">#: bla</span>
+    <span class="n">DISABLED_ON_COMMAND_LINE</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>    <span class="c1">#: bla</span>
+    <span class="n">IMPORT_FAILED</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>    <span class="c1">#: bla</span>
+    <span class="n">SETUP_FAILED</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>    <span class="c1">#: bla</span>
+    <span class="n">CIRCULAR_DEPENDENCY_ERROR</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>    <span class="c1">#: bla</span></div>
 
 
-<span class="n">_loaded_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="PluginInfo"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.PluginInfo">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">PluginInfo</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This :mod:`dataclass &lt;dataclasses&gt;` represents a plugin.</span>
+
+<span class="sd">    It&#39;s usually better to use ``info.setup_before``</span>
+<span class="sd">    instead of accessing ``info.module.setup_before`` directly.</span>
+<span class="sd">    Not all plugins define a ``setup_before`` variable, and if it&#39;s not present,</span>
+<span class="sd">    then ``info.setup_before`` is an empty set.</span>
+<span class="sd">    This also applies to ``setup_after``.</span>
+
+<span class="sd">    The value of *error* depends on *status*:</span>
+
+<span class="sd">        * If *status* is ``LOADING``, ``ACTIVE``, ``DISABLED_BY_SETTINGS`` or</span>
+<span class="sd">          ``DISABLED_ON_COMMAND_LINE``, then *error* is ``None``.</span>
+<span class="sd">        * If *status* is ``IMPORT_FAILED`` or ``SETUP_FAILED``, then *error*</span>
+<span class="sd">          is a Python error message, starting with</span>
+<span class="sd">          ``Traceback (most recent call last):``.</span>
+<span class="sd">        * If *status* is ``CIRCULAR_DEPENDENCY_ERROR``, then *error* is a</span>
+<span class="sd">          user-readable one-line message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">came_with_porcupine</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status</span>
+    <span class="n">module</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="n">setup_before</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">setup_after</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">plugin_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="c1"># TODO: document this</span>
+<span class="n">_mutable_plugin_infos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">plugin_infos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mutable_plugin_infos</span>  <span class="c1"># changing content is mypy error</span>
+
+
+<span class="k">def</span> <span class="nf">_did_plugin_come_with_porcupine</span><span class="p">(</span><span class="n">finder</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">finder</span><span class="p">,</span> <span class="n">importlib</span><span class="o">.</span><span class="n">machinery</span><span class="o">.</span><span class="n">FileFinder</span><span class="p">)</span> <span class="ow">and</span> <span class="n">finder</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">plugin_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">disabled_on_command_line</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load plugins.</span>
 
 <span class="sd">    The plugins are always ordered using their ``setup_before`` and</span>
@@ -76,45 +156,63 @@
 <span class="sd">    ``shuffle=True`` means that a random order is used instead; this is</span>
 <span class="sd">    useful for making sure that the plugins don&#39;t rely on the sorting.</span>
 
-<span class="sd">    Any exceptions from the plugins are caught and logged, so there&#39;s no</span>
-<span class="sd">    need to wrap calls to this function in ``try,except``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="ow">not</span> <span class="n">_loaded_names</span><span class="p">,</span> <span class="s2">&quot;cannot load() twice&quot;</span>
+<span class="sd">    Plugins specified as *disabled_on_command_line* won&#39;t be loaded.</span>
 
-    <span class="n">plugin_infos</span> <span class="o">=</span> <span class="p">{}</span>    <span class="c1"># {name: (setup_before, setup_after, setup_func)}</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">plugin_names</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;trying to import plugin: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<span class="sd">    Exceptions are caught and logged, so there&#39;s no need to wrap calls to this</span>
+<span class="sd">    function in ``try,except``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">_mutable_plugin_infos</span><span class="p">,</span> <span class="s2">&quot;cannot load() twice&quot;</span>
+    <span class="n">_mutable_plugin_infos</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="n">PluginInfo</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">came_with_porcupine</span><span class="o">=</span><span class="n">_did_plugin_come_with_porcupine</span><span class="p">(</span><span class="n">finder</span><span class="p">),</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span><span class="p">,</span>
+            <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">setup_before</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span>
+            <span class="n">setup_after</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span>
+            <span class="n">error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">finder</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_pkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">(</span><span class="n">plugin_paths</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">imported_infos</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">_mutable_plugin_infos</span><span class="p">:</span>
+        <span class="c1"># If it&#39;s disabled in settings and on command line, then status is set</span>
+        <span class="c1"># to DISABLED_BY_SETTINGS. This makes more sense for the user of the</span>
+        <span class="c1"># plugin manager dialog.</span>
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;disabled_plugins&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">DISABLED_BY_SETTINGS</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">disabled_on_command_line</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">DISABLED_ON_COMMAND_LINE</span>
+            <span class="k">continue</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to import porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">module</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span>
-                <span class="s1">&#39;porcupine.plugins.&#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
-            <span class="n">setup_before</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_before&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-            <span class="n">setup_after</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_after&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-            <span class="n">setup</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">setup</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">setup_before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_before&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">setup_after</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_after&#39;</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;problem with importing </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;can&#39;t import porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">IMPORT_FAILED</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
             <span class="k">continue</span>
 
         <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;imported </span><span class="si">%s</span><span class="s2"> in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;imported porcupine.plugins.</span><span class="si">%s</span><span class="s2"> in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">imported_infos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
-        <span class="c1"># now we know that the plugin is ok, we can add its stuff to</span>
-        <span class="c1"># dependencies and setup_funcs</span>
-        <span class="n">plugin_infos</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">setup_before</span><span class="p">,</span> <span class="n">setup_after</span><span class="p">,</span> <span class="n">setup</span><span class="p">)</span>
-
-    <span class="c1"># setup_before and setup_after may contain names of plugins that are</span>
-    <span class="c1"># not installed because they are for controlling the loading order,</span>
-    <span class="c1"># not for requiring dependencies</span>
-
-    <span class="n">dependencies</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">plugin_infos</span>
-    <span class="p">}</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">setup_before</span><span class="p">,</span> <span class="n">setup_after</span><span class="p">,</span> <span class="n">setup</span><span class="p">)</span> <span class="ow">in</span> <span class="n">plugin_infos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">dependencies</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">setup_after</span> <span class="o">&amp;</span> <span class="n">plugin_infos</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">for</span> <span class="n">reverse_dependency</span> <span class="ow">in</span> <span class="p">(</span><span class="n">setup_before</span> <span class="o">&amp;</span> <span class="n">plugin_infos</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">dependencies</span><span class="p">[</span><span class="n">reverse_dependency</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="c1"># setup_before and setup_after may contain names of plugins that are not</span>
+    <span class="c1"># installed because they are for controlling the loading order. That&#39;s fine</span>
+    <span class="c1"># because toposort ignores missing things.</span>
+    <span class="n">dependencies</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">imported_infos</span><span class="p">:</span>
+        <span class="n">dependencies</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">setup_after</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">reverse_dependency</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">setup_before</span><span class="p">:</span>
+            <span class="n">dependencies</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">reverse_dependency</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="c1"># the toposort will partially work even if there&#39;s a circular</span>
     <span class="c1"># dependency, the CircularDependencyError is raised after doing</span>
@@ -129,36 +227,36 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">names</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
             <span class="n">loading_order</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">loadable_infos</span> <span class="o">=</span> <span class="n">imported_infos</span>
+
     <span class="k">except</span> <span class="n">toposort</span><span class="o">.</span><span class="n">CircularDependencyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">parts</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> depends on </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;circular dependency: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;circular dependency&quot;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">loading_order</span><span class="p">:</span>
-        <span class="o">*</span><span class="n">junk</span><span class="p">,</span> <span class="n">setup</span> <span class="o">=</span> <span class="n">plugin_infos</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">imported_infos</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">loading_order</span><span class="p">:</span>
+                <span class="n">loadable_infos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">CIRCULAR_DEPENDENCY_ERROR</span>
+                <span class="n">parts</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> depends on </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Circular dependency error: </span><span class="si">{</span><span class="n">parts</span><span class="si">}</span><span class="s2">&quot;</span>
 
+    <span class="n">loadable_infos</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">info</span><span class="p">:</span> <span class="n">loading_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">loadable_infos</span><span class="p">:</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">setup</span><span class="p">()</span>
-            <span class="n">_loaded_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.setup() doesn&#39;t work&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.setup() doesn&#39;t work&quot;</span><span class="p">)</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">SETUP_FAILED</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span>
 
         <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span></div>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="get_loaded_plugins"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.get_loaded_plugins">[docs]</a><span class="k">def</span> <span class="nf">get_loaded_plugins</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Return a list of plugin names that have been loaded successfully.</span>
-
-<span class="sd">    This is useful for writing plugins that need to start a new Porcupine</span>
-<span class="sd">    process and load the same plugins in the new process. See</span>
-<span class="sd">    :source:`porcupine/plugins/poppingtabs.py` for an example.</span>
-
-<span class="sd">    The returned list is in loading order, and mutating the returned list</span>
-<span class="sd">    doesn&#39;t break anything.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: test the mutating thing</span>
-    <span class="k">return</span> <span class="n">_loaded_names</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">update_keyboard_shortcuts</span><span class="p">()</span></div>
 </pre></div>
 
           </div>
@@ -182,7 +280,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> — Add stuff to the menubar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
