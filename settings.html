@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.76.4-git-b2437c4 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -277,7 +277,7 @@ Like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>,-----------------------------------------------------------.
 | Porcupine Settings                                        |
 |-----------------------------------------------------------|
-|  / General \   / File Types \                             |
+|  / General \   / Config Files \                           |
 |_/           \_____________________________________________|
 |                           :                           :   |
 |                           :                           :col|
@@ -352,6 +352,13 @@ Usually you should pass at least <code class="docutils literal notranslate"><spa
 If it’s a valid integer between <code class="docutils literal notranslate"><span class="pre">spinbox['from']</span></code> and <code class="docutils literal notranslate"><span class="pre">spinbox['to']</span></code> (inclusive),
 then the option given by <em>option_name</em> is set to the <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.
 Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.settings.add_config_file_button">
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_config_file_button</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.8)">pathlib.Path</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Button<a class="reference internal" href="_modules/porcupine/settings.html#add_config_file_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_config_file_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a button that opens a file in Porcupine when it’s clicked.
+The button doesn’t have any text next to it.</p>
 </dd></dl>
 
 </div>
@@ -534,7 +541,7 @@ but they do things with the <a class="reference internal" href="#porcupine.setti
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

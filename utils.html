@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.76.4-git-b2437c4 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -55,8 +55,97 @@ starting a new command prompt from Python.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="tkinter-utilities">
-<h2>Tkinter Utilities<a class="headerlink" href="#tkinter-utilities" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="events-with-data">
+<h2>Events with Data<a class="headerlink" href="#events-with-data" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="porcupine.utils.bind_with_data">
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_with_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.BaseWidget</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#porcupine.utils.EventWithData" title="porcupine.utils.EventWithData">porcupine.utils.EventWithData</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">add</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="reference internal" href="_modules/porcupine/utils.html#bind_with_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_with_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <code class="docutils literal notranslate"><span class="pre">widget.bind(sequence,</span> <span class="pre">callback)</span></code>, but supports the <code class="docutils literal notranslate"><span class="pre">data</span></code>
+argument of <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>. Note that the callback takes an argument
+of type <a class="reference internal" href="#porcupine.utils.EventWithData" title="porcupine.utils.EventWithData"><code class="xref py py-class docutils literal notranslate"><span class="pre">EventWithData</span></code></a> rather than a usual <code class="docutils literal notranslate"><span class="pre">tkinter.Event</span></code>.</p>
+<p>Here’s an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="k">def</span> <span class="nf">handle_event</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">EventWithData</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span>
+
+<span class="n">utils</span><span class="o">.</span><span class="n">bind_with_data</span><span class="p">(</span><span class="n">some_widget</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;Thingy&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">handle_event</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># this prints &#39;wut wut&#39;</span>
+<span class="n">some_widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Thingy&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="s1">&#39;wut wut&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that everything is a string in Tcl, so tkinter <code class="docutils literal notranslate"><span class="pre">str()</span></code>’s the data.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="porcupine.utils.EventWithData">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">EventWithData</code><a class="reference internal" href="_modules/porcupine/utils.html#EventWithData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.EventWithData" title="Permalink to this definition">¶</a></dt>
+<dd><p>A subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Event</span></code> for use with <a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a>.</p>
+<dl class="py method">
+<dt id="porcupine.utils.EventWithData.data_class">
+<code class="sig-name descname">data_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span><span class="p">:</span> <span class="n">Type<span class="p">[</span>_T<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; _T<a class="reference internal" href="_modules/porcupine/utils.html#EventWithData.data_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.EventWithData.data_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>If a dataclass instance of type <code class="docutils literal notranslate"><span class="pre">T</span></code> was passed as <code class="docutils literal notranslate"><span class="pre">data</span></code> to
+<code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>, then this returns a copy of it. Otherwise this
+raises an error.</p>
+<p><code class="docutils literal notranslate"><span class="pre">T</span></code> must be a dataclass that inherits from <a class="reference internal" href="#porcupine.utils.EventDataclass" title="porcupine.utils.EventDataclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">EventDataclass</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="porcupine.utils.EventWithData.data_string">
+<code class="sig-name descname">data_string</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><a class="headerlink" href="#porcupine.utils.EventWithData.data_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>If a string was passed to the <code class="docutils literal notranslate"><span class="pre">data</span></code> argument of <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>,
+then this is that string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="porcupine.utils.EventWithData.data_widget">
+<code class="sig-name descname">data_widget</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tkinter.Misc<a class="reference internal" href="_modules/porcupine/utils.html#EventWithData.data_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.EventWithData.data_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>If a widget was passed as <code class="docutils literal notranslate"><span class="pre">data</span></code> to <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>, then this
+returns that widget. Otherwise this raises an error.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">event.widget</span></code> is the widget whose <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>
+method was used while <code class="docutils literal notranslate"><span class="pre">event.data_widget()</span></code> is the <code class="docutils literal notranslate"><span class="pre">data</span></code> argument
+of <code class="docutils literal notranslate"><span class="pre">widget.event_generate(...,</span> <span class="pre">data=the_data_widget)</span></code>. Usually these
+are different widgets; if they are known to be the same widget, then
+you probably don’t need <a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a> at all.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="porcupine.utils.EventDataclass">
+<em class="property">class </em><code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">EventDataclass</code><a class="reference internal" href="_modules/porcupine/utils.html#EventDataclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.EventDataclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherit from this class when creating a dataclass for
+<a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a>.</p>
+<p>All values should be JSON safe or data classes containing JSON safe values.
+Nested dataclasses don’t need to inherit from EventDataclass. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">num</span><span class="p">:</span> <span class="nb">int</span>
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Bar</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">EventDataclass</span><span class="p">):</span>
+    <span class="n">foos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Foo</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">handle_event</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">EventWithData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data_class</span><span class="p">(</span><span class="n">Bar</span><span class="p">)</span><span class="o">.</span><span class="n">foos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+<span class="n">utils</span><span class="o">.</span><span class="n">bind_with_data</span><span class="p">(</span><span class="n">some_widget</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;Thingy&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">handle_event</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="n">foos</span> <span class="o">=</span> <span class="p">[</span><span class="n">Foo</span><span class="p">(</span><span class="s1">&#39;ab&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span> <span class="n">Foo</span><span class="p">(</span><span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="mi">456</span><span class="p">)]</span>
+<span class="n">some_widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Thingy&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Bar</span><span class="p">(</span><span class="n">foos</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="other-tkinter-utilities">
+<h2>Other Tkinter Utilities<a class="headerlink" href="#other-tkinter-utilities" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="porcupine.utils.set_tooltip">
 <code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">set_tooltip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Widget</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#set_tooltip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.set_tooltip" title="Permalink to this definition">¶</a></dt>
@@ -75,7 +164,7 @@ anything from it in my editor.</p>
 
 <dl class="py function">
 <dt id="porcupine.utils.bind_mouse_wheel">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_mouse_wheel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget_or_class_name</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>tkinter.Misc<span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>typing_extensions.Literal<span class="p">[</span>up<span class="p">, </span>down<span class="p">]</span><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">prefixes</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">add</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#bind_mouse_wheel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_mouse_wheel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_mouse_wheel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget_or_class_name</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>tkinter.Misc<span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[typing_extensions.Literal[up, down]], None]</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">prefixes</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">add</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#bind_mouse_wheel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_mouse_wheel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bind mouse wheel events to callback.</p>
 <p>The callback will be called like <code class="docutils literal notranslate"><span class="pre">callback(direction)</span></code> where
 <em>direction</em> is <code class="docutils literal notranslate"><span class="pre">'up'</span></code> or <code class="docutils literal notranslate"><span class="pre">'down'</span></code>. The <em>prefixes</em> argument can
@@ -113,29 +202,8 @@ also works on X11.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.utils.bind_with_data">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">bind_with_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.BaseWidget</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>porcupine.utils.EventWithData<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">add</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="reference internal" href="_modules/porcupine/utils.html#bind_with_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.bind_with_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Like <code class="docutils literal notranslate"><span class="pre">widget.bind(sequence,</span> <span class="pre">callback)</span></code>, but supports the <code class="docutils literal notranslate"><span class="pre">data</span></code>
-argument of <code class="docutils literal notranslate"><span class="pre">event_generate()</span></code>. Note that the callback takes an argument
-of type <code class="xref py py-class docutils literal notranslate"><span class="pre">EventWithData</span></code> rather than a usual <code class="docutils literal notranslate"><span class="pre">tkinter.Event</span></code>.</p>
-<p>Here’s an example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">utils</span>
-
-<span class="k">def</span> <span class="nf">handle_event</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">EventWithData</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span>
-
-<span class="n">utils</span><span class="o">.</span><span class="n">bind_with_data</span><span class="p">(</span><span class="n">some_widget</span><span class="p">,</span> <span class="s1">&#39;&lt;&lt;Thingy&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">handle_event</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># this prints &#39;wut wut&#39;</span>
-<span class="n">some_widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Thingy&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="s1">&#39;wut wut&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Note that everything is a string in Tcl, so tkinter <code class="docutils literal notranslate"><span class="pre">str()</span></code>’s the data.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="porcupine.utils.run_in_thread">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">run_in_thread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocking_function</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">, </span>Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span>T<span class="p">]</span><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#run_in_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.run_in_thread" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">run_in_thread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocking_function</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable[[bool, Union[str, T]], None]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#run_in_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.run_in_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run <code class="docutils literal notranslate"><span class="pre">blocking_function()</span></code> in another thread.</p>
 <p>If the <em>blocking_function</em> raises an error,
 <code class="docutils literal notranslate"><span class="pre">done_callback(False,</span> <span class="pre">traceback)</span></code> will be called where <em>traceback</em>
@@ -315,7 +383,7 @@ the message in a <code class="docutils literal notranslate"><span class="pre">tk
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

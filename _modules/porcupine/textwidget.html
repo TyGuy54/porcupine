@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget &#8212; Porcupine API 0.76.4-git-b2437c4 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.textwidget &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -36,7 +36,7 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkfont</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">overload</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">import</span> <span class="nn">pygments.styles</span>          <span class="c1"># type: ignore</span>
@@ -520,8 +520,14 @@
         <span class="n">utils</span><span class="o">.</span><span class="n">forward_event</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">,</span> <span class="n">original_text_widget</span><span class="p">)</span></div>
 
 
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># noqa</span>
+
+
 <div class="viewcode-block" id="use_pygments_theme"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.use_pygments_theme">[docs]</a><span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span>
-    <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span>
+    <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span>
     <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -530,9 +536,9 @@
 <span class="sd">    Porcupine does that automatically for the ``textwidget`` of each</span>
 <span class="sd">    :class:`~porcupine.tabs.FileTab`.</span>
 
-<span class="sd">    If the callback is specified, it will be called like</span>
-<span class="sd">    ``callback(foreground_color, background_color)``</span>
-<span class="sd">    instead of configuring the widget.</span>
+<span class="sd">    If you don&#39;t specify a *callback*, then ``widget`` must be a :class:`tkinter.Text` widget.</span>
+<span class="sd">    If you specify a callback, then it will be called like</span>
+<span class="sd">    ``callback(foreground_color, background_color)``, and the type of the widget doesn&#39;t matter.</span>
 
 <span class="sd">    .. seealso::</span>
 <span class="sd">        This function is used in :source:`porcupine/plugins/linenumbers.py`.</span>
@@ -554,6 +560,7 @@
         <span class="c1">#    &#39;#222222&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;???&#39;, &#39;&#39;]</span>
         <span class="n">fg</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">style</span><span class="p">,</span> <span class="s1">&#39;default_style&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">utils</span><span class="o">.</span><span class="n">invert_color</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
             <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;fg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>
             <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;bg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span>
             <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;insertbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>  <span class="c1"># cursor color</span>
@@ -804,7 +811,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

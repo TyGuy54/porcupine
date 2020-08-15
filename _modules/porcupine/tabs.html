@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.tabs &#8212; Porcupine API 0.76.4-git-b2437c4 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.tabs &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -123,8 +123,7 @@
 
         <span class="c1"># These can be bound in a parent widget. This doesn&#39;t use</span>
         <span class="c1"># enable_traversal() because we want more bindings than it</span>
-        <span class="c1"># creates.</span>
-        <span class="c1"># TODO: document self.bindings?</span>
+        <span class="c1"># creates. Undocumented because plugins shouldn&#39;t need this.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">],</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="s1">&#39;&lt;Control-Prior&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_page_updown</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
             <span class="p">(</span><span class="s1">&#39;&lt;Control-Next&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_page_updown</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">)),</span>
@@ -282,7 +281,7 @@
         <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>   <span class="c1"># should be &quot;Slave index n out of bounds&quot;</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
-    <span class="c1"># TODO: test this</span>
+    <span class="c1"># TODO: write tests for this? otoh it&#39;s a feature that I use all the time</span>
 <div class="viewcode-block" id="TabManager.move_selected_tab"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.move_selected_tab">[docs]</a>    <span class="k">def</span> <span class="nf">move_selected_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Try to move the currently selected tab left or right.</span>
 
@@ -794,7 +793,6 @@
     <span class="k">def</span> <span class="nf">on_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>    <span class="c1"># override</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">focus_set</span><span class="p">()</span>
 
-    <span class="c1"># TODO: returning None on errors kinda sucks, maybe a handle_errors kwarg?</span>
 <div class="viewcode-block" id="FileTab.save"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Save the file to the current :attr:`path`.</span>
 
@@ -952,7 +950,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

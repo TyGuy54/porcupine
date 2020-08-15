@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.76.4-git-b2437c4 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.utils &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -275,7 +275,7 @@
     <span class="n">manager</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span></div>
 
 
-<span class="k">class</span> <span class="nc">EventDataclass</span><span class="p">:</span>
+<div class="viewcode-block" id="EventDataclass"><a class="viewcode-back" href="../../utils.html#porcupine.utils.EventDataclass">[docs]</a><span class="k">class</span> <span class="nc">EventDataclass</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inherit from this class when creating a dataclass for</span>
 <span class="sd">    :func:`bind_with_data`.</span>
@@ -308,15 +308,17 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="c1"># str(Foo(a=1, b=2)) --&gt; &#39;Foo{&quot;a&quot;: 1, &quot;b&quot;: 2}&#39;</span>
         <span class="c1"># Content after Foo is JSON parsed in Event.data_class()</span>
-        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 
 
-<span class="c1"># TODO: mention this in docs, useful for mypy</span>
-<span class="k">class</span> <span class="nc">EventWithData</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+<div class="viewcode-block" id="EventWithData"><a class="viewcode-back" href="../../utils.html#porcupine.utils.EventWithData">[docs]</a><span class="k">class</span> <span class="nc">EventWithData</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A subclass of :class:`tkinter.Event` for use with :func:`bind_with_data`.&quot;&quot;&quot;</span>
 
+    <span class="c1">#: If a string was passed to the ``data`` argument of ``event_generate()``,</span>
+    <span class="c1">#: then this is that string.</span>
     <span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span>
 
-    <span class="k">def</span> <span class="nf">data_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">:</span>
+<div class="viewcode-block" id="EventWithData.data_widget"><a class="viewcode-back" href="../../utils.html#porcupine.utils.EventWithData.data_widget">[docs]</a>    <span class="k">def</span> <span class="nf">data_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If a widget was passed as ``data`` to ``event_generate()``, then this</span>
 <span class="sd">        returns that widget. Otherwise this raises an error.</span>
@@ -327,9 +329,9 @@
 <span class="sd">        are different widgets; if they are known to be the same widget, then</span>
 <span class="sd">        you probably don&#39;t need :func:`bind_with_data` at all.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">data_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+<div class="viewcode-block" id="EventWithData.data_class"><a class="viewcode-back" href="../../utils.html#porcupine.utils.EventWithData.data_class">[docs]</a>    <span class="k">def</span> <span class="nf">data_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If a dataclass instance of type ``T`` was passed as ``data`` to</span>
 <span class="sd">        ``event_generate()``, then this returns a copy of it. Otherwise this</span>
@@ -340,12 +342,12 @@
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;{&#39;</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">dict_to_dataclass</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):]))</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;(.*)&gt;&#39;</span><span class="p">,</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">())</span>
         <span class="k">assert</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">%s</span><span class="s1"> data_string=</span><span class="si">%r</span><span class="s1">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">%s</span><span class="s1"> data_string=</span><span class="si">%r</span><span class="s1">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="bind_with_data"><a class="viewcode-back" href="../../utils.html#porcupine.utils.bind_with_data">[docs]</a><span class="k">def</span> <span class="nf">bind_with_data</span><span class="p">(</span>
@@ -379,8 +381,6 @@
     <span class="c1"># TODO: is it possible to do this without a deque?</span>
     <span class="n">event_objects</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span> <span class="n">EventWithData</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">event_objects</span><span class="o">.</span><span class="n">append</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
-    <span class="c1"># TODO: does the above bind get ever unbound so that it doesn&#39;t leak? see</span>
-    <span class="c1">#       tkinter&#39;s unbind method</span>
 
     <span class="k">def</span> <span class="nf">run_the_callback</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">event</span> <span class="o">=</span> <span class="n">event_objects</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
@@ -839,7 +839,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

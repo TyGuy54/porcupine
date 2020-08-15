@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings &#8212; Porcupine API 0.76.4-git-b2437c4 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.settings &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,6 +37,7 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -529,7 +530,7 @@
 <span class="sd">        ,-----------------------------------------------------------.</span>
 <span class="sd">        | Porcupine Settings                                        |</span>
 <span class="sd">        |-----------------------------------------------------------|</span>
-<span class="sd">        |  / General \   / File Types \                             |</span>
+<span class="sd">        |  / General \   / Config Files \                           |</span>
 <span class="sd">        |_/           \_____________________________________________|</span>
 <span class="sd">        |                           :                           :   |</span>
 <span class="sd">        |                           :                           :col|</span>
@@ -667,15 +668,24 @@
     <span class="k">return</span> <span class="n">label</span>
 
 
-<span class="k">def</span> <span class="nf">_edit_filetypes_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_edit_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># porcupine/tabs.py imports this file</span>
     <span class="c1"># these local imports feel so evil xD  MUHAHAHAA!!!</span>
     <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">tabs</span>
 
-    <span class="n">path</span> <span class="o">=</span> <span class="n">dirs</span><span class="o">.</span><span class="n">configdir</span> <span class="o">/</span> <span class="s1">&#39;filetypes.toml&#39;</span>
     <span class="n">manager</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span>
     <span class="n">manager</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
     <span class="n">get_notebook</span><span class="p">()</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">()</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="add_config_file_button"><a class="viewcode-back" href="../../settings.html#porcupine.settings.add_config_file_button">[docs]</a><span class="k">def</span> <span class="nf">add_config_file_button</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add a button that opens a file in Porcupine when it&#39;s clicked.</span>
+<span class="sd">    The button doesn&#39;t have any text next to it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Edit </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">_edit_file</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
+    <span class="n">button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">button</span></div>
 
 
 <span class="k">def</span> <span class="nf">_fill_notebook_with_defaults</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -693,27 +703,21 @@
         <span class="n">general</span><span class="p">,</span> <span class="s1">&#39;default_line_ending&#39;</span><span class="p">,</span> <span class="s2">&quot;Default line ending:&quot;</span><span class="p">,</span>
         <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">ending</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ending</span> <span class="ow">in</span> <span class="n">LineEnding</span><span class="p">])</span>
 
-    <span class="n">filetypes</span> <span class="o">=</span> <span class="n">add_section</span><span class="p">(</span><span class="s1">&#39;File Types&#39;</span><span class="p">)</span>
-    <span class="n">add_label</span><span class="p">(</span><span class="n">filetypes</span><span class="p">,</span> <span class="p">(</span>
-        <span class="s2">&quot;Currently there&#39;s no GUI for changing filetype specific settings, &quot;</span>
-        <span class="s2">&quot;but you can edit it the configuration file.&quot;</span>
-    <span class="p">))</span>
-    <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-        <span class="n">filetypes</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Edit filetypes.toml&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">_edit_filetypes_config</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-    <span class="n">add_label</span><span class="p">(</span><span class="n">filetypes</span><span class="p">,</span> <span class="p">(</span>
-        <span class="s2">&quot;You can use the following option to choose which filetype &quot;</span>
-        <span class="s2">&quot;Porcupine should use when you create a new file in Porcupine. You &quot;</span>
-        <span class="s2">&quot;can change the filetype after creating the file by clicking &quot;</span>
-        <span class="s2">&quot;Filetypes in the menu bar.&quot;</span><span class="p">))</span>
-
     <span class="c1"># filetypes aren&#39;t loaded yet when this is called</span>
-    <span class="k">def</span> <span class="nf">add_filetype_choosing_combobox</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">filetype_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">get_filetype_names</span><span class="p">())</span>
-        <span class="n">add_combobox</span><span class="p">(</span><span class="n">filetypes</span><span class="p">,</span> <span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s2">&quot;Default filetype for new files:&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">filetype_names</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">add_default_filetype_chooser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">add_combobox</span><span class="p">(</span>
+            <span class="n">general</span><span class="p">,</span> <span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s2">&quot;Default filetype for new files:&quot;</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">get_filetype_names</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">casefold</span><span class="p">),</span>
+        <span class="p">)</span>
 
-    <span class="n">filetypes</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="n">add_filetype_choosing_combobox</span><span class="p">)</span>
+    <span class="n">general</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="n">add_default_filetype_chooser</span><span class="p">)</span>
+
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">add_section</span><span class="p">(</span><span class="s1">&#39;Config Files&#39;</span><span class="p">)</span>
+    <span class="n">add_label</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="p">(</span>
+        <span class="s2">&quot;Currently there&#39;s no GUI for changing these settings, but you can edit it the &quot;</span>
+        <span class="s2">&quot;configuration files yourself.&quot;</span>
+    <span class="p">))</span>
+    <span class="n">add_config_file_button</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">dirs</span><span class="o">.</span><span class="n">configdir</span> <span class="o">/</span> <span class="s1">&#39;filetypes.toml&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_init</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -793,7 +797,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

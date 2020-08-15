@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.76.4-git-b2437c4 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -141,7 +141,7 @@ but that doesn’t work right when changing multiple lines.</p>
 The <code class="docutils literal notranslate"><span class="pre">change_list</span></code> is always ordered so that most recent change is
 <code class="docutils literal notranslate"><span class="pre">change_list[-1]</span></code> and the oldest change is <code class="docutils literal notranslate"><span class="pre">change_list[0]</span></code>.</p>
 <p>This boilerplate class is needed instead of a plain <code class="docutils literal notranslate"><span class="pre">List[Change]</span></code>
-because of how <code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.utils.EventDataclass</span></code> works.</p>
+because of how <a class="reference internal" href="utils.html#porcupine.utils.EventDataclass" title="porcupine.utils.EventDataclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.utils.EventDataclass</span></code></a> works.</p>
 </dd></dl>
 
 </div>
@@ -149,14 +149,16 @@ because of how <code class="xref py py-class docutils literal notranslate"><span
 <h2>Other stuff<a class="headerlink" href="#other-stuff" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="porcupine.textwidget.use_pygments_theme">
-<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">use_pygments_theme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/textwidget.html#use_pygments_theme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.use_pygments_theme" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">use_pygments_theme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Misc</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[str, str], None]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/textwidget.html#use_pygments_theme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.use_pygments_theme" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">use_pygments_theme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></span> <span class="o">=</span> <span class="default_value">'...'</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></dt>
 <dd><p>Configure <em>widget</em> to use the colors of the Pygments theme whenever the
 currently selected theme changes (see <a class="reference internal" href="settings.html#module-porcupine.settings" title="porcupine.settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code></a>).
 Porcupine does that automatically for the <code class="docutils literal notranslate"><span class="pre">textwidget</span></code> of each
 <a class="reference internal" href="tabs.html#porcupine.tabs.FileTab" title="porcupine.tabs.FileTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTab</span></code></a>.</p>
-<p>If the callback is specified, it will be called like
-<code class="docutils literal notranslate"><span class="pre">callback(foreground_color,</span> <span class="pre">background_color)</span></code>
-instead of configuring the widget.</p>
+<p>If you don’t specify a <em>callback</em>, then <code class="docutils literal notranslate"><span class="pre">widget</span></code> must be a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widget.
+If you specify a callback, then it will be called like
+<code class="docutils literal notranslate"><span class="pre">callback(foreground_color,</span> <span class="pre">background_color)</span></code>, and the type of the widget doesn’t matter.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>This function is used in <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/linenumbers.py">porcupine/plugins/linenumbers.py</a>.
@@ -282,7 +284,7 @@ You will get a <a class="reference external" href="https://docs.python.org/3/lib
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
