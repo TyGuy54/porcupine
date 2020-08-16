@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs &#8212; Porcupine API 0.76.5-git-69f6f91 documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.77.0+git.7559bfc documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -624,6 +624,8 @@
             <span class="s1">&#39;line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default_line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="p">),</span>
             <span class="n">converter</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">)</span>
 
+        <span class="c1"># filetype guessing must happen before &lt;&lt;PathChanged&gt;&gt; so that</span>
+        <span class="c1"># plugins can override guessed stuff</span>
         <span class="k">if</span> <span class="n">filetype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -724,8 +726,10 @@
         <span class="n">it_changes</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">!=</span> <span class="n">new_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">new_path</span>
         <span class="k">if</span> <span class="n">it_changes</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">)</span>
+            <span class="c1"># filetype guessing must happen before &lt;&lt;PathChanged&gt;&gt; so that</span>
+            <span class="c1"># plugins can override guessed stuff</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_guess_filetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
