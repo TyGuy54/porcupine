@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.77.1+git.7a4b7f5 documentation</title>
+    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.77.2+git.3ef1861 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -185,7 +185,7 @@ This is useful for e.g. <a class="reference external" href="https://github.com/A
 <p>This works better:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">the_widget_that_becomes_a_peer</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">master</span><span class="p">)</span>
 <span class="n">create_peer_widget</span><span class="p">(</span><span class="n">original_text_widget</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
-<span class="n">the_widget_that_becomes_a_peer</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span>
+<span class="n">the_widget_that_becomes_a_peer</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>All widget options of <em>the_widget_that_becomes_a_peer</em> are lost when

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.menubar &#8212; Porcupine API 0.77.1+git.7a4b7f5 documentation</title>
+    <title>porcupine.menubar &#8212; Porcupine API 0.77.2+git.3ef1861 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -82,7 +82,7 @@
     <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
 
-<span class="k">def</span> <span class="nf">_fix_text_widget_bindings</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_fix_text_widget_bindings</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">virtual_event</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_info</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">virtual_event</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">virtual_event</span><span class="p">):</span>
             <span class="c1"># When the keys are pressed, generate the event on the main</span>
@@ -94,7 +94,7 @@
 
 <span class="k">def</span> <span class="nf">_init</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">main_window</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>
-    <span class="n">main_window</span><span class="p">[</span><span class="s1">&#39;menu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">main_window</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">main_window</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">menu</span><span class="o">=</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">main_window</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
     <span class="n">main_window</span><span class="o">.</span><span class="n">bind_class</span><span class="p">(</span><span class="s1">&#39;Text&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;FocusIn&gt;&#39;</span><span class="p">,</span> <span class="n">_fix_text_widget_bindings</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_fill_menus_with_default_stuff</span><span class="p">()</span>
@@ -123,7 +123,7 @@
 <span class="sd">    If *path* is ``None``, then the menubar itself is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">main_window</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>
-    <span class="n">main_menu</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">main_window</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">main_window</span><span class="p">[</span><span class="s1">&#39;menu&#39;</span><span class="p">]))</span>
+    <span class="n">main_menu</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">main_window</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;menu&#39;</span><span class="p">)))</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">main_menu</span>
 
@@ -215,7 +215,7 @@
     <span class="k">return</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_menu_event_handler</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_menu_event_handler</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
     <span class="n">menu</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 

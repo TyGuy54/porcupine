@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils &#8212; Porcupine API 0.77.1+git.7a4b7f5 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.77.2+git.3ef1861 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -50,9 +50,9 @@
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 
-<span class="kn">import</span> <span class="nn">dacite</span>
+<span class="kn">import</span> <span class="nn">dacite</span>    <span class="c1"># type: ignore[import]</span>
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
 <span class="k">else</span><span class="p">:</span>
@@ -208,12 +208,12 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">destroy_tipwindow</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># For some reason, toplevels get also notified of their</span>
         <span class="c1"># childrens&#39; events.</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">:</span>
@@ -221,12 +221,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mousex</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x_root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mousey</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span>
 
@@ -312,8 +312,14 @@
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="EventWithData"><a class="viewcode-back" href="../../utils.html#porcupine.utils.EventWithData">[docs]</a><span class="k">class</span> <span class="nc">EventWithData</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A subclass of :class:`tkinter.Event` for use with :func:`bind_with_data`.&quot;&quot;&quot;</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="n">_Event</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">_Event</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span>
+
+
+<div class="viewcode-block" id="EventWithData"><a class="viewcode-back" href="../../utils.html#porcupine.utils.EventWithData">[docs]</a><span class="k">class</span> <span class="nc">EventWithData</span><span class="p">(</span><span class="n">_Event</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A subclass of :class:`&#39;tkinter.Event[tkinter.Misc]&#39;` for use with :func:`bind_with_data`.&quot;&quot;&quot;</span>
 
     <span class="c1">#: If a string was passed to the ``data`` argument of ``event_generate()``,</span>
     <span class="c1">#: then this is that string.</span>
@@ -359,7 +365,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Like ``widget.bind(sequence, callback)``, but supports the ``data``</span>
 <span class="sd">    argument of ``event_generate()``. Note that the callback takes an argument</span>
-<span class="sd">    of type :class:`EventWithData` rather than a usual ``tkinter.Event``.</span>
+<span class="sd">    of type :class:`EventWithData` rather than a usual ``&#39;tkinter.Event[tkinter.Misc]&#39;``.</span>
 
 <span class="sd">    Here&#39;s an example::</span>
 
@@ -380,7 +386,7 @@
     <span class="c1"># event objects and runs callback(event)</span>
     <span class="c1">#</span>
     <span class="c1"># TODO: is it possible to do this without a deque?</span>
-    <span class="n">event_objects</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span> <span class="n">EventWithData</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+    <span class="n">event_objects</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">,</span> <span class="n">EventWithData</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">event_objects</span><span class="o">.</span><span class="n">append</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">run_the_callback</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -402,7 +408,7 @@
 <span class="c1"># TODO: document this</span>
 <span class="k">def</span> <span class="nf">forward_event</span><span class="p">(</span><span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">from_</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span>
                   <span class="o">*</span><span class="p">,</span> <span class="n">add</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># make the coordinates relative to the &#39;to&#39; widget</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x_root</span> <span class="o">-</span> <span class="n">to</span><span class="o">.</span><span class="n">winfo_rootx</span><span class="p">()</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span> <span class="o">-</span> <span class="n">to</span><span class="o">.</span><span class="n">winfo_rooty</span><span class="p">()</span>
@@ -490,7 +496,7 @@
 <span class="c1"># this is not bind_tab to avoid confusing with tabs.py, as in browser tabs</span>
 <div class="viewcode-block" id="bind_tab_key"><a class="viewcode-back" href="../../utils.html#porcupine.utils.bind_tab_key">[docs]</a><span class="k">def</span> <span class="nf">bind_tab_key</span><span class="p">(</span>
         <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span>
-        <span class="n">on_tab</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">BreakOrNone</span><span class="p">],</span>
+        <span class="n">on_tab</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;tkinter.Event[Any]&#39;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">BreakOrNone</span><span class="p">],</span>
         <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A convenience function for binding Tab and Shift+Tab.</span>
 
@@ -512,7 +518,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># there&#39;s something for this in more_functools, but it&#39;s a big</span>
     <span class="c1"># dependency for something this simple imo</span>
-    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BreakOrNone</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BreakOrNone</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">on_tab</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">shifted</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;x11&#39;</span><span class="p">:</span>
@@ -560,7 +566,7 @@
     <span class="c1"># i needed to cheat and use stackoverflow for the mac stuff :(</span>
     <span class="c1"># http://stackoverflow.com/a/17457843</span>
     <span class="k">if</span> <span class="n">some_widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;x11&#39;</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
 
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">Button-4&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
@@ -568,7 +574,7 @@
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># TODO: test this on OSX</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
 
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">MouseWheel&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span></div>
@@ -598,9 +604,7 @@
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">ttk_fg</span><span class="p">:</span>
             <span class="n">ttk_fg</span> <span class="o">=</span> <span class="n">invert_color</span><span class="p">(</span><span class="n">ttk_bg</span><span class="p">,</span> <span class="n">black_or_white</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">text</span><span class="p">[</span><span class="s1">&#39;foreground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk_fg</span>
-        <span class="n">text</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk_bg</span>
-        <span class="n">text</span><span class="p">[</span><span class="s1">&#39;highlightbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk_bg</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">foreground</span><span class="o">=</span><span class="n">ttk_fg</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">ttk_bg</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="n">ttk_bg</span><span class="p">)</span>
 
     <span class="c1"># even non-ttk widgets can handle &lt;&lt;ThemeChanged&gt;&gt;</span>
     <span class="c1"># TODO: make sure that this works</span>
@@ -610,10 +614,10 @@
     <span class="k">return</span> <span class="n">text</span>
 
 
-<span class="k">try</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
     <span class="n">Spinbox</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Spinbox</span>
-<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-    <span class="c1"># python 3.6 compat thing, written similarly to ttk.Combobox</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># written similarly to ttk.Combobox</span>
     <span class="k">class</span> <span class="nc">Spinbox</span><span class="p">(</span><span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">):</span>   <span class="c1"># type: ignore</span>
 
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>     <span class="c1"># type: ignore</span>
@@ -626,7 +630,10 @@
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;from&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;from_&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>   <span class="c1"># type: ignore</span>
 
-        <span class="n">config</span> <span class="o">=</span> <span class="n">configure</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">configure</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">cget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="errordialog"><a class="viewcode-back" href="../../utils.html#porcupine.utils.errordialog">[docs]</a><span class="k">def</span> <span class="nf">errordialog</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -669,7 +676,7 @@
         <span class="n">text</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">text</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">text</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">monospace_text</span><span class="p">)</span>
-        <span class="n">text</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;disabled&#39;</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;disabled&#39;</span><span class="p">)</span>
         <span class="n">geometry</span> <span class="o">=</span> <span class="s1">&#39;400x300&#39;</span>
 
     <span class="n">button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;OK&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">destroy</span><span class="p">)</span>

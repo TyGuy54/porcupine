@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings &#8212; Porcupine API 0.77.1+git.7a4b7f5 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.77.2+git.3ef1861 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -44,7 +44,7 @@
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">import</span> <span class="nn">pygments.styles</span>   <span class="c1"># type: ignore</span>
 
@@ -387,23 +387,23 @@
         <span class="n">_log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;reading </span><span class="si">{</span><span class="n">_get_json_path</span><span class="p">()</span><span class="si">}</span><span class="s2"> failed&quot;</span><span class="p">)</span>
 
     <span class="n">fixedfont</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TkFixedFont&#39;</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">fixedfont</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="c1"># negative sizes have a special meaning in Tk, and i don&#39;t care much</span>
         <span class="c1"># about it for porcupine, using stupid hard-coded default instead</span>
-        <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">fixedfont</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-    <span class="c1"># fixedfont[&#39;family&#39;] is typically e.g. &#39;Monospace&#39;, that&#39;s not included in</span>
+    <span class="c1"># fixedfont.cget(&#39;family&#39;) is typically e.g. &#39;Monospace&#39;, that&#39;s not included in</span>
     <span class="c1"># tkinter.font.families() because it refers to another font family that is</span>
     <span class="c1"># in tkinter.font.families()</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="o">.</span><span class="n">actual</span><span class="p">(</span><span class="s1">&#39;family&#39;</span><span class="p">))</span>
-    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+    <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">))</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;pygments_style&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">_check_pygments_style</span><span class="p">)</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="s1">&#39;Python&#39;</span><span class="p">)</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;disabled_plugins&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span>
     <span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;default_line_ending&#39;</span><span class="p">,</span> <span class="n">LineEnding</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">),</span> <span class="n">converter</span><span class="o">=</span><span class="n">LineEnding</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">)</span>
 
     <span class="c1"># keep TkFixedFont up to date with settings</span>
-    <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># can&#39;t bind to get_tab_manager() as recommended in docs because tab</span>
         <span class="c1"># manager isn&#39;t ready yet when settings get inited</span>
         <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="o">==</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">():</span>
@@ -484,7 +484,8 @@
     <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">_StrOrInt</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">:</span>
 
-    <span class="n">triangle</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">master</span><span class="p">)</span>
+    <span class="c1"># TODO(typeshed): master attribute</span>
+    <span class="n">triangle</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">master</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
     <span class="n">var</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">var_changed</span><span class="p">(</span><span class="o">*</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -500,9 +501,9 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">triangle</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;triangle&#39;</span><span class="p">)</span>
+            <span class="n">triangle</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;triangle&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">triangle</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_blank_triangle_sized_image</span><span class="p">()</span>
+            <span class="n">triangle</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">_get_blank_triangle_sized_image</span><span class="p">())</span>
             <span class="nb">set</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">from_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">setting_changed</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -512,7 +513,7 @@
     <span class="n">var</span><span class="o">.</span><span class="n">trace_add</span><span class="p">(</span><span class="s1">&#39;write&#39;</span><span class="p">,</span> <span class="n">var_changed</span><span class="p">)</span>
     <span class="n">setting_changed</span><span class="p">()</span>
 
-    <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;textvariable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
+    <span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">textvariable</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">triangle</span>
 
 
@@ -569,7 +570,8 @@
 
 <span class="c1"># Widget is needed for chooser.master and triangle.grid</span>
 <span class="k">def</span> <span class="nf">_grid_widgets</span><span class="p">(</span><span class="n">label_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chooser</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">triangle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">chooser</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">label_text</span><span class="p">)</span>
+    <span class="c1"># TODO(typeshed): master attribute</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">chooser</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">label_text</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
     <span class="n">label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
     <span class="n">chooser</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">label</span><span class="o">.</span><span class="n">grid_info</span><span class="p">()[</span><span class="s1">&#39;row&#39;</span><span class="p">],</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">triangle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -612,17 +614,17 @@
 <span class="sd">    Usually you should pass at least ``values=list_of_strings``.</span>
 
 <span class="sd">    The content of the combobox is checked whenever it changes.</span>
-<span class="sd">    If it&#39;s in ``combobox[&#39;values&#39;]``</span>
+<span class="sd">    If it&#39;s in ``combobox.cget(&#39;values&#39;)``</span>
 <span class="sd">    (given with the ``values=list_of_strings`` keyword argument or changed</span>
 <span class="sd">    later by configuring the returned combobox), then the option given by</span>
 <span class="sd">    *option_name* is set to the content of the combobox. The converter passed</span>
 <span class="sd">    to :func:`add_option` will be used. If the content of the combobox is not</span>
-<span class="sd">    in ``combobox[&#39;values&#39;]``, then |triangle| is shown.</span>
+<span class="sd">    in ``combobox.cget(&#39;values&#39;)``, then |triangle| is shown.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">combo</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="o">**</span><span class="n">combobox_kwargs</span><span class="p">)</span>
     <span class="n">triangle</span> <span class="o">=</span> <span class="n">_create_validation_triangle</span><span class="p">(</span>
         <span class="n">combo</span><span class="p">,</span> <span class="n">option_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">combo</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">])</span>
+        <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">combo</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">))</span>
     <span class="n">_grid_widgets</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="n">triangle</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">combo</span></div>
 
@@ -639,14 +641,14 @@
 <span class="sd">    Usually you should pass at least ``from_=some_integer, to=another_integer``.</span>
 
 <span class="sd">    The content of the spinbox is checked whenever it changes.</span>
-<span class="sd">    If it&#39;s a valid integer between ``spinbox[&#39;from&#39;]`` and ``spinbox[&#39;to&#39;]`` (inclusive),</span>
+<span class="sd">    If it&#39;s a valid integer between ``spinbox.cget(&#39;from&#39;)`` and ``spinbox.cget(&#39;to&#39;)`` (inclusive),</span>
 <span class="sd">    then the option given by *option_name* is set to the :class:`int`.</span>
 <span class="sd">    Otherwise |triangle| is shown.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">spinbox</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">)</span>
     <span class="n">triangle</span> <span class="o">=</span> <span class="n">_create_validation_triangle</span><span class="p">(</span>
         <span class="n">spinbox</span><span class="p">,</span> <span class="n">option_name</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">spinbox</span><span class="p">[</span><span class="s1">&#39;from&#39;</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spinbox</span><span class="p">[</span><span class="s1">&#39;to&#39;</span><span class="p">]))</span>
+        <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">spinbox</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spinbox</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)))</span>
     <span class="n">_grid_widgets</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">spinbox</span><span class="p">,</span> <span class="n">triangle</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">spinbox</span></div>
 
@@ -660,11 +662,7 @@
     <span class="n">label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
     <span class="n">label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">wrap_on_resize</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">event</span><span class="o">.</span><span class="n">width</span> <span class="o">!=</span> <span class="s1">&#39;??&#39;</span>
-        <span class="n">label</span><span class="p">[</span><span class="s1">&#39;wraplength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">width</span>
-
-    <span class="n">section</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Configure&gt;&#39;</span><span class="p">,</span> <span class="n">wrap_on_resize</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">section</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Configure&gt;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">cast</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">wraplength</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">width</span><span class="p">))),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">label</span>
 
 

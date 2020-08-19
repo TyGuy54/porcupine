@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget &#8212; Porcupine API 0.77.1+git.7a4b7f5 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.77.2+git.3ef1861 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -479,7 +479,7 @@
 
 <span class="sd">            the_widget_that_becomes_a_peer = tkinter.Text(master)</span>
 <span class="sd">            create_peer_widget(original_text_widget, the_widget_that_becomes_a_peer)</span>
-<span class="sd">            the_widget_that_becomes_a_peer[&#39;background&#39;] = &#39;red&#39;</span>
+<span class="sd">            the_widget_that_becomes_a_peer.config(background=&#39;red&#39;)</span>
 
 <span class="sd">        All widget options of *the_widget_that_becomes_a_peer* are lost when</span>
 <span class="sd">        this function is called. I tried to make this function preserve the</span>
@@ -561,11 +561,13 @@
         <span class="n">fg</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">style</span><span class="p">,</span> <span class="s1">&#39;default_style&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">utils</span><span class="o">.</span><span class="n">invert_color</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
-            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;fg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>
-            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;bg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span>
-            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;insertbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>  <span class="c1"># cursor color</span>
-            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;selectforeground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span>
-            <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;selectbackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fg</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span>
+                <span class="n">foreground</span><span class="o">=</span><span class="n">fg</span><span class="p">,</span>
+                <span class="n">background</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span>
+                <span class="n">insertbackground</span><span class="o">=</span><span class="n">fg</span><span class="p">,</span>  <span class="c1"># cursor color</span>
+                <span class="n">selectforeground</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span>
+                <span class="n">selectbackground</span><span class="o">=</span><span class="n">fg</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">callback</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span>
 
@@ -615,9 +617,9 @@
         <span class="c1">#</span>
         <span class="c1"># TODO: there&#39;s similar code in overview plugin, clean up</span>
         <span class="n">font</span> <span class="o">=</span> <span class="n">tkfont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TkFixedFont&#39;</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;tabs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indent_size&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">tabs</span><span class="o">=</span><span class="n">font</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indent_size&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_on_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_down</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">_on_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_down</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">,</span>
                    <span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;This runs when the user presses backspace or delete.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_ranges</span><span class="p">(</span><span class="s1">&#39;sel&#39;</span><span class="p">):</span>
@@ -663,7 +665,7 @@
 
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_on_closing_brace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_on_closing_brace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Dedent automatically.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
 
@@ -721,11 +723,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">start</span> <span class="o">!=</span> <span class="n">end</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_redo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_redo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Redo&gt;&gt;&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Paste&gt;&gt;&#39;</span><span class="p">)</span>
 
         <span class="c1"># by default, selected text doesn&#39;t go away when pasting</span>
@@ -739,7 +741,7 @@
 
         <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_select_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_select_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tag_add</span><span class="p">(</span><span class="s1">&#39;sel&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="s1">&#39;break&#39;</span></div>
 </pre></div>
