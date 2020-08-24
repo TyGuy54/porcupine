@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs &#8212; Porcupine API 0.78.0+git.235eb78 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.tabs &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -48,7 +48,7 @@
 <span class="kn">import</span> <span class="nn">pygments.lexer</span>     <span class="c1"># type: ignore</span>
 <span class="kn">import</span> <span class="nn">pygments.lexers</span>    <span class="c1"># type: ignore</span>
 
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">filetypes</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">textwidget</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_state</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">textwidget</span><span class="p">,</span> <span class="n">utils</span>
 
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -541,8 +541,8 @@
 <span class="sd">    .. attribute:: settings</span>
 <span class="sd">        :type: porcupine.settings.Settings</span>
 
-<span class="sd">        This setting object is for settings loaded from :mod:`porcupine.filetypes`,</span>
-<span class="sd">        but they can be changed file-specifically too.</span>
+<span class="sd">        This setting object is for file-specific settings,</span>
+<span class="sd">        such as those loaded by :source:`porcupine/plugins/filetypes.py`.</span>
 <span class="sd">        It contains the following settings by default (but plugins add more</span>
 <span class="sd">        settings with :meth:`~porcupine.settings.Settings.add_option`):</span>
 
@@ -623,14 +623,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
             <span class="s1">&#39;line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default_line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="p">),</span>
             <span class="n">converter</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">)</span>
-
-        <span class="c1"># filetype guessing must happen before &lt;&lt;PathChanged&gt;&gt; so that</span>
-        <span class="c1"># plugins can override guessed stuff</span>
-        <span class="k">if</span> <span class="n">filetype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">filetype_to_settings</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># we need to set width and height to 1 to make sure it&#39;s never too</span>
         <span class="c1"># large for seeing other widgets</span>
@@ -731,27 +723,7 @@
         <span class="k">if</span> <span class="n">it_changes</span><span class="p">:</span>
             <span class="c1"># filetype guessing must happen before &lt;&lt;PathChanged&gt;&gt; so that</span>
             <span class="c1"># plugins can override guessed stuff</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_guess_filetype</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_guess_filetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">filetype</span> <span class="o">=</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">get_filetype_by_name</span><span class="p">(</span>
-                <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default_filetype&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># FIXME: this may read the shebang from the file, but the file</span>
-            <span class="c1">#        might not be saved yet because save_as() sets self.path</span>
-            <span class="c1">#        before saving, and that&#39;s when this runs</span>
-            <span class="n">filetype</span> <span class="o">=</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">guess_filetype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">filetype_to_settings</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">filetype_to_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;applying filetype settings: </span><span class="si">{</span><span class="n">filetype</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filetype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># Ignore stuff used only for guessing the correct filetype</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;filename_patterns&#39;</span><span class="p">,</span> <span class="s1">&#39;shebang_regex&#39;</span><span class="p">}:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">from_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># TODO: plugin</span>
     <span class="k">def</span> <span class="nf">_update_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -837,8 +809,7 @@
 <span class="sd">        cancelled the dialog.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># type ignored because mypy **kwargs support isn&#39;t great</span>
-        <span class="n">path_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span>    <span class="c1"># type: ignore</span>
-            <span class="o">**</span><span class="n">filetypes</span><span class="o">.</span><span class="n">get_filedialog_kwargs</span><span class="p">())</span>
+        <span class="n">path_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="o">**</span><span class="n">_state</span><span class="o">.</span><span class="n">filedialog_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path_string</span><span class="p">:</span>     <span class="c1"># it may be &#39;&#39; because tkinter</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
@@ -916,7 +887,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
@@ -957,7 +927,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

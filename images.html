@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.images — Load images that come with Porcupine &#8212; Porcupine API 0.78.0+git.235eb78 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.images — Load images that come with Porcupine &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -41,6 +41,13 @@ Click that link to view available images on GitHub.</p>
 Porcupine starts. <code class="docutils literal notranslate"><span class="pre">images.get('logo')</span></code> seems to take about 225 milliseconds on
 this system while <code class="docutils literal notranslate"><span class="pre">images.get('logo-200x200')</span></code> returns in about 5
 milliseconds.</p>
+<dl class="py data">
+<dt id="porcupine.images.images_dir">
+<code class="sig-prename descclassname">porcupine.images.</code><code class="sig-name descname">images_dir</code><a class="headerlink" href="#porcupine.images.images_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the directory containing the images.
+You can do <code class="docutils literal notranslate"><span class="pre">images_dir</span> <span class="pre">/</span> <span class="pre">'logo.gif'</span></code>, for example.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt id="porcupine.images.get">
 <code class="sig-prename descclassname">porcupine.images.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.PhotoImage<a class="reference internal" href="_modules/porcupine/images.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.images.get" title="Permalink to this definition">¶</a></dt>
@@ -80,7 +87,6 @@ returned every time.</p>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
@@ -121,7 +127,7 @@ returned every time.</p>
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

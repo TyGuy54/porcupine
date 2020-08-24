@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.menubar &#8212; Porcupine API 0.78.0+git.235eb78 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.menubar &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -48,7 +48,8 @@
 <span class="k">else</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
 
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_run</span><span class="p">,</span> <span class="n">filetypes</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">tabs</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">tabs</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">porcupine._state</span> <span class="kn">import</span> <span class="n">filedialog_kwargs</span><span class="p">,</span> <span class="n">get_main_window</span><span class="p">,</span> <span class="n">get_tab_manager</span><span class="p">,</span> <span class="n">quit</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -78,7 +79,7 @@
 <span class="c1"># before root.mainloop(), then it works, so that has to be done for every</span>
 <span class="c1"># text widget.</span>
 <span class="k">def</span> <span class="nf">_generate_event</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;break&#39;</span><span class="p">]:</span>
-    <span class="n">_run</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
 
@@ -93,9 +94,9 @@
 
 
 <span class="k">def</span> <span class="nf">_init</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">main_window</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>
+    <span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
     <span class="n">main_window</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">menu</span><span class="o">=</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">main_window</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-
+    <span class="n">main_window</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PluginsLoaded&gt;&gt;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">update_keyboard_shortcuts</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">main_window</span><span class="o">.</span><span class="n">bind_class</span><span class="p">(</span><span class="s1">&#39;Text&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;FocusIn&gt;&#39;</span><span class="p">,</span> <span class="n">_fix_text_widget_bindings</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_fill_menus_with_default_stuff</span><span class="p">()</span>
 
@@ -122,7 +123,7 @@
 
 <span class="sd">    If *path* is ``None``, then the menubar itself is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">main_window</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>
+    <span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
     <span class="n">main_menu</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">main_window</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;menu&#39;</span><span class="p">)))</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">main_menu</span>
@@ -231,7 +232,7 @@
 <span class="sd">    This has to be called when menus or keyboard shortcuts have been modified.</span>
 <span class="sd">    It&#39;s called automatically when plugins have been set up.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">main_window</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>
+    <span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">_walk_menu_contents</span><span class="p">():</span>
         <span class="n">event_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;&lt;Menubar:</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&gt;&gt;&#39;</span>
 
@@ -270,7 +271,7 @@
 <span class="sd">            set_enabled_based_on_tab(&quot;Foo/Bar&quot;, (lambda tab: isinstance(tab, tabs.FileTab)))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">on_tab_changed</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">tab</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
         <span class="n">menu</span> <span class="o">=</span> <span class="n">get_menu</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">path</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">_find_item</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -278,7 +279,7 @@
         <span class="n">menu</span><span class="o">.</span><span class="n">entryconfig</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;normal&#39;</span> <span class="k">if</span> <span class="n">callback</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;disabled&#39;</span><span class="p">))</span>
 
     <span class="n">on_tab_changed</span><span class="p">()</span>
-    <span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;NotebookTabChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">on_tab_changed</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;NotebookTabChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">on_tab_changed</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: pluginify?</span>
@@ -290,11 +291,10 @@
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;Edit&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">new_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">(</span><span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()))</span>
+        <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">(</span><span class="n">get_tab_manager</span><span class="p">()))</span>
 
     <span class="k">def</span> <span class="nf">open_files</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">filetypes</span><span class="o">.</span><span class="n">get_filedialog_kwargs</span><span class="p">()</span>
-        <span class="n">paths</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilenames</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">paths</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilenames</span><span class="p">(</span><span class="o">**</span><span class="n">filedialog_kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
         <span class="c1"># tkinter returns &#39;&#39; if the user cancels, and i&#39;m arfaid that python</span>
         <span class="c1"># devs might &quot;fix&quot; a future version to return None</span>
@@ -303,17 +303,17 @@
 
         <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">tab</span> <span class="o">=</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">(),</span> <span class="n">path</span><span class="p">)</span>
+                <span class="n">tab</span> <span class="o">=</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">get_tab_manager</span><span class="p">(),</span> <span class="n">path</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;opening &#39;</span><span class="si">%s</span><span class="s2">&#39; failed&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
                 <span class="n">utils</span><span class="o">.</span><span class="n">errordialog</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;Opening failed!&quot;</span><span class="p">,</span>
                                   <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
                 <span class="k">continue</span>
 
-            <span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+            <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span><span class="n">save_as</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">tab</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">save_as</span><span class="p">:</span>
             <span class="n">tab</span><span class="o">.</span><span class="n">save_as</span><span class="p">()</span>
@@ -321,10 +321,10 @@
             <span class="n">tab</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">close_selected_tab</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">tab</span> <span class="o">=</span> <span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">tab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">can_be_closed</span><span class="p">():</span>
-            <span class="n">_run</span><span class="o">.</span><span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">close_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+            <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">close_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
 
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;New File&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">new_file</span><span class="p">)</span>
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Open&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">open_files</span><span class="p">)</span>
@@ -332,7 +332,7 @@
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Save As&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">save_file</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_separator</span><span class="p">()</span>
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Close&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">close_selected_tab</span><span class="p">)</span>
-    <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Quit&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">_run</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
+    <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Quit&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">quit</span><span class="p">)</span>
 
     <span class="n">set_enabled_based_on_tab</span><span class="p">(</span><span class="s2">&quot;File/Save&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">tab</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">)))</span>
     <span class="n">set_enabled_based_on_tab</span><span class="p">(</span><span class="s2">&quot;File/Save As&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">tab</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">)))</span>
@@ -408,7 +408,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
@@ -449,7 +448,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

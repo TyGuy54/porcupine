@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.78.0+git.235eb78 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -35,15 +35,6 @@
             
   <div class="section" id="module-porcupine.pluginloader">
 <span id="porcupine-pluginloader-the-module-that-loads-plugins-on-startup"></span><h1><a class="reference internal" href="#module-porcupine.pluginloader" title="porcupine.pluginloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code></a> — The module that loads plugins on startup<a class="headerlink" href="#module-porcupine.pluginloader" title="Permalink to this headline">¶</a></h1>
-<p>On startup, Porcupine loads plugins roughly like this (after calling
-<a class="reference internal" href="porcupine.html#porcupine.init" title="porcupine.init"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.init()</span></code></a>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">pluginloader</span>
-<span class="n">pluginloader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-</pre></div>
-</div>
-<p><a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/__main__.py">The real code</a> is a little more complicated
-than that because the behaviour can be changed with command-line arguments, but
-you get the idea.</p>
 <p>In this documentation, a plugin name means no file extension or
 <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.</span></code> prefix, e.g. <code class="docutils literal notranslate"><span class="pre">highlight</span></code> instead of <code class="docutils literal notranslate"><span class="pre">highlight.py</span></code>
 or <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.highlight</span></code>.</p>
@@ -55,8 +46,8 @@ currently running Porcupine process.</p>
 <dl class="py data">
 <dt id="porcupine.pluginloader.Status.LOADING">
 <code class="sig-name descname">LOADING</code><a class="headerlink" href="#porcupine.pluginloader.Status.LOADING" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="#porcupine.pluginloader.load" title="porcupine.pluginloader.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a> function is currently running, and it doesn’t know yet
-what the final status of the plugin will be.</p>
+<dd><p>The plugin hasn’t been set up successfully yet, but no errors
+preventing the setup have occurred.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -130,25 +121,22 @@ user-readable one-line message.</p></li>
 
 <dl class="py data">
 <dt id="porcupine.pluginloader.plugin_infos">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">plugin_infos</code><em class="property">: Sequence<span class="p">[</span>PluginInfo<span class="p">]</span></em><a class="headerlink" href="#porcupine.pluginloader.plugin_infos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">plugin_infos</code><em class="property">: Sequence<span class="p">[</span><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo">PluginInfo</a><span class="p">]</span></em><a class="headerlink" href="#porcupine.pluginloader.plugin_infos" title="Permalink to this definition">¶</a></dt>
 <dd><p>This contains infos for all the plugins that the plugin loader knows about,
 including plugins that failed to load and disabled plugins.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt id="porcupine.pluginloader.load">
-<code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">shuffle</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">disabled_on_command_line</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/pluginloader.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load plugins.</p>
-<p>The plugins are always ordered using their <code class="docutils literal notranslate"><span class="pre">setup_before</span></code> and
-<code class="docutils literal notranslate"><span class="pre">setup_after</span></code> lists. The <em>shuffle</em> argument determines what is
-done when multiple plugins can be loaded in any order with respect
-to each other. By default, they are sorted alphabetically, so
-things like menu items are always in the same order. Setting
-<code class="docutils literal notranslate"><span class="pre">shuffle=True</span></code> means that a random order is used instead; this is
-useful for making sure that the plugins don’t rely on the sorting.</p>
-<p>Plugins specified as <em>disabled_on_command_line</em> won’t be loaded.</p>
-<p>Exceptions are caught and logged, so there’s no need to wrap calls to this
-function in <code class="docutils literal notranslate"><span class="pre">try,except</span></code>.</p>
+<dl class="py virtualevent">
+<dt id="porcupine.pluginloader.PluginsLoaded">
+<em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;PluginsLoaded&gt;&gt;</code><a class="headerlink" href="#porcupine.pluginloader.PluginsLoaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>This virtual event is generated on the main window
+when the <code class="docutils literal notranslate"><span class="pre">setup()</span></code> methods of all plugins have been called.
+Bind to it if you want to run things that must not happen
+until plugins are ready for it.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a></p>
+</div>
 </dd></dl>
 
 </div>
@@ -180,7 +168,6 @@ function in <code class="docutils literal notranslate"><span class="pre">try,exc
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
@@ -221,7 +208,7 @@ function in <code class="docutils literal notranslate"><span class="pre">try,exc
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

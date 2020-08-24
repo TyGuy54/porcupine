@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine._run &#8212; Porcupine API 0.78.0+git.235eb78 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine._state &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -31,7 +31,7 @@
 
           <div class="body" role="main">
             
-  <h1>Source code for porcupine._run</h1><div class="highlight"><pre>
+  <h1>Source code for porcupine._state</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;The main window and tab manager globals are here.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -39,63 +39,40 @@
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span>
 
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_logs</span><span class="p">,</span> <span class="n">filetypes</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">menubar</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">tabs</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">tabs</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># global state makes some things a lot easier</span>
 <span class="n">_root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">_tab_manager</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">TabManager</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">_init_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_parsed_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">filedialog_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <span class="k">def</span> <span class="nf">_log_tkinter_error</span><span class="p">(</span><span class="n">exc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span> <span class="n">val</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">,</span> <span class="n">tb</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in tkinter callback&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">))</span>
 
 
-<span class="c1"># get_main_window() and get_tab_manager() work only if this has been called</span>
-<span class="c1"># TODO: should this function call pluginloader.load()?</span>
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../porcupine.html#porcupine.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get everything ready for running Porcupine.</span>
-
-<span class="sd">    The *verbose_logging* option corresponds to the ``--verbose``</span>
-<span class="sd">    argument. Run ``porcu --help`` for more information about it.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_init_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>   <span class="c1"># not too hacky IMO</span>
-
+<span class="c1"># undocumented on purpose, don&#39;t use in plugins</span>
+<span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">global</span> <span class="n">_root</span>
     <span class="k">global</span> <span class="n">_tab_manager</span>
-    <span class="k">if</span> <span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;cannot init() twice&quot;</span><span class="p">)</span>
+    <span class="k">global</span> <span class="n">_parsed_args</span>
+    <span class="k">assert</span> <span class="n">_root</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_tab_manager</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_parsed_args</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
-    <span class="n">dirs</span><span class="o">.</span><span class="n">makedirs</span><span class="p">()</span>
-    <span class="n">_logs</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">verbose_logging</span><span class="p">)</span>
+    <span class="n">_parsed_args</span> <span class="o">=</span> <span class="n">args</span>
+
     <span class="n">_root</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
     <span class="n">_root</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="s1">&#39;WM_DELETE_WINDOW&#39;</span><span class="p">,</span> <span class="n">quit</span><span class="p">)</span>
-    <span class="c1"># TODO: why ignore comment needed?</span>
+    <span class="c1"># TODO(typeshed): why ignore comment needed?</span>
     <span class="n">_root</span><span class="o">.</span><span class="n">report_callback_exception</span> <span class="o">=</span> <span class="n">_log_tkinter_error</span>  <span class="c1"># type: ignore[assignment,misc]</span>
-    <span class="n">settings</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
-    <span class="n">filetypes</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
 
     <span class="n">_tab_manager</span> <span class="o">=</span> <span class="n">tabs</span><span class="o">.</span><span class="n">TabManager</span><span class="p">(</span><span class="n">_root</span><span class="p">)</span>
     <span class="n">_tab_manager</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">binding</span><span class="p">,</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">_tab_manager</span><span class="o">.</span><span class="n">bindings</span><span class="p">:</span>
         <span class="n">_root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">binding</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">menubar</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span></div>
-
-
-<span class="c1"># TODO: avoid Any typing</span>
-<div class="viewcode-block" id="get_init_kwargs"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">get_init_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Return a dictionary of the keyword arguments that were passed to :func:\</span>
-<span class="sd">`init`.</span>
-
-<span class="sd">    This is useful for invoking :func:`init` again in exactly the same</span>
-<span class="sd">    way.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_init_kwargs</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;init() wasn&#39;t called&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_init_kwargs</span></div>
 
 
 <div class="viewcode-block" id="get_main_window"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_main_window">[docs]</a><span class="k">def</span> <span class="nf">get_main_window</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">:</span>
@@ -113,16 +90,11 @@
     <span class="k">return</span> <span class="n">_tab_manager</span></div>
 
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../porcupine.html#porcupine.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;init() wasn&#39;t called&quot;</span><span class="p">)</span>
-
-    <span class="c1"># the user can change the settings only if we get here, so there&#39;s</span>
-    <span class="c1"># no need to wrap the whole thing in try/with/finally/whatever</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">_root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+<span class="c1"># TODO: document available attributes</span>
+<div class="viewcode-block" id="get_parsed_args"><a class="viewcode-back" href="../../porcupine.html#porcupine.get_parsed_args">[docs]</a><span class="k">def</span> <span class="nf">get_parsed_args</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return Porcupine&#39;s arguments as returned by :func:`argparse.parse_args`.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">_parsed_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">_parsed_args</span></div>
 
 
 <div class="viewcode-block" id="quit"><a class="viewcode-back" href="../../porcupine.html#porcupine.quit">[docs]</a><span class="k">def</span> <span class="nf">quit</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -177,7 +149,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
@@ -218,7 +189,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.78.0+git.235eb78 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -167,7 +167,7 @@ room for moving it or there are no tabs.</p>
 
 <dl class="py method">
 <dt id="porcupine.tabs.TabManager.select">
-<code class="sig-name descname">select</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tab_id</span><span class="p">:</span> <span class="n">Union[None, int, Tab]</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab">porcupine.tabs.Tab</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/tabs.html#TabManager.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.tabs.TabManager.select" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">select</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tab_id</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab">Tab</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab">porcupine.tabs.Tab</a><span class="p">]</span><a class="reference internal" href="_modules/porcupine/tabs.html#TabManager.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.tabs.TabManager.select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select the given tab as if the user clicked it.</p>
 <p>Usually the <code class="docutils literal notranslate"><span class="pre">tab_id</span></code> should be a <a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a> widget. If it is not
 given, this returns the currently selected tab or None if there are no
@@ -186,7 +186,7 @@ are no tabs.</p>
 
 <dl class="py method">
 <dt id="porcupine.tabs.TabManager.tabs">
-<code class="sig-name descname">tabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple[porcupine.tabs.Tab, …]<a class="reference internal" href="_modules/porcupine/tabs.html#TabManager.tabs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.tabs.TabManager.tabs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab">porcupine.tabs.Tab</a><span class="p">, </span><span class="p">…</span><span class="p">]</span><a class="reference internal" href="_modules/porcupine/tabs.html#TabManager.tabs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.tabs.TabManager.tabs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a tuple of tabs in the tab manager.</p>
 <p>This returns a tuple instead of a list for compatibility with
 tkinter.</p>
@@ -368,8 +368,8 @@ the encoding setting in a <a class="reference internal" href="#porcupine.tabs.Fi
 <dl class="py attribute">
 <dt id="porcupine.tabs.FileTab.settings">
 <code class="sig-name descname">settings</code><em class="property">: <a class="reference internal" href="settings.html#porcupine.settings.Settings" title="porcupine.settings.Settings">porcupine.settings.Settings</a></em><a class="headerlink" href="#porcupine.tabs.FileTab.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>This setting object is for settings loaded from <a class="reference internal" href="filetypes.html#module-porcupine.filetypes" title="porcupine.filetypes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code></a>,
-but they can be changed file-specifically too.
+<dd><p>This setting object is for file-specific settings,
+such as those loaded by <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/filetypes.py">porcupine/plugins/filetypes.py</a>.
 It contains the following settings by default (but plugins add more
 settings with <a class="reference internal" href="settings.html#porcupine.settings.Settings.add_option" title="porcupine.settings.Settings.add_option"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_option()</span></code></a>):</p>
 <blockquote>
@@ -508,7 +508,6 @@ cancelled the dialog.</p>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
@@ -549,7 +548,7 @@ cancelled the dialog.</p>
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

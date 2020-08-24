@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader &#8212; Porcupine API 0.78.0+git.235eb78 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.pluginloader &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,6 +37,7 @@
 <span class="c1"># plugins using Porcupine, so Porcupine must run if the plugins are</span>
 <span class="c1"># broken</span>
 
+<span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">importlib.machinery</span>
@@ -49,7 +50,7 @@
 
 <span class="kn">import</span> <span class="nn">toposort</span>     <span class="c1"># type: ignore</span>
 
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">menubar</span><span class="p">,</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">porcupine.plugins</span> <span class="kn">import</span> <span class="n">__path__</span> <span class="k">as</span> <span class="n">plugin_paths</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -62,8 +63,8 @@
 
 <span class="sd">    .. data:: LOADING</span>
 
-<span class="sd">        The :func:`load` function is currently running, and it doesn&#39;t know yet</span>
-<span class="sd">        what the final status of the plugin will be.</span>
+<span class="sd">        The plugin hasn&#39;t been set up successfully yet, but no errors</span>
+<span class="sd">        preventing the setup have occurred.</span>
 
 <span class="sd">    .. data:: ACTIVE</span>
 
@@ -144,23 +145,9 @@
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">finder</span><span class="p">,</span> <span class="n">importlib</span><span class="o">.</span><span class="n">machinery</span><span class="o">.</span><span class="n">FileFinder</span><span class="p">)</span> <span class="ow">and</span> <span class="n">finder</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">plugin_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">disabled_on_command_line</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load plugins.</span>
-
-<span class="sd">    The plugins are always ordered using their ``setup_before`` and</span>
-<span class="sd">    ``setup_after`` lists. The *shuffle* argument determines what is</span>
-<span class="sd">    done when multiple plugins can be loaded in any order with respect</span>
-<span class="sd">    to each other. By default, they are sorted alphabetically, so</span>
-<span class="sd">    things like menu items are always in the same order. Setting</span>
-<span class="sd">    ``shuffle=True`` means that a random order is used instead; this is</span>
-<span class="sd">    useful for making sure that the plugins don&#39;t rely on the sorting.</span>
-
-<span class="sd">    Plugins specified as *disabled_on_command_line* won&#39;t be loaded.</span>
-
-<span class="sd">    Exceptions are caught and logged, so there&#39;s no need to wrap calls to this</span>
-<span class="sd">    function in ``try,except``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="ow">not</span> <span class="n">_mutable_plugin_infos</span><span class="p">,</span> <span class="s2">&quot;cannot load() twice&quot;</span>
+<span class="c1"># undocumented on purpose, don&#39;t use in plugins</span>
+<span class="k">def</span> <span class="nf">import_plugins</span><span class="p">(</span><span class="n">disabled_on_command_line</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">_mutable_plugin_infos</span>
     <span class="n">_mutable_plugin_infos</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
         <span class="n">PluginInfo</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
@@ -175,7 +162,6 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
     <span class="p">)</span>
 
-    <span class="n">imported_infos</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">_mutable_plugin_infos</span><span class="p">:</span>
         <span class="c1"># If it&#39;s disabled in settings and on command line, then status is set</span>
         <span class="c1"># to DISABLED_BY_SETTINGS. This makes more sense for the user of the</span>
@@ -202,7 +188,33 @@
 
         <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;imported porcupine.plugins.</span><span class="si">%s</span><span class="s2"> in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="n">imported_infos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_successfully_imported_infos</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]:</span>
+    <span class="c1"># If all plugins are disabled, then import_plugins() doesn&#39;t run at all and plugin_infos is empty</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">info</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">plugin_infos</span>
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
+    <span class="p">]</span>
+
+
+<span class="c1"># undocumented on purpose, don&#39;t use in plugins</span>
+<span class="c1"># TODO: document what setup_argument_parser() function in a plugin does</span>
+<span class="k">def</span> <span class="nf">run_setup_argument_parser_functions</span><span class="p">(</span><span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">_get_successfully_imported_infos</span><span class="p">():</span>
+        <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_argument_parser&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">setup_argument_parser</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.setup_argument_parser() doesn&#39;t work&quot;</span><span class="p">)</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">SETUP_FAILED</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+
+
+<span class="c1"># undocumented on purpose, don&#39;t use in plugins</span>
+<span class="k">def</span> <span class="nf">run_setup_functions</span><span class="p">(</span><span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">imported_infos</span> <span class="o">=</span> <span class="n">_get_successfully_imported_infos</span><span class="p">()</span>
 
     <span class="c1"># setup_before and setup_after may contain names of plugins that are not</span>
     <span class="c1"># installed because they are for controlling the loading order. That&#39;s fine</span>
@@ -222,8 +234,12 @@
         <span class="n">make_list</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">list</span>
         <span class="k">for</span> <span class="n">names</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="n">make_list</span><span class="p">,</span> <span class="n">toposort</span><span class="o">.</span><span class="n">toposort</span><span class="p">(</span><span class="n">dependencies</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+                <span class="c1"># for plugin developers wanting to make sure that the</span>
+                <span class="c1"># dependencies specified in setup_before and setup_after</span>
+                <span class="c1"># are correct</span>
                 <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># for consistency in UI (e.g. always same order of menu items)</span>
                 <span class="n">names</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
             <span class="n">loading_order</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
         <span class="n">loadable_infos</span> <span class="o">=</span> <span class="n">imported_infos</span>
@@ -254,8 +270,6 @@
 
         <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
-
-    <span class="n">menubar</span><span class="o">.</span><span class="n">update_keyboard_shortcuts</span><span class="p">()</span></div>
 </pre></div>
 
           </div>
@@ -284,7 +298,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../filetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.filetypes</span></code> — Low-level access to <code class="docutils literal notranslate"><span class="pre">filetypes.toml</span></code> stuff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
@@ -325,7 +338,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
