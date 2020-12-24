@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine — The top level Porcupine package &#8212; Porcupine API 0.79.0+git.7d3f135 documentation</title>
+    <title>porcupine — The top level Porcupine package &#8212; Porcupine API 0.79.1+git.4245d69 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -45,7 +45,7 @@ I recommend reading it first. Then you’ll have a much better idea about what
 <a class="reference internal" href="#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_main_window()</span></code></a> and <a class="reference internal" href="#porcupine.get_tab_manager" title="porcupine.get_tab_manager"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_tab_manager()</span></code></a> do.</p>
 <dl class="py function">
 <dt id="porcupine.get_main_window">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">get_main_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.html#tkinter.Tk" title="(in Python v3.8)">tkinter.Tk</a><a class="reference internal" href="_modules/porcupine/_state.html#get_main_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.get_main_window" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">get_main_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.html#tkinter.Tk" title="(in Python v3.9)">tkinter.Tk</a><a class="reference internal" href="_modules/porcupine/_state.html#get_main_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.get_main_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the tkinter root window that Porcupine is using.</p>
 </dd></dl>
 
@@ -63,7 +63,7 @@ I recommend reading it first. Then you’ll have a much better idea about what
 
 <dl class="py function">
 <dt id="porcupine.quit">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="reference internal" href="_modules/porcupine/_state.html#quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.quit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/_state.html#quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.quit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calling this function is equivalent to clicking the X button in the
 corner of the main window.</p>
 <p>First the <a class="reference internal" href="tabs.html#porcupine.tabs.Tab.can_be_closed" title="porcupine.tabs.Tab.can_be_closed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">can_be_closed()</span></code></a> method of each
@@ -101,8 +101,8 @@ supports a specific feature:</p>
 <h2>File Dialogs<a class="headerlink" href="#file-dialogs" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
 <dt id="porcupine.filedialog_kwargs">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">filedialog_kwargs</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span>Any<span class="p">]</span></em><a class="headerlink" href="#porcupine.filedialog_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Porcupine uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.filedialog</span></code> functions similarly to this:</p>
+<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">filedialog_kwargs</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span></em><a class="headerlink" href="#porcupine.filedialog_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Porcupine uses <a class="reference external" href="https://docs.python.org/3/library/dialog.html#module-tkinter.filedialog" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.filedialog</span></code></a> functions similarly to this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="o">**</span><span class="n">porcupine</span><span class="o">.</span><span class="n">filedialog_kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
