@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.tabs &#8212; Porcupine API 0.79.1+git.4245d69 documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -39,11 +39,12 @@
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span><span class="p">,</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">filedialog</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span> <span class="nn">pygments.lexer</span> <span class="kn">import</span> <span class="n">LexerMeta</span>     <span class="c1"># type: ignore</span>
 <span class="kn">from</span> <span class="nn">pygments.lexers</span> <span class="kn">import</span> <span class="n">TextLexer</span>    <span class="c1"># type: ignore</span>
@@ -53,6 +54,22 @@
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">_flatten</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span>
+<span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_T&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_find_duplicates</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">_T</span><span class="p">],</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">_T</span><span class="p">]]:</span>
+    <span class="k">for</span> <span class="n">key_return_value</span><span class="p">,</span> <span class="n">similar_items_iter</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">):</span>
+        <span class="n">similar_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">similar_items_iter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">similar_items</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">similar_items</span>
+
+
+<span class="k">def</span> <span class="nf">_short_ways_to_display_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="n">first_part</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">first_part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="p">]</span>
 
 
 <div class="viewcode-block" id="TabManager"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager">[docs]</a><span class="k">class</span> <span class="nc">TabManager</span><span class="p">(</span><span class="n">ttk</span><span class="o">.</span><span class="n">Notebook</span><span class="p">):</span>
@@ -180,6 +197,24 @@
         <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>        <span class="c1"># index out of bounds</span>
             <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="k">def</span> <span class="nf">_update_tab_titles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">titlelists</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">title_choices</span><span class="p">)</span> <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">()]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">did_something</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">conflicting_title_lists</span> <span class="ow">in</span> <span class="n">_find_duplicates</span><span class="p">(</span><span class="n">titlelists</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">lizt</span><span class="p">:</span> <span class="n">lizt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))):</span>
+                <span class="c1"># shorten longest title lists</span>
+                <span class="n">maxlen</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">titlelist</span><span class="p">)</span> <span class="k">for</span> <span class="n">titlelist</span> <span class="ow">in</span> <span class="n">conflicting_title_lists</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">maxlen</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">titlelist</span> <span class="ow">in</span> <span class="n">conflicting_title_lists</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">titlelist</span><span class="p">)</span> <span class="o">==</span> <span class="n">maxlen</span><span class="p">:</span>
+                            <span class="k">del</span> <span class="n">titlelist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">did_something</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">did_something</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">for</span> <span class="n">tab</span><span class="p">,</span> <span class="n">titlelist</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">(),</span> <span class="n">titlelists</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">titlelist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
     <span class="c1"># fixing tkinter weirdness: some methods returns widget names as</span>
     <span class="c1"># strings instead of widget objects, these str() everything anyway</span>
     <span class="c1"># because tkinter might be fixed some day</span>
@@ -238,8 +273,8 @@
                 <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">existing_tab</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">tab</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;closebutton&#39;</span><span class="p">),</span>
-                 <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;closebutton&#39;</span><span class="p">),</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_tab_titles</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">select</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
 
@@ -257,7 +292,8 @@
 <span class="sd">        .. seealso:: The :meth:`.Tab.can_be_closed` method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">forget</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
-        <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
+        <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_tab_titles</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TabManager.select_another_tab"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.select_another_tab">[docs]</a>    <span class="k">def</span> <span class="nf">select_another_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Try to select another tab next to the currently selected tab.</span>
@@ -339,7 +375,7 @@
 <span class="sd">        class HelloTab(tabs.Tab):</span>
 <span class="sd">            def __init__(self, manager):</span>
 <span class="sd">                super().__init__(manager)</span>
-<span class="sd">                self.title = &quot;Hello&quot;</span>
+<span class="sd">                self.title_choices = [&quot;Hello&quot;]</span>
 <span class="sd">                ttk.Label(self, text=&quot;Hello World!&quot;).pack()</span>
 
 <span class="sd">        def new_hello_tab():</span>
@@ -358,10 +394,16 @@
 <span class="sd">        This event is generated when :attr:`status` is set to a new</span>
 <span class="sd">        value. Use ``event.widget.status`` to access the current status.</span>
 
-<span class="sd">    .. attribute:: title</span>
+<span class="sd">    .. attribute:: title_choices</span>
 
-<span class="sd">        This is the title of the tab, next to the red close button. You</span>
-<span class="sd">        can set and get this attribute easily.</span>
+<span class="sd">        A :class:`typing.Sequence` of strings that can be used as the title of</span>
+<span class="sd">        the tab, next to the red close button.</span>
+
+<span class="sd">        Usually the first title of the list is used, but if multiple tabs have</span>
+<span class="sd">        the same first title, then the second title is used instead, and so on.</span>
+<span class="sd">        For example, if you open a file named ``foo/bar/baz.py``, its title</span>
+<span class="sd">        will be ``baz.py``, but if you also open ``foo/bar2/baz.py`` then the</span>
+<span class="sd">        titles change to ``bar/baz.py`` and ``bar2/baz.py``.</span>
 
 <span class="sd">    .. attribute:: status</span>
 
@@ -401,7 +443,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">:</span> <span class="n">TabManager</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">manager</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_titles</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
 
         <span class="c1"># top and bottom frames must be packed first because this way</span>
         <span class="c1"># they extend past other frames in the corners</span>
@@ -424,14 +466,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;StatusChanged&gt;&gt;&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span>
+    <span class="k">def</span> <span class="nf">title_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_titles</span>
 
-    <span class="nd">@title</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">text</span>
+    <span class="nd">@title_choices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">title_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">titles</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">titles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_titles</span> <span class="o">=</span> <span class="n">titles</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">tabs</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">_update_tab_titles</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Tab.can_be_closed"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.Tab.can_be_closed">[docs]</a>    <span class="k">def</span> <span class="nf">can_be_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -561,9 +604,9 @@
 
 <span class="sd">    .. virtualevent:: TabSettingChanged:foo</span>
 
-<span class="sd">        When the ``title`` of :attr:`~settings` is set,</span>
+<span class="sd">        When the ``indent_size`` of :attr:`~settings` is set,</span>
 <span class="sd">        the tab receives (but the child widgets of the tab don&#39;t receive)</span>
-<span class="sd">        a virtual event named ``&lt;&lt;TabSettingChanged:title&gt;&gt;``.</span>
+<span class="sd">        a virtual event named ``&lt;&lt;TabSettingChanged:indent_size&gt;&gt;``.</span>
 <span class="sd">        This works similarly for other tab settings.</span>
 
 <span class="sd">    .. virtualevent:: Save</span>
@@ -627,7 +670,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">MainText</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_title</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span>
                              <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
@@ -643,7 +686,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">scrollbar</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_title</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FileTab.open_file"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.open_file">[docs]</a>    <span class="nd">@classmethod</span>
@@ -697,7 +740,7 @@
 <div class="viewcode-block" id="FileTab.mark_saved"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.mark_saved">[docs]</a>    <span class="k">def</span> <span class="nf">mark_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Make :meth:`is_saved` return True.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hash</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_title</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="FileTab.is_saved"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.is_saved">[docs]</a>    <span class="k">def</span> <span class="nf">is_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return False if the text has changed since previous save.</span>
@@ -724,13 +767,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">)</span>
 
     <span class="c1"># TODO: plugin</span>
-    <span class="k">def</span> <span class="nf">_update_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;New File&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">def</span> <span class="nf">_update_titles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;New File&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">titles</span> <span class="o">=</span> <span class="n">_short_ways_to_display_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_saved</span><span class="p">():</span>
-            <span class="c1"># TODO: figure out how to make the label red in ttk instead</span>
-            <span class="c1">#       of stupid stars</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="n">text</span> <span class="o">+</span> <span class="s1">&#39;*&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">text</span>
+            <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;*</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">*&#39;</span> <span class="k">for</span> <span class="n">title</span> <span class="ow">in</span> <span class="n">titles</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_choices</span> <span class="o">=</span> <span class="n">titles</span>
 
     <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -852,7 +898,7 @@
 
         <span class="c1"># the title depends on the saved hash</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span> <span class="o">=</span> <span class="n">save_hash</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_title</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">mark_set</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">,</span> <span class="n">cursor_pos</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">see</span><span class="p">(</span><span class="s1">&#39;insert linestart&#39;</span><span class="p">)</span>

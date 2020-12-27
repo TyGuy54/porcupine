@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.79.1+git.4245d69 documentation</title>
+    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -125,7 +125,7 @@ wanted to add some boilerplate. I think something like
 doing what is usually done with these methods.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#porcupine.tabs.TabManager.add_tab" title="porcupine.tabs.TabManager.add_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_tab()</span></code></a>, <a class="reference internal" href="#porcupine.tabs.TabManager.close_tab" title="porcupine.tabs.TabManager.close_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close_tab()</span></code></a>, <a class="reference internal" href="#porcupine.tabs.Tab.title" title="porcupine.tabs.Tab.title"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Tab.title</span></code></a></p>
+<p><a class="reference internal" href="#porcupine.tabs.TabManager.add_tab" title="porcupine.tabs.TabManager.add_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_tab()</span></code></a>, <a class="reference internal" href="#porcupine.tabs.TabManager.close_tab" title="porcupine.tabs.TabManager.close_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close_tab()</span></code></a>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">Tab.title</span></code></p>
 </div>
 </dd></dl>
 
@@ -206,7 +206,7 @@ class. Here’s a very minimal but complete example plugin:</p>
 <span class="k">class</span> <span class="nc">HelloTab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">Tab</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">manager</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Hello&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_choices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Hello&quot;</span><span class="p">]</span>
         <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">new_hello_tab</span><span class="p">():</span>
@@ -228,10 +228,15 @@ value. Use <code class="docutils literal notranslate"><span class="pre">event.wi
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="porcupine.tabs.Tab.title">
-<code class="sig-name descname">title</code><a class="headerlink" href="#porcupine.tabs.Tab.title" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the title of the tab, next to the red close button. You
-can set and get this attribute easily.</p>
+<dt id="porcupine.tabs.Tab.title_choices">
+<code class="sig-name descname">title_choices</code><a class="headerlink" href="#porcupine.tabs.Tab.title_choices" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Sequence</span></code></a> of strings that can be used as the title of
+the tab, next to the red close button.</p>
+<p>Usually the first title of the list is used, but if multiple tabs have
+the same first title, then the second title is used instead, and so on.
+For example, if you open a file named <code class="docutils literal notranslate"><span class="pre">foo/bar/baz.py</span></code>, its title
+will be <code class="docutils literal notranslate"><span class="pre">baz.py</span></code>, but if you also open <code class="docutils literal notranslate"><span class="pre">foo/bar2/baz.py</span></code> then the
+titles change to <code class="docutils literal notranslate"><span class="pre">bar/baz.py</span></code> and <code class="docutils literal notranslate"><span class="pre">bar2/baz.py</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -386,9 +391,9 @@ each option.</p>
 <dl class="py virtualevent">
 <dt id="porcupine.tabs.FileTab.TabSettingChanged-foo">
 <span id="porcupine.tabs.FileTab.TabSettingChanged:foo"></span><em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;TabSettingChanged:foo&gt;&gt;</code><a class="headerlink" href="#porcupine.tabs.FileTab.TabSettingChanged-foo" title="Permalink to this definition">¶</a></dt>
-<dd><p>When the <code class="docutils literal notranslate"><span class="pre">title</span></code> of <a class="reference internal" href="#porcupine.tabs.FileTab.settings" title="porcupine.tabs.FileTab.settings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code></a> is set,
+<dd><p>When the <code class="docutils literal notranslate"><span class="pre">indent_size</span></code> of <a class="reference internal" href="#porcupine.tabs.FileTab.settings" title="porcupine.tabs.FileTab.settings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code></a> is set,
 the tab receives (but the child widgets of the tab don’t receive)
-a virtual event named <code class="docutils literal notranslate"><span class="pre">&lt;&lt;TabSettingChanged:title&gt;&gt;</span></code>.
+a virtual event named <code class="docutils literal notranslate"><span class="pre">&lt;&lt;TabSettingChanged:indent_size&gt;&gt;</span></code>.
 This works similarly for other tab settings.</p>
 </dd></dl>
 

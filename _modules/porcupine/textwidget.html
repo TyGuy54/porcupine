@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget &#8212; Porcupine API 0.79.1+git.4245d69 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -35,7 +35,6 @@
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
-<span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkfont</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">overload</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 
@@ -508,10 +507,6 @@
     <span class="c1"># widget knows its child widgets, and .destroy() would make tkinter no</span>
     <span class="c1"># longer know it. Tkinter&#39;s winfo_children() also ignores anything not</span>
     <span class="c1"># known to tkinter.</span>
-    <span class="c1">#</span>
-    <span class="c1"># issues related to type ignore comments:</span>
-    <span class="c1">#    https://github.com/python/mypy/issues/6552</span>
-    <span class="c1">#    https://github.com/python/typeshed/issues/4409</span>
     <span class="n">the_widget_that_becomes_a_peer</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
     <span class="n">original_text_widget</span><span class="o">.</span><span class="n">peer_create</span><span class="p">(</span><span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
 
@@ -607,17 +602,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-a&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_all</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_indent_size_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># from the text(3tk) man page: &quot;To achieve a different standard</span>
-        <span class="c1"># spacing, for example every 4 characters, simply configure the</span>
-        <span class="c1"># widget with “-tabs &quot;[expr {4 * [font measure $font 0]}] left&quot;</span>
-        <span class="c1"># -tabstyle wordprocessor”.&quot;</span>
-        <span class="c1">#</span>
-        <span class="c1"># my version is kind of minimal compared to that example, but it</span>
-        <span class="c1"># seems to work :)</span>
-        <span class="c1">#</span>
-        <span class="c1"># TODO: there&#39;s similar code in overview plugin, clean up</span>
-        <span class="n">font</span> <span class="o">=</span> <span class="n">tkfont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TkFixedFont&#39;</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">tabs</span><span class="o">=</span><span class="n">font</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indent_size&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)))</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">config_tab_displaying</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indent_size&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_on_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_down</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">,</span>
                    <span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>

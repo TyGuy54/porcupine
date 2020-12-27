@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.79.1+git.4245d69 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -637,6 +637,21 @@
     <span class="n">update_colors</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">text</span>
+
+
+<span class="c1"># TODO: document this</span>
+<span class="k">def</span> <span class="nf">config_tab_displaying</span><span class="p">(</span><span class="n">textwidget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">indent_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># from the text(3tk) man page: &quot;To achieve a different standard</span>
+    <span class="c1"># spacing, for example every 4 characters, simply configure the</span>
+    <span class="c1"># widget with “-tabs &quot;[expr {4 * [font measure $font 0]}] left&quot;</span>
+    <span class="c1"># -tabstyle wordprocessor”.&quot;</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">tag_cget</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;font&#39;</span><span class="p">)</span>
+
+    <span class="n">measure_result</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">textwidget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="s1">&#39;measure&#39;</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">))</span>
+    <span class="n">textwidget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">tabs</span><span class="o">=</span><span class="p">(</span><span class="n">indent_size</span><span class="o">*</span><span class="n">measure_result</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">),</span> <span class="n">tabstyle</span><span class="o">=</span><span class="s1">&#39;wordprocessor&#39;</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
