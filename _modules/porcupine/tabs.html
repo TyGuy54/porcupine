@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.tabs &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.tabs &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -42,15 +42,14 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
-<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span><span class="p">,</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">filedialog</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span><span class="p">,</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 
-<span class="kn">from</span> <span class="nn">pygments.lexer</span> <span class="kn">import</span> <span class="n">LexerMeta</span>     <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pygments.lexers</span> <span class="kn">import</span> <span class="n">TextLexer</span>    <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pygments.lexer</span> <span class="kn">import</span> <span class="n">LexerMeta</span>  <span class="c1"># type: ignore[import]</span>
+<span class="kn">from</span> <span class="nn">pygments.lexers</span> <span class="kn">import</span> <span class="n">TextLexer</span>  <span class="c1"># type: ignore[import]</span>
 
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_state</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">textwidget</span><span class="p">,</span> <span class="n">utils</span>
-
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">_flatten</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span>
@@ -64,7 +63,7 @@
             <span class="k">yield</span> <span class="n">similar_items</span>
 
 
-<span class="k">def</span> <span class="nf">_short_ways_to_display_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_short_ways_to_display_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
         <span class="n">first_part</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -77,35 +76,6 @@
 
 <span class="sd">    This widget inherits from ``ttk.Notebook``. All widgets added to</span>
 <span class="sd">    this should be :class:`Tab` objects.</span>
-
-<span class="sd">    .. virtualevent:: NewTab</span>
-
-<span class="sd">        This runs when a new tab has been added to the tab manager with</span>
-<span class="sd">        :meth:`add_tab`. Use :func:`~porcupine.utils.bind_with_data` and</span>
-<span class="sd">        ``event.data_widget()`` to access the tab that was added.</span>
-
-<span class="sd">        Bind to the ``&lt;Destroy&gt;`` event of the tab if you want to clean</span>
-<span class="sd">        up something when the tab is closed.</span>
-
-<span class="sd">    .. virtualevent:: WillOpenFile</span>
-
-<span class="sd">        :meth:`FileTab.open_file` generates this event when an **existing**</span>
-<span class="sd">        file is about to be opened. Unlike :virtevt:`~NewTab`, this never runs</span>
-<span class="sd">        for tabs created without :meth:`~FileTab.open_file`, such as the tabs</span>
-<span class="sd">        created by clicking &quot;New File&quot; in the menu.</span>
-
-<span class="sd">        Use :func:`~porcupine.utils.bind_with_data` and ``event.data_widget()``</span>
-<span class="sd">        to access the related :class:`FileTab`.</span>
-
-<span class="sd">        This event runs before the file is read, so if you want your plugin to</span>
-<span class="sd">        e.g. decide which encoding will be used, then this is the virtual event</span>
-<span class="sd">        that you should use. See :source:`porcupine/plugins/editorconfig.py`</span>
-<span class="sd">        for an example.</span>
-
-<span class="sd">        .. note::</span>
-<span class="sd">            :virtevt:`WillOpenFile` doesn&#39;t run for files created by clicking</span>
-<span class="sd">            &quot;New File&quot; and then &quot;Save as&quot;. Use  :virtevt:`NewTab` and</span>
-<span class="sd">            :virtevt:`~FileTab.PathChanged` to handle those.</span>
 
 <span class="sd">    .. virtualevent:: NotebookTabChanged</span>
 
@@ -155,6 +125,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_click</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">bind_mouse_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_wheel</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+        <span class="c1"># the string is call stack for adding callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Tab</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="k">def</span> <span class="nf">_focus_selected_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">tab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -197,7 +170,7 @@
         <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>        <span class="c1"># index out of bounds</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_update_tab_titles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_update_tab_titles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">titlelists</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">title_choices</span><span class="p">)</span> <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">()]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">did_something</span> <span class="o">=</span> <span class="kc">False</span>
@@ -218,10 +191,7 @@
     <span class="c1"># fixing tkinter weirdness: some methods returns widget names as</span>
     <span class="c1"># strings instead of widget objects, these str() everything anyway</span>
     <span class="c1"># because tkinter might be fixed some day</span>
-    <span class="c1">#</span>
-    <span class="c1"># The ignore comment is to allow creating someting incompatible with</span>
-    <span class="c1"># ttk.Notebook. Hopefully it doesn&#39;t break any ttk.Notebook internals.</span>
-<div class="viewcode-block" id="TabManager.select"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;Tab&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Tab&#39;</span><span class="p">]:</span>  <span class="c1"># type: ignore</span>
+<div class="viewcode-block" id="TabManager.select"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;Tab&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Tab&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Select the given tab as if the user clicked it.</span>
 
 <span class="sd">        Usually the ``tab_id`` should be a :class:`.Tab` widget. If it is not</span>
@@ -281,7 +251,12 @@
         <span class="c1"># The update() is needed in some cases because virtual events don&#39;t run</span>
         <span class="c1"># if the widget isn&#39;t visible yet.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;NewTab&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tab</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">callback</span><span class="p">,</span> <span class="n">add_stack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_callbacks</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">callback</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;tab callback failed&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;the callback was added here</span><span class="se">\n</span><span class="si">{</span><span class="n">add_stack</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tab</span></div>
 
 <div class="viewcode-block" id="TabManager.close_tab"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.close_tab">[docs]</a>    <span class="k">def</span> <span class="nf">close_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab</span><span class="p">:</span> <span class="s1">&#39;Tab&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -348,13 +323,25 @@
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span>
         <span class="n">selected</span> <span class="o">=</span> <span class="p">(</span><span class="n">tab</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">())</span>
 
-        <span class="c1"># type ignore comment because mypy support for **kwargs is not great</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">forget</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">tab</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>     <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">tab</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="kc">True</span></div></div>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TabManager.add_tab_callback"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.add_tab_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_tab_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Tab&#39;</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run a callback for each tab in the tab manager.</span>
+
+<span class="sd">        When new tabs are added later, the callback will be ran for them too.</span>
+<span class="sd">        Bind to the ``&lt;Destroy&gt;`` event of each tab if you want to clean</span>
+<span class="sd">        up something when a tab is closed.</span>
+
+<span class="sd">        The return value of the callback is ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">():</span>
+            <span class="n">func</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_stack</span><span class="p">())))</span></div></div>
 
 
 <span class="c1"># _FileTabT represents a subclass of FileTab. Don&#39;t know if there&#39;s a better</span>
@@ -700,7 +687,6 @@
 <span class="sd">        file fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">manager</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;WillOpenFile&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tab</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
@@ -711,8 +697,6 @@
             <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; contains mixed line endings: </span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">newlines</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">file</span><span class="o">.</span><span class="n">newlines</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">newlines</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="c1"># The editorconfig plugin sets newlines when &lt;&lt;WillOpenFile&gt;&gt; is generated, and that</span>
-            <span class="c1"># will be used if e.g. the file is empty (more generally, contains no newlines)</span>
             <span class="n">tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">newlines</span><span class="p">))</span>
 
         <span class="n">tab</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">()</span>
@@ -971,7 +955,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

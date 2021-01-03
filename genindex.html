@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -67,8 +67,6 @@
 </li>
       <li><a href="menubar.html#porcupine.menubar.Menubar-Foo-Bar-Baz">&lt;&lt;Menubar:Foo/Bar/Baz&gt;&gt; (virtual event)</a>
 </li>
-      <li><a href="tabs.html#porcupine.tabs.TabManager.NewTab">&lt;&lt;NewTab&gt;&gt; (porcupine.tabs.TabManager virtual event)</a>
-</li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.NotebookTabChanged">&lt;&lt;NotebookTabChanged&gt;&gt; (porcupine.tabs.TabManager virtual event)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.PathChanged">&lt;&lt;PathChanged&gt;&gt; (porcupine.tabs.FileTab virtual event)</a>
@@ -84,8 +82,6 @@
       <li><a href="tabs.html#porcupine.tabs.Tab.StatusChanged">&lt;&lt;StatusChanged&gt;&gt; (porcupine.tabs.Tab virtual event)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.TabSettingChanged-foo">&lt;&lt;TabSettingChanged:foo&gt;&gt; (porcupine.tabs.FileTab virtual event)</a>
-</li>
-      <li><a href="tabs.html#porcupine.tabs.TabManager.WillOpenFile">&lt;&lt;WillOpenFile&gt;&gt; (porcupine.tabs.TabManager virtual event)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -109,19 +105,21 @@
 </li>
       <li><a href="settings.html#porcupine.settings.add_entry">add_entry() (in module porcupine.settings)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="settings.html#porcupine.settings.add_option">add_option() (in module porcupine.settings)</a>
 
       <ul>
         <li><a href="settings.html#porcupine.settings.Settings.add_option">(porcupine.settings.Settings method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="settings.html#porcupine.settings.add_section">add_section() (in module porcupine.settings)</a>
 </li>
       <li><a href="settings.html#porcupine.settings.add_spinbox">add_spinbox() (in module porcupine.settings)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.TabManager.add_tab">add_tab() (porcupine.tabs.TabManager method)</a>
+</li>
+      <li><a href="tabs.html#porcupine.tabs.TabManager.add_tab_callback">add_tab_callback() (porcupine.tabs.TabManager method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -150,6 +148,8 @@
       <li><a href="dirs.html#porcupine.dirs.cachedir">cachedir (in module porcupine.dirs)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.Tab.can_be_closed">can_be_closed() (porcupine.tabs.Tab method)</a>
+</li>
+      <li><a href="pluginloader.html#porcupine.pluginloader.can_setup_while_running">can_setup_while_running() (in module porcupine.pluginloader)</a>
 </li>
       <li><a href="textwidget.html#porcupine.textwidget.Change">Change (class in porcupine.textwidget)</a>
 </li>
@@ -481,9 +481,11 @@
 </li>
       <li><a href="settings.html#porcupine.settings.Settings">Settings (class in porcupine.settings)</a>
 </li>
+      <li><a href="tabs.html#porcupine.tabs.FileTab.settings">settings (porcupine.tabs.FileTab attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tabs.html#porcupine.tabs.FileTab.settings">settings (porcupine.tabs.FileTab attribute)</a>
+      <li><a href="pluginloader.html#porcupine.pluginloader.setup_while_running">setup_while_running() (in module porcupine.pluginloader)</a>
 </li>
       <li><a href="settings.html#porcupine.settings.show_dialog">show_dialog() (in module porcupine.settings)</a>
 </li>
@@ -622,7 +624,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

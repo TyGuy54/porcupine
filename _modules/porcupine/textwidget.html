@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.textwidget &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -32,15 +32,17 @@
           <div class="body" role="main">
             
   <h1>Source code for porcupine.textwidget</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
+<span></span><span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">overload</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">overload</span>
 
-<span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>   <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>  <span class="c1"># type: ignore[import]</span>
 
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">utils</span>
+
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">tabs</span>
 
@@ -112,6 +114,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">widget</span> <span class="o">=</span> <span class="n">widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">old_cursor_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
@@ -359,6 +362,12 @@
         <span class="k">else</span><span class="p">:</span>   <span class="c1"># pragma: no cover</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;the tcl code called _change_cb with unexpected subcommand: </span><span class="si">{</span><span class="n">subcommand</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_change_event</span><span class="p">(</span><span class="n">changes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">changes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_change_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># remove changes that don&#39;t actually do anything</span>
         <span class="n">changes</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">change</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="n">changes</span>
@@ -367,15 +376,12 @@
                 <span class="ow">or</span> <span class="n">change</span><span class="o">.</span><span class="n">new_text</span><span class="p">)</span>
         <span class="p">]</span>
 
-        <span class="c1"># some plugins expect &lt;&lt;ContentChanged&gt;&gt; events to occur after changing</span>
-        <span class="c1"># the content in the editor, but the tcl code in __init__ needs them to</span>
-        <span class="c1"># run before, so here is the solution</span>
-        <span class="c1">#</span>
-        <span class="c1"># TODO: i think event_generate takes an argument describing when to</span>
-        <span class="c1"># trigger the event?</span>
         <span class="k">if</span> <span class="n">changes</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span>
-                <span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Changes</span><span class="p">(</span><span class="n">changes</span><span class="p">)))</span>
+            <span class="c1"># Some plugins expect &lt;&lt;ContentChanged&gt;&gt; events to occur after changing</span>
+            <span class="c1"># the content in the editor, so we need to delay it here. For some</span>
+            <span class="c1"># reason, using the &#39;when&#39; argument of event_generate() breaks tests.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Changes</span><span class="p">(</span><span class="n">changes</span><span class="p">))))</span>
 
     <span class="k">def</span> <span class="nf">_cursor_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># more implicit newline stuff</span>
@@ -388,7 +394,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;CursorMoved&gt;&gt;&#39;</span><span class="p">)</span>
 
 
-<span class="n">_change_tracked_widgets</span><span class="p">:</span> <span class="s1">&#39;weakref.WeakSet[tkinter.Text]&#39;</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakSet</span><span class="p">()</span>
+<span class="n">_change_trackers</span><span class="p">:</span> <span class="s1">&#39;weakref.WeakKeyDictionary[tkinter.Text, _ChangeTracker]&#39;</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakKeyDictionary</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="track_changes"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.track_changes">[docs]</a><span class="k">def</span> <span class="nf">track_changes</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -443,17 +449,54 @@
 <span class="sd">        ``textwidget.index(&#39;insert&#39;)`` to find the current cursor</span>
 <span class="sd">        position.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">_change_tracked_widgets</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">_change_trackers</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;track_changes() called twice for same text widget&quot;</span><span class="p">)</span>
 
     <span class="c1"># all peers except the one we&#39;re trying to track should already be tracked</span>
     <span class="n">peers</span> <span class="o">=</span> <span class="p">{</span><span class="n">widget</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">nameobj</span><span class="p">)</span> <span class="k">for</span> <span class="n">nameobj</span> <span class="ow">in</span> <span class="n">widget</span><span class="o">.</span><span class="n">peer_names</span><span class="p">()}</span>
     <span class="k">assert</span> <span class="n">widget</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">peers</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">peers</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_change_tracked_widgets</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">peers</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_change_trackers</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;track_changes() must be called before create_peer_widget()&quot;</span><span class="p">)</span>
 
-    <span class="n">_change_tracked_widgets</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-    <span class="n">_ChangeTracker</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span></div>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">_ChangeTracker</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+    <span class="n">tracker</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+    <span class="n">_change_trackers</span><span class="p">[</span><span class="n">widget</span><span class="p">]</span> <span class="o">=</span> <span class="n">tracker</span></div>
+
+
+<span class="c1"># how to type hint context manager: https://stackoverflow.com/a/49736916</span>
+<span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span> <span class="nf">change_batch</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;A context manager to optimize doing many changes to a text widget.</span>
+
+<span class="sd">    When :func:`track_changes` has been called, every change to a text widget</span>
+<span class="sd">    generates a new ``&lt;&lt;ContentChanged&gt;&gt;`` event, and lots of</span>
+<span class="sd">    ``&lt;&lt;ContentChanged&gt;&gt;`` events can cause Porcupine to run slowly. To avoid</span>
+<span class="sd">    that, you can use this context manager during the changes, like this::</span>
+
+<span class="sd">        with textwidget.change_batch(some_text_widget_with_change_tracking):</span>
+<span class="sd">            for thing in big_list_of_things_to_do:</span>
+<span class="sd">                textwidget.delete(...)</span>
+<span class="sd">                textwidget.insert(...)</span>
+
+<span class="sd">    See :source:`porcupine/plugins/indent_block.py` for a complete example.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tracker</span> <span class="o">=</span> <span class="n">_change_trackers</span><span class="p">[</span><span class="n">widget</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">yield</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">tracker</span><span class="o">.</span><span class="n">change_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;nested calls to change_batch&quot;</span><span class="p">)</span>
+
+    <span class="n">tracker</span><span class="o">.</span><span class="n">change_batch</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tracker</span><span class="o">.</span><span class="n">generate_change_event</span><span class="p">(</span><span class="n">tracker</span><span class="o">.</span><span class="n">change_batch</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">tracker</span><span class="o">.</span><span class="n">change_batch</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="create_peer_widget"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.create_peer_widget">[docs]</a><span class="k">def</span> <span class="nf">create_peer_widget</span><span class="p">(</span>
@@ -510,7 +553,7 @@
     <span class="n">the_widget_that_becomes_a_peer</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
     <span class="n">original_text_widget</span><span class="o">.</span><span class="n">peer_create</span><span class="p">(</span><span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">original_text_widget</span> <span class="ow">in</span> <span class="n">_change_tracked_widgets</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">original_text_widget</span> <span class="ow">in</span> <span class="n">_change_trackers</span><span class="p">:</span>
         <span class="n">track_changes</span><span class="p">(</span><span class="n">the_widget_that_becomes_a_peer</span><span class="p">)</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">forward_event</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">,</span> <span class="n">original_text_widget</span><span class="p">)</span></div>
 
@@ -804,7 +847,7 @@
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

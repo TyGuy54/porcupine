@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -208,31 +208,19 @@ if we had done this instead:</p>
 </div>
 <p>Unfortunately tkinter’s <code class="docutils literal notranslate"><span class="pre">unbind()</span></code> method is stupid and it unbinds
 everything, regardless of the second argument passed into it (see
-<a class="reference external" href="https://github.com/python/cpython/blob/dff9b5f9d62a/Lib/tkinter/__init__.py#L1249">the source code</a>).
-If you need to bind and unbind something use
-<code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.utils.temporary_bind()</span></code>, and let me know that you needed it so I
-won’t delete it.</p>
+<a class="reference external" href="https://github.com/python/cpython/blob/dff9b5f9d62a/Lib/tkinter/__init__.py#L1249">the source code</a>).</p>
 </div>
-<div class="section" id="binding-key-presses">
-<h3>Binding Key Presses<a class="headerlink" href="#binding-key-presses" title="Permalink to this headline">¶</a></h3>
-<p>If you want to bind a key press <strong>globally</strong> you should use
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.actions</span></code> in most cases, but you can also bind on the main
-window, like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
-
-<span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
-    <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-g&gt;&#39;</span><span class="p">,</span> <span class="n">print_hello</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Now pressing <code class="docutils literal notranslate"><span class="pre">Ctrl+G</span></code> in <em>any</em> Porcupine widget runs <code class="docutils literal notranslate"><span class="pre">print_hello</span></code>.</p>
-<p>Note that the binding returns <code class="docutils literal notranslate"><span class="pre">'break'</span></code>. This way, if tkinter does something
-by default when <code class="docutils literal notranslate"><span class="pre">Ctrl+G</span></code> is pressed, it will not do it now. You can also
-<code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">'break'</span></code> from other callbacks to indicate whether other plugins
-should handle that event (see <a class="reference internal" href="#shift-tab">Shift-Tab</a> below).</p>
-<p>Of course, you can also create <strong>non-global</strong> bindings normally with the
-<code class="docutils literal notranslate"><span class="pre">bind()</span></code> method of any other widget.</p>
+<div class="section" id="binding-key-presses-globally">
+<h3>Binding Key Presses Globally<a class="headerlink" href="#binding-key-presses-globally" title="Permalink to this headline">¶</a></h3>
+<p>If you want to bind a key press so that pressing it anywhere in Porcupine does something,
+you should probably add a menu item for it with <a class="reference internal" href="menubar.html#module-porcupine.menubar" title="porcupine.menubar"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code></a>,
+and then ask the users of the plugin to add the corresponding binding to their <code class="docutils literal notranslate"><span class="pre">keybindings.tcl</span></code>.
+This way, you allow the user of the plugin to decide
+which key combination (if any) does your thing.</p>
+<p>The user-specific <code class="docutils literal notranslate"><span class="pre">keybindings.tcl</span></code> can be edited by going to
+<em>Settings</em> menu at top, then <em>Porcupine Settings</em>, then <em>Config Files</em>.
+By default, it contains a link to Porcupine’s default <code class="docutils literal notranslate"><span class="pre">keybindings.tcl</span></code>,
+and that contains many example key bindings.</p>
 </div>
 <div class="section" id="shift-tab">
 <h3>Shift-Tab<a class="headerlink" href="#shift-tab" title="Permalink to this headline">¶</a></h3>
@@ -415,7 +403,7 @@ tags in the loop, the <code class="docutils literal notranslate"><span class="pr
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

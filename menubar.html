@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.80.0+git.aa6a694 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -49,7 +49,7 @@ doesn’t already exist.</p>
 
 <dl class="py function">
 <dt id="porcupine.menubar.set_enabled_based_on_tab">
-<code class="sig-prename descclassname">porcupine.menubar.</code><code class="sig-name descname">set_enabled_based_on_tab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Optional<span class="p">[</span><a class="reference internal" href="tabs.html#porcupine.tabs.Tab" title="porcupine.tabs.Tab">porcupine.tabs.Tab</a><span class="p">]</span><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/menubar.html#set_enabled_based_on_tab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.menubar.set_enabled_based_on_tab" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.menubar.</code><code class="sig-name descname">set_enabled_based_on_tab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Optional<span class="p">[</span><a class="reference internal" href="tabs.html#porcupine.tabs.Tab" title="porcupine.tabs.Tab">porcupine.tabs.Tab</a><span class="p">]</span><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Callable[[…], None]<a class="reference internal" href="_modules/porcupine/menubar.html#set_enabled_based_on_tab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.menubar.set_enabled_based_on_tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use this for disabling menu items depending on the currently selected tab.</p>
 <p>When the selected <a class="reference internal" href="tabs.html#porcupine.tabs.Tab" title="porcupine.tabs.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a> changes, <code class="docutils literal notranslate"><span class="pre">callback</span></code> will
 be called with the selected tab as an argument, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if there are
@@ -67,9 +67,15 @@ the currently selected tab is not a <a class="reference internal" href="tabs.htm
 
 <span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
     <span class="n">menubar</span><span class="o">.</span><span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;Foo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Bar&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">do_something</span><span class="p">)</span>
-    <span class="n">set_enabled_based_on_tab</span><span class="p">(</span><span class="s2">&quot;Foo/Bar&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">tab</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">)))</span>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">set_enabled_based_on_tab</span><span class="p">(</span><span class="s2">&quot;Foo/Bar&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">tab</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">)))</span>
 </pre></div>
 </div>
+<p>Sometimes you need to update the enabled-ness of a menu item for other
+reasons than changing the currently selected tab. To do that, call the
+callback that this function returns. It’s always called when the selected
+tab changes, but you can call it at other times too. The returned callback
+ignores all arguments given to it, which makes using it with <code class="docutils literal notranslate"><span class="pre">.bind()</span></code>
+easier.</p>
 </dd></dl>
 
 <dl class="py virtualevent">
@@ -176,7 +182,7 @@ It’s called automatically when plugins have been set up.</p>
       &copy;2017, Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
