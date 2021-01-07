@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -81,7 +81,7 @@ of type <a class="reference internal" href="#porcupine.utils.EventWithData" titl
 <dl class="py class">
 <dt id="porcupine.utils.EventWithData">
 <em class="property">class </em><code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">EventWithData</code><a class="reference internal" href="_modules/porcupine/utils.html#EventWithData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.EventWithData" title="Permalink to this definition">¶</a></dt>
-<dd><p>A subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">'tkinter.Event[tkinter.Misc]'</span></code> for use with <a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a>.</p>
+<dd><p>A subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Event[tkinter.Misc]</span></code> for use with <a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a>.</p>
 <dl class="py method">
 <dt id="porcupine.utils.EventWithData.data_class">
 <code class="sig-name descname">data_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span><span class="p">:</span> <span class="n">Type<span class="p">[</span>_T<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; _T<a class="reference internal" href="_modules/porcupine/utils.html#EventWithData.data_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.EventWithData.data_class" title="Permalink to this definition">¶</a></dt>
@@ -146,6 +146,7 @@ Nested dataclasses don’t need to inherit from EventDataclass. Example:</p>
 </div>
 <div class="section" id="other-tkinter-utilities">
 <h2>Other Tkinter Utilities<a class="headerlink" href="#other-tkinter-utilities" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="textwidget.html#module-porcupine.textwidget" title="porcupine.textwidget"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code></a> for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> specific things.</p>
 <dl class="py function">
 <dt id="porcupine.utils.set_tooltip">
 <code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">set_tooltip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Widget</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#set_tooltip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.set_tooltip" title="Permalink to this definition">¶</a></dt>
@@ -201,6 +202,17 @@ also works on X11.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="porcupine.utils.add_scroll_command">
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">add_scroll_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em>, <em class="sig-param"><span class="n">option</span><span class="p">:</span> <span class="n">typing_extensions.Literal<span class="p">[</span>xscrollcommand<span class="p">, </span>yscrollcommand<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[], None]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#add_scroll_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.add_scroll_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedule <code class="docutils literal notranslate"><span class="pre">callback</span></code> to run with no arguments when <code class="docutils literal notranslate"><span class="pre">widget</span></code> is scrolled.</p>
+<p>The option should be <code class="docutils literal notranslate"><span class="pre">'xscrollcommand'</span></code> for horizontal scrolling or
+<code class="docutils literal notranslate"><span class="pre">'yscrollcommand'</span></code> for vertical scrolling.</p>
+<p>Unlike when setting the option directly, this function can be called
+multiple times with the same widget and the same option to set multiple
+callbacks.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="porcupine.utils.run_in_thread">
 <code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">run_in_thread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocking_function</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>_T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable[[bool, Union[str, _T]], None]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#run_in_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.run_in_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run <code class="docutils literal notranslate"><span class="pre">blocking_function()</span></code> in another thread.</p>
@@ -211,6 +223,23 @@ is the error message as a string. If no errors are raised,
 return value from <em>blocking_function</em>. The <em>done_callback</em> is always
 called from Tk’s main loop, so it can do things with Tkinter widgets
 unlike <em>blocking_function</em>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.utils.errordialog">
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">errordialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">message</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">monospace_text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#errordialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.errordialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a lot like <code class="docutils literal notranslate"><span class="pre">tkinter.messagebox.showerror</span></code>.</p>
+<p>This function can be called with or without creating a root window
+first. If <em>monospace_text</em> is not None, it will be displayed below
+the message in a <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widget.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">do</span> <span class="n">something</span>
+<span class="k">except</span> <span class="n">SomeError</span><span class="p">:</span>
+    <span class="n">utils</span><span class="o">.</span><span class="n">errordialog</span><span class="p">(</span><span class="s2">&quot;Oh no&quot;</span><span class="p">,</span> <span class="s2">&quot;Doing something failed!&quot;</span><span class="p">,</span>
+                      <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py class">
@@ -249,6 +278,14 @@ inside the <code class="docutils literal notranslate"><span class="pre">with</sp
 <em class="property">class </em><code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">Spinbox</code><a class="reference internal" href="_modules/tkinter/ttk.html#Spinbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.Spinbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starting with Python 3.7, this is <code class="docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code>. On Python 3.6,
 this class behaves just like <code class="docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code> on Python 3.7.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="porcupine.utils.BreakOrNone">
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">BreakOrNone</code><a class="headerlink" href="#porcupine.utils.BreakOrNone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <code class="docutils literal notranslate"><span class="pre">Optional[Literal['break']]</span></code>, where <code class="docutils literal notranslate"><span class="pre">Optional</span></code> and <code class="docutils literal notranslate"><span class="pre">Literal</span></code> come from <a class="reference external" href="https://docs.python.org/3/library/typing.html#module-typing" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">typing</span></code></a>,
+except that this uses <code class="docutils literal notranslate"><span class="pre">typing_extensions.Literal</span></code> on Python versions that don’t have <code class="docutils literal notranslate"><span class="pre">typing.Literal</span></code>.
+This is the correct return type for tkinter bind callbacks.</p>
 </dd></dl>
 
 </div>
@@ -293,23 +330,6 @@ the file, but this is useful when overwriting the user’s files.</p>
 <p>This function is equivalent to <a class="reference external" href="https://docs.python.org/3/library/shlex.html#shlex.quote" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shlex.quote()</span></code></a> on non-Windows systems,
 and on Windows it adds double quotes in a similar way. This is useful for
 running commands in the Windows command prompt or a POSIX-compatible shell.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="porcupine.utils.errordialog">
-<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">errordialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">message</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">monospace_text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/utils.html#errordialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.errordialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a lot like <code class="docutils literal notranslate"><span class="pre">tkinter.messagebox.showerror</span></code>.</p>
-<p>This function can be called with or without creating a root window
-first. If <em>monospace_text</em> is not None, it will be displayed below
-the message in a <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widget.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do</span> <span class="n">something</span>
-<span class="k">except</span> <span class="n">SomeError</span><span class="p">:</span>
-    <span class="n">utils</span><span class="o">.</span><span class="n">errordialog</span><span class="p">(</span><span class="s2">&quot;Oh no&quot;</span><span class="p">,</span> <span class="s2">&quot;Doing something failed!&quot;</span><span class="p">,</span>
-                      <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>

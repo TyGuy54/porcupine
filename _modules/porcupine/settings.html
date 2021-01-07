@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -44,8 +44,10 @@
 <span class="kn">import</span> <span class="nn">tkinter.font</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span>
+                    <span class="n">overload</span><span class="p">)</span>
 
+<span class="kn">import</span> <span class="nn">dacite</span>
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>  <span class="c1"># type: ignore[import]</span>
 
 <span class="kn">import</span> <span class="nn">porcupine</span>
@@ -107,7 +109,7 @@
     <span class="k">class</span> <span class="nc">ValueContainer</span><span class="p">:</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">tybe</span>  <span class="c1"># type: ignore[valid-type]</span>
 
-    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_to_dataclass</span><span class="p">(</span><span class="n">ValueContainer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">})</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="n">dacite</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">ValueContainer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="p">})</span><span class="o">.</span><span class="n">value</span>
 
 
 <span class="k">class</span> <span class="nc">_Option</span><span class="p">:</span>
@@ -643,7 +645,7 @@
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Add a :class:`utils.Spinbox` to the setting dialog.</span>
+    <span class="sd">&quot;&quot;&quot;Add a :class:`porcupine.utils.Spinbox` to the setting dialog.</span>
 
 <span class="sd">    All ``**spinbox_kwargs`` go to :class:`utils.Spinbox`.</span>
 <span class="sd">    Usually you should pass at least ``from_=some_integer, to=another_integer``.</span>
@@ -661,7 +663,7 @@
     <span class="k">return</span> <span class="n">spinbox</span></div>
 
 
-<span class="k">def</span> <span class="nf">add_label</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">:</span>
+<div class="viewcode-block" id="add_label"><a class="viewcode-back" href="../../settings.html#porcupine.settings.add_label">[docs]</a><span class="k">def</span> <span class="nf">add_label</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Add text to the setting dialog.</span>
 
 <span class="sd">    This is useful for explaining what some options do with more than a few words.</span>
@@ -671,7 +673,7 @@
     <span class="n">label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;we&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="n">section</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Configure&gt;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">cast</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">wraplength</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">width</span><span class="p">))),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">label</span>
+    <span class="k">return</span> <span class="n">label</span></div>
 
 
 <span class="k">def</span> <span class="nf">_edit_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

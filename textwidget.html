@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -144,29 +144,27 @@ The <code class="docutils literal notranslate"><span class="pre">change_list</sp
 because of how <a class="reference internal" href="utils.html#porcupine.utils.EventDataclass" title="porcupine.utils.EventDataclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.utils.EventDataclass</span></code></a> works.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt id="porcupine.textwidget.change_batch">
+<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">change_batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em><span class="sig-paren">)</span> &#x2192; Iterator[None]<a class="reference internal" href="_modules/porcupine/textwidget.html#change_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.change_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>A context manager to optimize doing many changes to a text widget.</p>
+<p>When <a class="reference internal" href="#porcupine.textwidget.track_changes" title="porcupine.textwidget.track_changes"><code class="xref py py-func docutils literal notranslate"><span class="pre">track_changes()</span></code></a> has been called, every change to a text widget
+generates a new <code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> event, and lots of
+<code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> events can cause Porcupine to run slowly. To avoid
+that, you can use this context manager during the changes, like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">change_batch</span><span class="p">(</span><span class="n">some_text_widget_with_change_tracking</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">thing</span> <span class="ow">in</span> <span class="n">big_list_of_things_to_do</span><span class="p">:</span>
+        <span class="n">textwidget</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+        <span class="n">textwidget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This does nothing if <a class="reference internal" href="#porcupine.textwidget.track_changes" title="porcupine.textwidget.track_changes"><code class="xref py py-func docutils literal notranslate"><span class="pre">track_changes()</span></code></a> hasn’t been called.</p>
+<p>See <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/indent_block.py">porcupine/plugins/indent_block.py</a> for a complete example.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="other-stuff">
 <h2>Other stuff<a class="headerlink" href="#other-stuff" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="porcupine.textwidget.use_pygments_theme">
-<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">use_pygments_theme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Misc</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[str, str], None]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/textwidget.html#use_pygments_theme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.use_pygments_theme" title="Permalink to this definition">¶</a></dt>
-<dt>
-<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">use_pygments_theme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></span> <span class="o">=</span> <span class="default_value">'...'</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></dt>
-<dd><p>Configure <em>widget</em> to use the colors of the Pygments theme whenever the
-currently selected theme changes (see <a class="reference internal" href="settings.html#module-porcupine.settings" title="porcupine.settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code></a>).
-Porcupine does that automatically for the <code class="docutils literal notranslate"><span class="pre">textwidget</span></code> of each
-<a class="reference internal" href="tabs.html#porcupine.tabs.FileTab" title="porcupine.tabs.FileTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTab</span></code></a>.</p>
-<p>If you don’t specify a <em>callback</em>, then <code class="docutils literal notranslate"><span class="pre">widget</span></code> must be a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widget.
-If you specify a callback, then it will be called like
-<code class="docutils literal notranslate"><span class="pre">callback(foreground_color,</span> <span class="pre">background_color)</span></code>, and the type of the widget doesn’t matter.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>This function is used in <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/linenumbers.py">porcupine/plugins/linenumbers.py</a>.
-Syntax highlighting is implemented in
-<a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/highlight.py">porcupine/plugins/highlight.py</a>.</p>
-</div>
-</dd></dl>
-
 <dl class="py function">
 <dt id="porcupine.textwidget.create_peer_widget">
 <code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">create_peer_widget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">original_text_widget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em>, <em class="sig-param"><span class="n">the_widget_that_becomes_a_peer</span><span class="p">:</span> <span class="n">tkinter.Text</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/textwidget.html#create_peer_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.create_peer_widget" title="Permalink to this definition">¶</a></dt>
@@ -196,15 +194,69 @@ widget options but that caused weird problems.</p>
 together:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Bind to the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> event of <em>original_text_widget</em>,
-not <em>the_widget_that_becomes_a_peer</em>. <strong>Make sure to get this right</strong>
-to avoid issues with <code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> sometimes not triggering.
-If you create peers of peers, then bind to the most original widget,
-not any of its peers.</p></li>
+<li><p>Call <a class="reference internal" href="#porcupine.textwidget.track_changes" title="porcupine.textwidget.track_changes"><code class="xref py py-func docutils literal notranslate"><span class="pre">track_changes()</span></code></a> with <em>original_text_widget</em>, not with its
+peers. If you get this wrong, you will get a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>.</p></li>
+<li><p>Bind to the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code> with the original widget, not with
+the peers. If you get this wrong, your <code class="docutils literal notranslate"><span class="pre">&lt;&lt;ContentChanged&gt;&gt;</span></code>
+callback won’t run.</p></li>
 <li><p>First call <a class="reference internal" href="#porcupine.textwidget.track_changes" title="porcupine.textwidget.track_changes"><code class="xref py py-func docutils literal notranslate"><span class="pre">track_changes()</span></code></a> and then <a class="reference internal" href="#porcupine.textwidget.create_peer_widget" title="porcupine.textwidget.create_peer_widget"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_peer_widget()</span></code></a>.
-You will get a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> if you screw this up.</p></li>
+If you get this wrong, you will get a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>.</p></li>
 </ul>
 </div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.textwidget.create_passive_text_widget">
+<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">create_passive_text_widget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">tkinter.Widget</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; tkinter.Text<a class="reference internal" href="_modules/porcupine/textwidget.html#create_passive_text_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.create_passive_text_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a text widget that is meant to be used for displaying text, not for editing.</p>
+<p>The returned text widget is disabled by default (<code class="docutils literal notranslate"><span class="pre">state='disabled'</span></code>),
+and it’s intended to be used that way. You need to temporarily enable it
+to add text to it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">widget</span> <span class="o">=</span> <span class="n">create_passive_text_widget</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+<span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+<span class="n">widget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">wall_of_text</span><span class="p">)</span>
+<span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;disabled&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When creating the widget, this function uses some default settings (such as
+<code class="docutils literal notranslate"><span class="pre">wrap='word'</span></code> and <code class="docutils literal notranslate"><span class="pre">state='disabled'</span></code>) that can be overrided with
+<code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>. For example, the above example code can be written like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">widget</span> <span class="o">=</span> <span class="n">create_passive_text_widget</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+<span class="n">widget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">wall_of_text</span><span class="p">)</span>
+<span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;disabled&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.textwidget.use_pygments_theme">
+<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">use_pygments_theme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Misc</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n">Callable[[str, str], None]</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/textwidget.html#use_pygments_theme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.use_pygments_theme" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">use_pygments_theme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em>, <em class="sig-param"><span class="n">callback</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></span> <span class="o">=</span> <span class="default_value">'...'</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></dt>
+<dd><p>Configure <em>widget</em> to use the colors of the Pygments theme whenever the
+currently selected theme changes (see <a class="reference internal" href="settings.html#module-porcupine.settings" title="porcupine.settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code></a>).
+Porcupine does that automatically for the <code class="docutils literal notranslate"><span class="pre">textwidget</span></code> of each
+<a class="reference internal" href="tabs.html#porcupine.tabs.FileTab" title="porcupine.tabs.FileTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTab</span></code></a>.</p>
+<p>If you don’t specify a <em>callback</em>, then <code class="docutils literal notranslate"><span class="pre">widget</span></code> must be a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widget.
+If you specify a callback, then it will be called like
+<code class="docutils literal notranslate"><span class="pre">callback(foreground_color,</span> <span class="pre">background_color)</span></code>, and the type of the widget doesn’t matter.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>This function is used in <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/linenumbers.py">porcupine/plugins/linenumbers.py</a>.
+Syntax highlighting is implemented in
+<a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/highlight.py">porcupine/plugins/highlight.py</a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.textwidget.config_tab_displaying">
+<code class="sig-prename descclassname">porcupine.textwidget.</code><code class="sig-name descname">config_tab_displaying</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">textwidget</span><span class="p">:</span> <span class="n">tkinter.Text</span></em>, <em class="sig-param"><span class="n">indent_size</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/textwidget.html#config_tab_displaying"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.textwidget.config_tab_displaying" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make <code class="docutils literal notranslate"><span class="pre">textwidget</span></code> display tabs as <code class="docutils literal notranslate"><span class="pre">indent_size</span></code> characters wide.</p>
+<p>For example, if <code class="docutils literal notranslate"><span class="pre">indent_size</span></code> is 4, then each tab character will look
+like be 4 spaces. This function uses the font of the textwidget, so don’t
+change the font immediately after</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">tag</span></code> is specified, then only the text tagged with the tag is
+affected, not the entire <code class="docutils literal notranslate"><span class="pre">textwidget</span></code>.</p>
 </dd></dl>
 
 <dl class="py class">

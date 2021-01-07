@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -50,7 +50,8 @@
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span>
+                    <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">dacite</span>
 
@@ -62,13 +63,7 @@
 <span class="kn">import</span> <span class="nn">porcupine</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-<span class="c1"># seems like dacite doesn&#39;t have type hints working correctly?</span>
-<span class="c1"># don&#39;t know what&#39;s going on</span>
-<span class="c1"># TODO: document or delete dict_to_dataclass?</span>
 <span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_T&#39;</span><span class="p">)</span>
-<span class="n">dict_to_dataclass</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">_T</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">_T</span><span class="p">]</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">dacite</span><span class="p">)</span><span class="o">.</span><span class="n">from_dict</span>
-
 <span class="n">BreakOrNone</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;break&#39;</span><span class="p">]]</span>
 
 
@@ -312,7 +307,7 @@
 
 
 <div class="viewcode-block" id="EventWithData"><a class="viewcode-back" href="../../utils.html#porcupine.utils.EventWithData">[docs]</a><span class="k">class</span> <span class="nc">EventWithData</span><span class="p">(</span><span class="n">_Event</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A subclass of :class:`&#39;tkinter.Event[tkinter.Misc]&#39;` for use with :func:`bind_with_data`.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A subclass of :class:`tkinter.Event[tkinter.Misc]` for use with :func:`bind_with_data`.&quot;&quot;&quot;</span>
 
     <span class="c1">#: If a string was passed to the ``data`` argument of ``event_generate()``,</span>
     <span class="c1">#: then this is that string.</span>
@@ -340,7 +335,7 @@
 <span class="sd">        ``T`` must be a dataclass that inherits from :class:`EventDataclass`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;{&#39;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">dict_to_dataclass</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):]))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dacite</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_string</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):]))</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
@@ -398,32 +393,19 @@
     <span class="k">return</span> <span class="n">funcname</span></div>
 
 
-<span class="c1"># TODO: document this</span>
-<span class="k">def</span> <span class="nf">forward_event</span><span class="p">(</span><span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">from_</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span>
-                  <span class="o">*</span><span class="p">,</span> <span class="n">add</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># make the coordinates relative to the &#39;to&#39; widget</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x_root</span> <span class="o">-</span> <span class="n">to</span><span class="o">.</span><span class="n">winfo_rootx</span><span class="p">()</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span> <span class="o">-</span> <span class="n">to</span><span class="o">.</span><span class="n">winfo_rooty</span><span class="p">()</span>
-        <span class="c1"># no need to specify rootx and rooty, because Tk can calculate them</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">EventWithData</span><span class="p">):</span>
-            <span class="n">to</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">data_string</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">to</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">event_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;&#39;</span><span class="p">):</span>
-        <span class="c1"># virtual events support data</span>
-        <span class="k">return</span> <span class="n">bind_with_data</span><span class="p">(</span><span class="n">from_</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">from_</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
-
-
-<span class="c1"># TODO: document this</span>
-<span class="k">def</span> <span class="nf">add_scroll_command</span><span class="p">(</span>
+<div class="viewcode-block" id="add_scroll_command"><a class="viewcode-back" href="../../utils.html#porcupine.utils.add_scroll_command">[docs]</a><span class="k">def</span> <span class="nf">add_scroll_command</span><span class="p">(</span>
         <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span>
         <span class="n">option</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;xscrollcommand&#39;</span><span class="p">,</span> <span class="s1">&#39;yscrollcommand&#39;</span><span class="p">],</span>
         <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Schedule ``callback`` to run with no arguments when ``widget`` is scrolled.</span>
+
+<span class="sd">    The option should be ``&#39;xscrollcommand&#39;`` for horizontal scrolling or</span>
+<span class="sd">    ``&#39;yscrollcommand&#39;`` for vertical scrolling.</span>
+
+<span class="sd">    Unlike when setting the option directly, this function can be called</span>
+<span class="sd">    multiple times with the same widget and the same option to set multiple</span>
+<span class="sd">    callbacks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">widget</span><span class="p">[</span><span class="n">option</span><span class="p">]:</span>
         <span class="n">widget</span><span class="p">[</span><span class="n">option</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">tcl_code</span> <span class="o">=</span> <span class="n">widget</span><span class="p">[</span><span class="n">option</span><span class="p">]</span>
@@ -441,7 +423,7 @@
     <span class="c1">#</span>
     <span class="c1">#   something</span>
     <span class="c1">#   bla bla bla 0.123 0.456</span>
-    <span class="n">widget</span><span class="p">[</span><span class="n">option</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">tcl_code</span>
+    <span class="n">widget</span><span class="p">[</span><span class="n">option</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">tcl_code</span></div>
 
 
 <div class="viewcode-block" id="TemporaryBind"><a class="viewcode-back" href="../../utils.html#porcupine.utils.TemporaryBind">[docs]</a><span class="k">class</span> <span class="nc">TemporaryBind</span><span class="p">:</span>
@@ -596,55 +578,6 @@
             <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
 
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">MouseWheel&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span></div>
-
-
-<span class="c1"># TODO: document this</span>
-<span class="k">def</span> <span class="nf">create_passive_text_widget</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">:</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="s1">&#39;TkDefaultFont&#39;</span><span class="p">)</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;borderwidth&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;relief&#39;</span><span class="p">,</span> <span class="s1">&#39;flat&#39;</span><span class="p">)</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;wrap&#39;</span><span class="p">,</span> <span class="s1">&#39;word&#39;</span><span class="p">)</span>       <span class="c1"># TODO: remember to mention in docs</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;disabled&#39;</span><span class="p">)</span>  <span class="c1"># TODO: remember to mention in docs</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">update_colors</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># tkinter&#39;s ttk::style api sucks so let&#39;s not use it</span>
-        <span class="n">ttk_fg</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;ttk::style lookup TLabel.label -foreground&#39;</span><span class="p">)</span>
-        <span class="n">ttk_bg</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;ttk::style lookup TLabel.label -background&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ttk_fg</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ttk_bg</span><span class="p">:</span>
-            <span class="c1"># stupid ttk theme, it deserves this</span>
-            <span class="n">ttk_fg</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span>
-            <span class="n">ttk_bg</span> <span class="o">=</span> <span class="s1">&#39;white&#39;</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ttk_bg</span><span class="p">:</span>
-            <span class="c1"># this happens with e.g. elegance theme (more_plugins/ttkthemes.py)</span>
-            <span class="n">ttk_bg</span> <span class="o">=</span> <span class="n">invert_color</span><span class="p">(</span><span class="n">ttk_fg</span><span class="p">,</span> <span class="n">black_or_white</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ttk_fg</span><span class="p">:</span>
-            <span class="n">ttk_fg</span> <span class="o">=</span> <span class="n">invert_color</span><span class="p">(</span><span class="n">ttk_bg</span><span class="p">,</span> <span class="n">black_or_white</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="n">text</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">foreground</span><span class="o">=</span><span class="n">ttk_fg</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">ttk_bg</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="n">ttk_bg</span><span class="p">)</span>
-
-    <span class="c1"># even non-ttk widgets can handle &lt;&lt;ThemeChanged&gt;&gt;</span>
-    <span class="c1"># TODO: make sure that this works</span>
-    <span class="n">text</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ThemeChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">update_colors</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">update_colors</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">text</span>
-
-
-<span class="c1"># TODO: document this</span>
-<span class="k">def</span> <span class="nf">config_tab_displaying</span><span class="p">(</span><span class="n">textwidget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">indent_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="c1"># from the text(3tk) man page: &quot;To achieve a different standard</span>
-    <span class="c1"># spacing, for example every 4 characters, simply configure the</span>
-    <span class="c1"># widget with “-tabs &quot;[expr {4 * [font measure $font 0]}] left&quot;</span>
-    <span class="c1"># -tabstyle wordprocessor”.&quot;</span>
-    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">tag_cget</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;font&#39;</span><span class="p">)</span>
-
-    <span class="n">measure_result</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">textwidget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="s1">&#39;measure&#39;</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">))</span>
-    <span class="n">textwidget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">tabs</span><span class="o">=</span><span class="p">(</span><span class="n">indent_size</span><span class="o">*</span><span class="n">measure_result</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">),</span> <span class="n">tabstyle</span><span class="o">=</span><span class="s1">&#39;wordprocessor&#39;</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>

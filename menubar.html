@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -82,20 +82,14 @@ easier.</p>
 <dt id="porcupine.menubar.Menubar-Foo-Bar-Baz">
 <span id="porcupine.menubar.Menubar:Foo/Bar/Baz"></span><em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;Menubar:Foo/Bar/Baz&gt;&gt;</code><a class="headerlink" href="#porcupine.menubar.Menubar-Foo-Bar-Baz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generating an event like this on the main window (see
-<a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a>)runs the callback of a menu item named
+<a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a>) runs the callback of a menu item named
 <code class="docutils literal notranslate"><span class="pre">Baz</span></code> in a menu named <code class="docutils literal notranslate"><span class="pre">Foo/Bar</span></code> (see <a class="reference internal" href="#porcupine.menubar.get_menu" title="porcupine.menubar.get_menu"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_menu()</span></code></a>).</p>
-<p>Use the <code class="docutils literal notranslate"><span class="pre">event_add()</span></code> method of any tkinter widget to associate a
-keyboard shortcut with the menu item. For example, Porcupine runs code like
-this when it starts:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
-<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/New File&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-n&gt;&#39;</span><span class="p">)</span>
-<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/Open&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-o&gt;&#39;</span><span class="p">)</span>
-<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/Save&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-s&gt;&#39;</span><span class="p">)</span>
-<span class="n">main_window</span><span class="o">.</span><span class="n">event_add</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:File/Save As&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Control-S&gt;&#39;</span><span class="p">)</span>
-<span class="o">...</span>
-</pre></div>
-</div>
-<p>Call <a class="reference internal" href="#porcupine.menubar.update_keyboard_shortcuts" title="porcupine.menubar.update_keyboard_shortcuts"><code class="xref py py-func docutils literal notranslate"><span class="pre">update_keyboard_shortcuts()</span></code></a> after doing that.</p>
+<p>Porcupine has a file named <code class="docutils literal notranslate"><span class="pre">keybindings.tcl</span></code>, and it can be edited at
+<code class="docutils literal notranslate"><span class="pre">Settings/Porcupine</span> <span class="pre">Settings/Config</span> <span class="pre">Files</span></code> in the menubar.
+By default, it contains a link to Porcupine’s default <code class="docutils literal notranslate"><span class="pre">keybindings.tcl</span></code>,
+and that contains many example key bindings.
+All of them work by associating a keyboard event, such as <code class="docutils literal notranslate"><span class="pre">&lt;Control-n&gt;</span></code>,
+which one of these virtual events, such as <code class="docutils literal notranslate"><span class="pre">&lt;&lt;Menubar:File/New</span> <span class="pre">File&gt;&gt;</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -110,7 +104,7 @@ menu, and similarly to all other menu items in all menus:</p>
 </ul>
 </div></blockquote>
 <p>This has to be called when menus or keyboard shortcuts have been modified.
-It’s called automatically when plugins have been set up.</p>
+It’s called automatically when a plugin has been set up.</p>
 </dd></dl>
 
 </div>

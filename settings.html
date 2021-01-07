@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -272,7 +272,7 @@ itself. It’s a <code class="xref py py-class docutils literal notranslate"><sp
 <a class="reference internal" href="#porcupine.settings.add_entry" title="porcupine.settings.add_entry"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_entry()</span></code></a>,
 <a class="reference internal" href="#porcupine.settings.add_combobox" title="porcupine.settings.add_combobox"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_combobox()</span></code></a>,
 <a class="reference internal" href="#porcupine.settings.add_spinbox" title="porcupine.settings.add_spinbox"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_spinbox()</span></code></a> and
-<code class="xref py py-func docutils literal notranslate"><span class="pre">add_label()</span></code>.
+<a class="reference internal" href="#porcupine.settings.add_label" title="porcupine.settings.add_label"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_label()</span></code></a>.
 Like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>,-----------------------------------------------------------.
 | Porcupine Settings                                        |
@@ -345,13 +345,21 @@ in <code class="docutils literal notranslate"><span class="pre">combobox.cget('v
 <dl class="py function">
 <dt id="porcupine.settings.add_spinbox">
 <code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_spinbox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.9)">tkinter.ttk.Spinbox</a><a class="reference internal" href="_modules/porcupine/settings.html#add_spinbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_spinbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a <code class="xref py py-class docutils literal notranslate"><span class="pre">utils.Spinbox</span></code> to the setting dialog.</p>
+<dd><p>Add a <a class="reference internal" href="utils.html#porcupine.utils.Spinbox" title="porcupine.utils.Spinbox"><code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.utils.Spinbox</span></code></a> to the setting dialog.</p>
 <p>All <code class="docutils literal notranslate"><span class="pre">**spinbox_kwargs</span></code> go to <code class="xref py py-class docutils literal notranslate"><span class="pre">utils.Spinbox</span></code>.
 Usually you should pass at least <code class="docutils literal notranslate"><span class="pre">from_=some_integer,</span> <span class="pre">to=another_integer</span></code>.</p>
 <p>The content of the spinbox is checked whenever it changes.
 If it’s a valid integer between <code class="docutils literal notranslate"><span class="pre">spinbox.cget('from')</span></code> and <code class="docutils literal notranslate"><span class="pre">spinbox.cget('to')</span></code> (inclusive),
 then the option given by <em>option_name</em> is set to the <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.
 Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.settings.add_label">
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Label<a class="reference internal" href="_modules/porcupine/settings.html#add_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add text to the setting dialog.</p>
+<p>This is useful for explaining what some options do with more than a few words.
+The text is always as wide as the dialog is, even when the dialog is resized.</p>
 </dd></dl>
 
 <dl class="py function">

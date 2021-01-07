@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.pluginloader &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -58,7 +58,7 @@
 
 <div class="viewcode-block" id="Status"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.Status">[docs]</a><span class="k">class</span> <span class="nc">Status</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This :mod:`Enum &lt;enum&gt;` represents the status of the plugin in the</span>
+<span class="sd">    This :mod:`enum` represents the status of the plugin in the</span>
 <span class="sd">    currently running Porcupine process.</span>
 
 <span class="sd">    .. data:: LOADING</span>
@@ -281,9 +281,6 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns whether the plugin can be set up now, without having to</span>
 <span class="sd">    restart Porcupine.</span>
-
-<span class="sd">    This function handles errors coming from plugins, so there&#39;s on need to</span>
-<span class="sd">    wrap it in try/except.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="n">Status</span><span class="o">.</span><span class="n">DISABLED_BY_SETTINGS</span><span class="p">,</span> <span class="n">Status</span><span class="o">.</span><span class="n">DISABLED_ON_COMMAND_LINE</span><span class="p">}:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -308,8 +305,6 @@
 
 <span class="sd">    Before calling this function, make sure that</span>
 <span class="sd">    :func:`can_setup_while_running` returns ``True``.</span>
-<span class="sd">    This function handles errors coming from plugins, so there&#39;s on need to</span>
-<span class="sd">    wrap it in try/except.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
 

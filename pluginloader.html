@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.81.0+git.507a440 documentation</title>
+    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -41,7 +41,7 @@ or <code class="docutils literal notranslate"><span class="pre">porcupine.plugin
 <dl class="py class">
 <dt id="porcupine.pluginloader.Status">
 <em class="property">class </em><code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">Status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#Status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.Status" title="Permalink to this definition">¶</a></dt>
-<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Enum</span></code></a> represents the status of the plugin in the
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code></a> represents the status of the plugin in the
 currently running Porcupine process.</p>
 <dl class="py data">
 <dt id="porcupine.pluginloader.Status.LOADING">
@@ -123,7 +123,8 @@ user-readable one-line message.</p></li>
 <dt id="porcupine.pluginloader.plugin_infos">
 <code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">plugin_infos</code><em class="property">: Sequence<span class="p">[</span>PluginInfo<span class="p">]</span></em><a class="headerlink" href="#porcupine.pluginloader.plugin_infos" title="Permalink to this definition">¶</a></dt>
 <dd><p>This contains infos for all the plugins that the plugin loader knows about,
-including plugins that failed to load and disabled plugins.</p>
+including plugins that failed to load and disabled plugins.
+Don’t modify this sequence outside <code class="docutils literal notranslate"><span class="pre">porcupine/pluginloader.py</span></code>.</p>
 </dd></dl>
 
 <dl class="py virtualevent">
@@ -141,7 +142,7 @@ until plugins are ready for it.</p>
 This event also runs after that happens.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#porcupine.pluginloader.setup_while_running" title="porcupine.pluginloader.setup_while_running"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.pluginloader.setup_while_running()</span></code></a></p>
+<p><a class="reference internal" href="#porcupine.pluginloader.setup_while_running" title="porcupine.pluginloader.setup_while_running"><code class="xref py py-func docutils literal notranslate"><span class="pre">setup_while_running()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -150,8 +151,6 @@ This event also runs after that happens.</p>
 <code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">can_setup_while_running</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">info</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo">porcupine.pluginloader.PluginInfo</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="reference internal" href="_modules/porcupine/pluginloader.html#can_setup_while_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.can_setup_while_running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether the plugin can be set up now, without having to
 restart Porcupine.</p>
-<p>This function handles errors coming from plugins, so there’s on need to
-wrap it in try/except.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -159,11 +158,14 @@ wrap it in try/except.</p>
 <code class="sig-prename descclassname">porcupine.pluginloader.</code><code class="sig-name descname">setup_while_running</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">info</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo">porcupine.pluginloader.PluginInfo</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/pluginloader.html#setup_while_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.pluginloader.setup_while_running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the <code class="docutils literal notranslate"><span class="pre">setup_argument_parser()</span></code> and <code class="docutils literal notranslate"><span class="pre">setup()</span></code> functions now.</p>
 <p>Before calling this function, make sure that
-<a class="reference internal" href="#porcupine.pluginloader.can_setup_while_running" title="porcupine.pluginloader.can_setup_while_running"><code class="xref py py-func docutils literal notranslate"><span class="pre">can_setup_while_running()</span></code></a> returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.
-This function handles errors coming from plugins, so there’s on need to
-wrap it in try/except.</p>
+<a class="reference internal" href="#porcupine.pluginloader.can_setup_while_running" title="porcupine.pluginloader.can_setup_while_running"><code class="xref py py-func docutils literal notranslate"><span class="pre">can_setup_while_running()</span></code></a> returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd></dl>
 
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The functions documented above handle the errors coming from plugins,
+so there’s no need to use <code class="docutils literal notranslate"><span class="pre">try/except</span></code> when calling them.</p>
+</div>
 </div>
 
 
