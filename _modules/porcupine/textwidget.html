@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,8 +37,7 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span>
-                    <span class="n">Tuple</span><span class="p">,</span> <span class="n">overload</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>  <span class="c1"># type: ignore[import]</span>
 
@@ -113,8 +112,8 @@
 
     <span class="c1"># event_receiver_widget will receive the change events</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_receiver_widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">event_receiver_widget</span> <span class="o">=</span> <span class="n">event_receiver_widget</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_receiver_widget</span> <span class="o">=</span> <span class="n">event_receiver_widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">old_cursor_pos</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>    <span class="c1"># must be widget specific</span>
@@ -240,7 +239,7 @@
             <span class="s1">&#39;fake_widget&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">widget</span><span class="p">),</span>
             <span class="s1">&#39;actual_widget&#39;</span><span class="p">:</span> <span class="n">actual_widget_command</span><span class="p">,</span>
             <span class="s1">&#39;change_event_from_command&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_event_from_command</span><span class="p">,</span> <span class="n">widget</span><span class="p">)),</span>
-            <span class="s1">&#39;event_receiver&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_receiver_widget</span><span class="p">,</span>
+            <span class="s1">&#39;event_receiver&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_receiver_widget</span><span class="p">,</span>
             <span class="s1">&#39;cursor_moved_callback&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">cursor_pos_changed</span><span class="p">),</span>
         <span class="p">})</span>
 
@@ -380,24 +379,24 @@
                 <span class="ow">or</span> <span class="n">change</span><span class="o">.</span><span class="n">new_text</span><span class="p">)</span>
         <span class="p">]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Changes</span><span class="p">(</span><span class="n">changes</span><span class="p">))</span> <span class="k">if</span> <span class="n">changes</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">changes</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">changes</span><span class="p">)</span>
             <span class="k">return</span> <span class="s1">&#39;&#39;</span>   <span class="c1"># don&#39;t generate event</span>
 
     <span class="k">def</span> <span class="nf">begin_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;nested calls to change_batch&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">finish_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">event_receiver_widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Changes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_event_receiver_widget</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Changes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span><span class="p">))</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">change_batch</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <span class="n">_change_trackers</span><span class="p">:</span> <span class="s1">&#39;weakref.WeakKeyDictionary[tkinter.Text, _ChangeTracker]&#39;</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakKeyDictionary</span><span class="p">()</span>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
+    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -85,11 +85,18 @@ easier.</p>
 <a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a>) runs the callback of a menu item named
 <code class="docutils literal notranslate"><span class="pre">Baz</span></code> in a menu named <code class="docutils literal notranslate"><span class="pre">Foo/Bar</span></code> (see <a class="reference internal" href="#porcupine.menubar.get_menu" title="porcupine.menubar.get_menu"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_menu()</span></code></a>).</p>
 <p>Porcupine has a file named <code class="docutils literal notranslate"><span class="pre">keybindings.tcl</span></code>, and it can be edited at
-<code class="docutils literal notranslate"><span class="pre">Settings/Porcupine</span> <span class="pre">Settings/Config</span> <span class="pre">Files</span></code> in the menubar.
+<em>Settings/Config Files</em> in the menubar.
 By default, it contains a link to Porcupine’s default <code class="docutils literal notranslate"><span class="pre">keybindings.tcl</span></code>,
 and that contains many example key bindings.
 All of them work by associating a keyboard event, such as <code class="docutils literal notranslate"><span class="pre">&lt;Control-n&gt;</span></code>,
 which one of these virtual events, such as <code class="docutils literal notranslate"><span class="pre">&lt;&lt;Menubar:File/New</span> <span class="pre">File&gt;&gt;</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.menubar.add_config_file_button">
+<code class="sig-prename descclassname">porcupine.menubar.</code><code class="sig-name descname">add_config_file_button</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)">pathlib.Path</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/menubar.html#add_config_file_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.menubar.add_config_file_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a button to <em>Settings/Config Files</em> that opens a file in Porcupine when
+it’s clicked.</p>
 </dd></dl>
 
 <dl class="py function">

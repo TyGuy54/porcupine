@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.menubar &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
+    <title>porcupine.menubar &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -49,8 +49,7 @@
     <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">tabs</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">porcupine._state</span> <span class="kn">import</span> <span class="p">(</span><span class="n">filedialog_kwargs</span><span class="p">,</span> <span class="n">get_main_window</span><span class="p">,</span>
-                              <span class="n">get_tab_manager</span><span class="p">,</span> <span class="n">quit</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">porcupine._state</span> <span class="kn">import</span> <span class="n">filedialog_kwargs</span><span class="p">,</span> <span class="n">get_main_window</span><span class="p">,</span> <span class="n">get_tab_manager</span><span class="p">,</span> <span class="n">quit</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -151,6 +150,17 @@
             <span class="n">menu</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">menu</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">submenu_index</span><span class="p">,</span> <span class="s1">&#39;menu&#39;</span><span class="p">)))</span>
 
     <span class="k">return</span> <span class="n">menu</span></div>
+
+
+<div class="viewcode-block" id="add_config_file_button"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.add_config_file_button">[docs]</a><span class="k">def</span> <span class="nf">add_config_file_button</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add a button to *Settings/Config Files* that opens a file in Porcupine when</span>
+<span class="sd">    it&#39;s clicked.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;Settings/Config Files&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">get_tab_manager</span><span class="p">(),</span> <span class="n">path</span><span class="p">))),</span>
+    <span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_walk_menu_contents</span><span class="p">(</span>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -304,6 +304,16 @@ with Tk).</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">black_or_white=True</span></code> is set, then the result is always <code class="docutils literal notranslate"><span class="pre">'#000000'</span></code>
 (black) or <code class="docutils literal notranslate"><span class="pre">'#ffffff'</span></code> (white), depending on whether the color is bright
 or dark.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.utils.mix_colors">
+<code class="sig-prename descclassname">porcupine.utils.</code><code class="sig-name descname">mix_colors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">color1</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">color2</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">color1_amount</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><a class="reference internal" href="_modules/porcupine/utils.html#mix_colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.utils.mix_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new color based on two existing colors.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">color1_amount</span></code> should be a number between 0 and 1, specifying how
+much <code class="docutils literal notranslate"><span class="pre">color1</span></code> to use. If you set it to 0.8, for example, then the
+resulting color will be 80% <code class="docutils literal notranslate"><span class="pre">color1</span></code> and 20% <code class="docutils literal notranslate"><span class="pre">color2</span></code>.</p>
+<p>Colors are specified and returned similarly to <a class="reference internal" href="#porcupine.utils.invert_color" title="porcupine.utils.invert_color"><code class="xref py py-func docutils literal notranslate"><span class="pre">invert_color()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py function">

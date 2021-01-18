@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.81.1+git.440018f documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -215,7 +215,6 @@ class in the settings object. That’s implemented similarly to this:</p>
 
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -223,7 +222,7 @@ class in the settings object. That’s implemented similarly to this:</p>
 <span class="k">def</span> <span class="nf">connect_to_http_server</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">host</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http_server_host&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
     <span class="n">port</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http_server_port&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting to localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting to </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
     <span class="o">...</span>
 
 <span class="k">def</span> <span class="nf">setup</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -247,38 +246,17 @@ settings of a widget, or add something to the setting dialog (see below).</p>
 </div>
 <div class="section" id="the-settings-dialog">
 <h2>The Settings Dialog<a class="headerlink" href="#the-settings-dialog" title="Permalink to this headline">¶</a></h2>
-<p>Click <em>Porcupine Settings</em> in the <em>Edit</em> menu to open the dialog.
-The dialog contains a <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Notebook" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Notebook</span></code></a> widget and some buttons.</p>
+<p>Click <em>Porcupine Settings</em> in the <em>Edit</em> menu to open the dialog.</p>
 <dl class="py function">
-<dt id="porcupine.settings.get_notebook">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">get_notebook</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Notebook" title="(in Python v3.9)">tkinter.ttk.Notebook</a><a class="reference internal" href="_modules/porcupine/settings.html#get_notebook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.get_notebook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the notebook widget in the setting dialog.</p>
-<p>Use <code class="docutils literal notranslate"><span class="pre">settings.get_notebook().winfo_toplevel()</span></code> to access the dialog
+<dt id="porcupine.settings.get_dialog_content">
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">get_dialog_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Frame<a class="reference internal" href="_modules/porcupine/settings.html#get_dialog_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.get_dialog_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the widget where setting changing widgets should be added.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">settings.get_dialog_content().winfo_toplevel()</span></code> to access the dialog
 itself. It’s a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Toplevel</span></code>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="porcupine.settings.get_section">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">get_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Frame<a class="reference internal" href="_modules/porcupine/settings.html#get_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.get_section" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find a tab from the notebook by the text of the tab showing near the top of the notebook.</p>
-</dd></dl>
-
-<p>You can add widgets to the notebook yourself, but it’s usually easiest to use this:</p>
-<dl class="py function">
-<dt id="porcupine.settings.add_section">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title_text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Frame<a class="reference internal" href="_modules/porcupine/settings.html#add_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_section" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Frame</span></code> to the notebook and return the frame.</p>
-<p>The columns of the frame’s grid is configured suitably for
-<a class="reference internal" href="#porcupine.settings.add_entry" title="porcupine.settings.add_entry"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_entry()</span></code></a>,
-<a class="reference internal" href="#porcupine.settings.add_combobox" title="porcupine.settings.add_combobox"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_combobox()</span></code></a>,
-<a class="reference internal" href="#porcupine.settings.add_spinbox" title="porcupine.settings.add_spinbox"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_spinbox()</span></code></a> and
-<a class="reference internal" href="#porcupine.settings.add_label" title="porcupine.settings.add_label"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_label()</span></code></a>.
-Like this:</p>
+<p>Use grid with the returned widget. Its columns are configured like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>,-----------------------------------------------------------.
 | Porcupine Settings                                        |
 |-----------------------------------------------------------|
-|  / General \   / Config Files \                           |
-|_/           \_____________________________________________|
 |                           :                           :   |
 |                           :                           :col|
 |         column 0          :         column 1          :umn|
@@ -309,19 +287,18 @@ contains widgets for changing the settings. Column 2 is used for displaying
 <img alt="triangle" src="_images/triangle.gif" /> when the user has chosen the setting badly.</p>
 </dd></dl>
 
-<p>You can add widgets to the section yourself or use the following functions.
-All of these assume that the <em>section</em> argument comes from <a class="reference internal" href="#porcupine.settings.add_section" title="porcupine.settings.add_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_section()</span></code></a>
-and return the added widget.
+<p>You can add widgets to the content frame, but it’s usually easiest to use these functions.
+All of these return the added widget.
 A label that displays <em>text</em> is added to column 0 (see the ascii art above).
 When setting the values, the converter passed to <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> is used.</p>
 <dl class="py function">
 <dt id="porcupine.settings.add_entry">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">validate_callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">entry_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Entry<a class="reference internal" href="_modules/porcupine/settings.html#add_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_entry" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">validate_callback</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">entry_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Entry<a class="reference internal" href="_modules/porcupine/settings.html#add_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_entry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Entry</span></code> to the setting dialog.</p>
 <p>A label that displays <em>text</em> will be added next to the entry.
 All <code class="docutils literal notranslate"><span class="pre">**entry_kwargs</span></code> go to <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Entry</span></code>.</p>
-<p>When the user types something into the entry,
-<em>validate_callback</em> is called with the text of the entry as its only argument.
+<p>When the user types something into the entry, <em>validate_callback</em>
+is called with the text of the entry as its only argument.
 If it returns <code class="docutils literal notranslate"><span class="pre">True</span></code>, then the option given by <em>option_name</em>
 is set to the string that the user typed.
 Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
@@ -329,7 +306,7 @@ Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 
 <dl class="py function">
 <dt id="porcupine.settings.add_combobox">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_combobox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">combobox_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)">tkinter.ttk.Combobox</a><a class="reference internal" href="_modules/porcupine/settings.html#add_combobox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_combobox" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_combobox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">combobox_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)">tkinter.ttk.Combobox</a><a class="reference internal" href="_modules/porcupine/settings.html#add_combobox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_combobox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Combobox</span></code></a> to the setting dialog.</p>
 <p>All <code class="docutils literal notranslate"><span class="pre">**combobox_kwargs</span></code> go to <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Combobox</span></code></a>.
 Usually you should pass at least <code class="docutils literal notranslate"><span class="pre">values=list_of_strings</span></code>.</p>
@@ -344,7 +321,7 @@ in <code class="docutils literal notranslate"><span class="pre">combobox.cget('v
 
 <dl class="py function">
 <dt id="porcupine.settings.add_spinbox">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_spinbox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.9)">tkinter.ttk.Spinbox</a><a class="reference internal" href="_modules/porcupine/settings.html#add_spinbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_spinbox" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_spinbox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.9)">tkinter.ttk.Spinbox</a><a class="reference internal" href="_modules/porcupine/settings.html#add_spinbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_spinbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <a class="reference internal" href="utils.html#porcupine.utils.Spinbox" title="porcupine.utils.Spinbox"><code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.utils.Spinbox</span></code></a> to the setting dialog.</p>
 <p>All <code class="docutils literal notranslate"><span class="pre">**spinbox_kwargs</span></code> go to <code class="xref py py-class docutils literal notranslate"><span class="pre">utils.Spinbox</span></code>.
 Usually you should pass at least <code class="docutils literal notranslate"><span class="pre">from_=some_integer,</span> <span class="pre">to=another_integer</span></code>.</p>
@@ -356,17 +333,10 @@ Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 
 <dl class="py function">
 <dt id="porcupine.settings.add_label">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Label<a class="reference internal" href="_modules/porcupine/settings.html#add_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_label" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Label<a class="reference internal" href="_modules/porcupine/settings.html#add_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add text to the setting dialog.</p>
 <p>This is useful for explaining what some options do with more than a few words.
 The text is always as wide as the dialog is, even when the dialog is resized.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="porcupine.settings.add_config_file_button">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_config_file_button</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section</span><span class="p">:</span> <span class="n">tkinter.ttk.Frame</span></em>, <em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)">pathlib.Path</a></span></em><span class="sig-paren">)</span> &#x2192; tkinter.ttk.Button<a class="reference internal" href="_modules/porcupine/settings.html#add_config_file_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.add_config_file_button" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a button that opens a file in Porcupine when it’s clicked.
-The button doesn’t have any text next to it.</p>
 </dd></dl>
 
 </div>
