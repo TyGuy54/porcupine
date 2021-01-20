@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.menubar &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
+    <title>porcupine.menubar &#8212; Porcupine API 0.83.0+git.3fee585 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -87,8 +87,7 @@
     <span class="k">for</span> <span class="n">virtual_event</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_info</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">virtual_event</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">virtual_event</span><span class="p">):</span>
             <span class="c1"># When the keys are pressed, generate the event on the main</span>
-            <span class="c1"># window so the menu callback will trigger. Don&#39;t know why</span>
-            <span class="c1"># utils.forward_event didn&#39;t work for this.</span>
+            <span class="c1"># window so the menu callback will trigger.</span>
             <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">virtual_event</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_generate_event</span><span class="p">,</span> <span class="n">virtual_event</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">virtual_event</span><span class="p">)</span>
 

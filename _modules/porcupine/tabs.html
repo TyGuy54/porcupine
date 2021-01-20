@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.83.0+git.3fee585 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -584,6 +584,8 @@
 
 <span class="sd">            ``encoding``: :class:`str`</span>
 
+<span class="sd">            ``comment_prefix``: :class:`str`</span>
+
 <span class="sd">            ``line_ending``: :class:`settings.LineEnding`</span>
 
 <span class="sd">        See :source:`porcupine/default_filetypes.toml` for a description of</span>
@@ -648,6 +650,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;tabs2spaces&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;indent_size&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;comment_prefix&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
             <span class="s1">&#39;line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default_line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="p">),</span>
             <span class="n">converter</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">)</span>

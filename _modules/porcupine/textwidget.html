@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget &#8212; Porcupine API 0.82.0+git.b4bd1be documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.83.0+git.3fee585 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -650,9 +650,6 @@
                   <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Shift-Control-BackSpace&gt;&#39;</span><span class="p">,</span>
                   <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_delete</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;parenright&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_closing_brace</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;bracketright&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_closing_brace</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;braceright&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_closing_brace</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># most other things work by default, but these don&#39;t</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-v&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paste</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -707,10 +704,6 @@
                 <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
         <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">_on_closing_brace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Dedent automatically.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">indent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Insert indentation character(s) at the given location.&quot;&quot;&quot;</span>
