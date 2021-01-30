@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget &#8212; Porcupine API 0.84.1+git.81ce2c73 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.84.2+git.220ba0b1 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -35,6 +35,7 @@
 <span></span><span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">overload</span>
@@ -168,8 +169,6 @@
         <span class="c1"># this part is tcl because i couldn&#39;t get a python callback to work</span>
         <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">        proc </span><span class="si">%(fake_widget)s</span><span class="s1"> </span><span class="si">{args}</span><span class="s1"> {</span>
-<span class="s1">            #puts &quot;</span><span class="si">%(fake_widget)s</span><span class="s1"> $args&quot;</span>
-
 <span class="s1">            # subcommand is e.g. insert, delete, replace, index, search, ...</span>
 <span class="s1">            # see text(3tk) for all possible subcommands</span>
 <span class="s1">            set subcommand [lindex $args 0]</span>
@@ -200,6 +199,21 @@
 <span class="s1">            if {$subcommand == &quot;delete&quot; ||</span>
 <span class="s1">                    $subcommand == &quot;insert&quot; ||</span>
 <span class="s1">                    $subcommand == &quot;replace&quot;} {</span>
+<span class="s1">                # Validate and clean up indexes here so that any problems</span>
+<span class="s1">                # result in Tcl error</span>
+<span class="s1">                if {$subcommand == &quot;delete&quot;} {</span>
+<span class="s1">                    for {set i 1} {$i &lt; [llength $args]} {incr i} {</span>
+<span class="s1">                        lset args $i [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args $i]]</span>
+<span class="s1">                    }</span>
+<span class="s1">                }</span>
+<span class="s1">                if {$subcommand == &quot;insert&quot;} {</span>
+<span class="s1">                    lset args 1 [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args 1]]</span>
+<span class="s1">                }</span>
+<span class="s1">                if {$subcommand == &quot;replace&quot;} {</span>
+<span class="s1">                    lset args 1 [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args 1]]</span>
+<span class="s1">                    lset args 2 [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args 2]]</span>
+<span class="s1">                }</span>
+
 <span class="s1">                set cursor_may_have_moved 1</span>
 <span class="s1">                set prepared_event [</span><span class="si">%(change_event_from_command)s</span><span class="s1"> {*}$args]</span>
 <span class="s1">            }</span>
@@ -245,6 +259,8 @@
 
     <span class="k">def</span> <span class="nf">_create_change</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Change</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]+\.[0-9]+&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]+\.[0-9]+&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Change</span><span class="p">(</span>
             <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
             <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
@@ -259,15 +275,10 @@
         <span class="c1"># search for &#39;pathName delete&#39; in text(3tk)... it&#39;s a wall of text,</span>
         <span class="c1"># and this thing has to implement every detail of that wall</span>
         <span class="k">if</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;delete&#39;</span><span class="p">:</span>
-            <span class="c1"># &quot;All indices are first checked for validity before any deletions</span>
-            <span class="c1"># are made.&quot; they are already validated, but this doesn&#39;t hurt</span>
-            <span class="c1"># imo... but note that rest of this code assumes that this is done!</span>
-            <span class="c1"># not everything works in corner cases without this</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args_tuple</span><span class="p">]</span>
-
             <span class="c1"># tk has a funny abstraction of an invisible newline character at</span>
             <span class="c1"># the end of file, it&#39;s always there but nothing else uses it, so</span>
             <span class="c1"># let&#39;s ignore it</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args_tuple</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">old_arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">old_arg</span> <span class="o">==</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
                     <span class="n">args</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
@@ -330,7 +341,6 @@
         <span class="c1"># text, but not as bad as the delete</span>
         <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;insert&#39;</span><span class="p">:</span>
             <span class="n">text_index</span><span class="p">,</span> <span class="o">*</span><span class="n">other_args</span> <span class="o">=</span> <span class="n">args_tuple</span>
-            <span class="n">text_index</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">text_index</span><span class="p">)</span>
 
             <span class="c1"># &quot;If index refers to the end of the text (the character after the</span>
             <span class="c1"># last newline) then the new text is inserted just before the last</span>
@@ -353,8 +363,6 @@
         <span class="c1"># an even smaller wall of text that mostly refers to insert and replace</span>
         <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
             <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">other_args</span> <span class="o">=</span> <span class="n">args_tuple</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
             <span class="n">new_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other_args</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
 
             <span class="c1"># more invisible newline garbage</span>

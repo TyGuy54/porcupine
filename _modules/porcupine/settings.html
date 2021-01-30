@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings &#8212; Porcupine API 0.84.1+git.81ce2c73 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.84.2+git.220ba0b1 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -651,12 +651,25 @@
     <span class="k">return</span> <span class="n">label</span></div>
 
 
+<span class="k">def</span> <span class="nf">_is_monospace</span><span class="p">(</span><span class="n">font_family</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="c1"># Ignore weird fonts starting with @ (happens on Windows)</span>
+    <span class="k">if</span> <span class="n">font_family</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># I don&#39;t want to create font objects just for this, lol</span>
+    <span class="n">tcl_interpreter</span> <span class="o">=</span> <span class="n">get_dialog_content</span><span class="p">()</span><span class="o">.</span><span class="n">tk</span>
+
+    <span class="c1"># In non-monospace fonts, i is very narrow and m is very wide</span>
+    <span class="n">iii_size</span> <span class="o">=</span> <span class="n">tcl_interpreter</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="s1">&#39;measure&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">font_family</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">),</span> <span class="s1">&#39;iii&#39;</span><span class="p">)</span>
+    <span class="n">mmm_size</span> <span class="o">=</span> <span class="n">tcl_interpreter</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="s1">&#39;measure&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">font_family</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">),</span> <span class="s1">&#39;mmm&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Ignore off-by-one errors (don&#39;t know if they ever happen)</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">iii_size</span> <span class="o">-</span> <span class="n">mmm_size</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+
+
 <span class="k">def</span> <span class="nf">_fill_dialog_content_with_defaults</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># sort, remove duplicates, remove weird fonts starting with @ on windows</span>
-    <span class="n">font_families</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span>
-        <span class="n">family</span> <span class="k">for</span> <span class="n">family</span> <span class="ow">in</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">families</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">family</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
-    <span class="p">})</span>
+    <span class="n">font_families</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">builtins</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">_is_monospace</span><span class="p">,</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">families</span><span class="p">())))</span>
 
     <span class="n">add_combobox</span><span class="p">(</span><span class="s1">&#39;font_family&#39;</span><span class="p">,</span> <span class="s2">&quot;Font family:&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">font_families</span><span class="p">)</span>
     <span class="n">add_spinbox</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="s2">&quot;Font size:&quot;</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
