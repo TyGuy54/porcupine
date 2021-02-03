@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs &#8212; Porcupine API 0.84.2+git.220ba0b1 documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.85.0+git.6659f18a documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,7 +34,6 @@
   <h1>Source code for porcupine.tabs</h1><div class="highlight"><pre>
 <span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Tabs as in browser tabs, not \t characters.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -44,12 +43,13 @@
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span><span class="p">,</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span>
+                    <span class="n">cast</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">pygments.lexer</span> <span class="kn">import</span> <span class="n">LexerMeta</span>  <span class="c1"># type: ignore[import]</span>
 <span class="kn">from</span> <span class="nn">pygments.lexers</span> <span class="kn">import</span> <span class="n">TextLexer</span>  <span class="c1"># type: ignore[import]</span>
 
-<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_state</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">textwidget</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">_state</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">textwidget</span><span class="p">,</span> <span class="n">utils</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">_flatten</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span>
@@ -94,7 +94,6 @@
 <span class="sd">    .. method:: enable_traversal()</span>
 <span class="sd">    .. method:: forget(tab_id)</span>
 <span class="sd">    .. method:: hide(tab_id)</span>
-<span class="sd">    .. method:: insert(pos, child, **kw)</span>
 <span class="sd">    .. method:: tab(tab_id, option=None, **kw)</span>
 
 <span class="sd">        Don&#39;t use these methods. They are inherited from</span>
@@ -107,68 +106,15 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># These can be bound in a parent widget. This doesn&#39;t use</span>
-        <span class="c1"># enable_traversal() because we want more bindings than it</span>
-        <span class="c1"># creates. Undocumented because plugins shouldn&#39;t need this.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">],</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;&lt;Control-Prior&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_page_updown</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
-            <span class="p">(</span><span class="s1">&#39;&lt;Control-Next&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_page_updown</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">)),</span>
-            <span class="p">(</span><span class="s1">&#39;&lt;Control-Shift-Prior&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_page_updown</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
-            <span class="p">(</span><span class="s1">&#39;&lt;Control-Shift-Next&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_page_updown</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">)),</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-            <span class="n">callback</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_alt_n</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;&lt;Alt-Key-</span><span class="si">%d</span><span class="s1">&gt;&#39;</span> <span class="o">%</span> <span class="n">number</span><span class="p">,</span> <span class="n">callback</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;NotebookTabChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus_selected_tab</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_click</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">bind_mouse_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_wheel</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;NotebookTabChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notify_selected_tab</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># the string is call stack for adding callback</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tab_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Tab</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">_focus_selected_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_notify_selected_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">tab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tab</span><span class="o">.</span><span class="n">on_focus</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_on_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identify</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
-            <span class="c1"># something else than the top label was clicked</span>
-            <span class="k">return</span>
-
-        <span class="c1"># find the right edge of the label</span>
-        <span class="n">right</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span>
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">identify</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
-            <span class="n">right</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="c1"># hopefully the image is on the right edge of the label and</span>
-        <span class="c1"># there&#39;s no padding :O</span>
-        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;closebutton&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">right</span><span class="p">:</span>
-            <span class="c1"># the close button was clicked</span>
-            <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;@</span><span class="si">%d</span><span class="s1">,</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">))]</span>
-            <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">can_be_closed</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">close_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_on_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">select_another_tab</span><span class="p">({</span><span class="s1">&#39;up&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;down&#39;</span><span class="p">:</span> <span class="o">+</span><span class="mi">1</span><span class="p">}[</span><span class="n">direction</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="nf">_on_page_updown</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">shifted</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">move_selected_tab</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">select_another_tab</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
-
-    <span class="k">def</span> <span class="nf">_on_alt_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
-        <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>        <span class="c1"># index out of bounds</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="n">tab</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;TabSelected&gt;&gt;&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_tab_titles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">titlelists</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">title_choices</span><span class="p">)</span> <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">()]</span>
@@ -243,7 +189,7 @@
                 <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">existing_tab</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;closebutton&#39;</span><span class="p">),</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_tab_titles</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">select</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
@@ -269,66 +215,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">forget</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_tab_titles</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="TabManager.select_another_tab"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.select_another_tab">[docs]</a>    <span class="k">def</span> <span class="nf">select_another_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Try to select another tab next to the currently selected tab.</span>
-
-<span class="sd">        *diff* should be ``1`` for selecting a tab at right or ``-1``</span>
-<span class="sd">        for left. This returns True if another tab was selected and</span>
-<span class="sd">        False if the current tab is already the leftmost tab or there</span>
-<span class="sd">        are no tabs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">diff</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="nb">repr</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">():</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="n">selected_tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="n">selected_tab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">selected_tab</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="n">diff</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>   <span class="c1"># should be &quot;Slave index n out of bounds&quot;</span>
-            <span class="k">return</span> <span class="kc">False</span></div>
-
-    <span class="c1"># TODO: write tests for this? otoh it&#39;s a feature that I use all the time</span>
-<div class="viewcode-block" id="TabManager.move_selected_tab"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.move_selected_tab">[docs]</a>    <span class="k">def</span> <span class="nf">move_selected_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Try to move the currently selected tab left or right.</span>
-
-<span class="sd">        *diff* should be ``1`` for moving to right or ``-1`` for left.</span>
-<span class="sd">        This returns True if the tab was moved and False if there was no</span>
-<span class="sd">        room for moving it or there are no tabs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">diff</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="nb">repr</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">():</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="n">selected_tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="n">selected_tab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="n">i1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">selected_tab</span><span class="p">)</span>
-
-        <span class="c1"># this could be simplified, but it&#39;s nice and readable now</span>
-        <span class="n">i2</span> <span class="o">=</span> <span class="n">i1</span> <span class="o">+</span> <span class="n">diff</span>
-        <span class="k">if</span> <span class="n">i1</span> <span class="o">&gt;</span> <span class="n">i2</span><span class="p">:</span>
-            <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span> <span class="o">=</span> <span class="n">i2</span><span class="p">,</span> <span class="n">i1</span>
-
-        <span class="k">if</span> <span class="n">i1</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i2</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="c1"># it&#39;s important to move the second tab back instead of moving</span>
-        <span class="c1"># the other tab forward because insert(number_of_tabs, tab)</span>
-        <span class="c1"># doesn&#39;t work for some reason</span>
-        <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">()[</span><span class="n">i2</span><span class="p">]</span>
-        <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span>
-        <span class="n">selected</span> <span class="o">=</span> <span class="p">(</span><span class="n">tab</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">())</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">forget</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">tab</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="TabManager.add_tab_callback"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.add_tab_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_tab_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Tab&#39;</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Run a callback for each tab in the tab manager.</span>
@@ -375,6 +261,13 @@
 <span class="sd">    custom tabs. If you want to use grid or place you can create a frame</span>
 <span class="sd">    inside the tab, pack it with ``fill=&#39;both&#39;, expand=True`` and do</span>
 <span class="sd">    whatever you want inside it.</span>
+
+<span class="sd">    .. virtualevent:: TabSelected</span>
+
+<span class="sd">        :class:`TabManager` generates this event on the tab when the tab is</span>
+<span class="sd">        selected. Unlike :virtevt:`~TabManager.NotebookTabSelected`, this event</span>
+<span class="sd">        is bound on the tab and not the tab manager, and hence is automatically</span>
+<span class="sd">        unbound when the tab is destroyed.</span>
 
 <span class="sd">    .. virtualevent:: StatusChanged</span>
 
@@ -474,13 +367,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="Tab.on_focus"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.Tab.on_focus">[docs]</a>    <span class="k">def</span> <span class="nf">on_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;This is called when the tab is selected.</span>
-
-<span class="sd">        This does nothing by default. You can override this in a</span>
-<span class="sd">        subclass and make this focus the tab&#39;s main widget if needed.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-
 <div class="viewcode-block" id="Tab.equivalent"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.Tab.equivalent">[docs]</a>    <span class="k">def</span> <span class="nf">equivalent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Tab&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;This is explained in :meth:`.TabManager.add_tab`.</span>
 
@@ -532,12 +418,11 @@
             <span class="s2">&quot;from_state() wasn&#39;t overrided but get_state() was overrided&quot;</span><span class="p">)</span></div></div>
 
 
-<span class="n">_FileTabState</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span>
-    <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">],</span>
-    <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>   <span class="c1"># content</span>
-    <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>   <span class="c1"># hash</span>
-    <span class="nb">str</span><span class="p">,</span>             <span class="c1"># cursor location</span>
-<span class="p">]</span>
+<span class="k">class</span> <span class="nc">_FileTabState</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span>
+    <span class="n">content</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">saved_state</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">stat_result</span><span class="p">],</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="n">cursor_pos</span><span class="p">:</span> <span class="nb">str</span>
 
 
 <span class="k">def</span> <span class="nf">_import_lexer_class</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LexerMeta</span><span class="p">:</span>
@@ -637,7 +522,6 @@
                  <span class="n">filetype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">manager</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -660,13 +544,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">MainText</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span>
-                             <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">edit_reset</span><span class="p">()</span>   <span class="c1"># reset undo/redo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_saved_state</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;TabSelected&gt;&gt;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">focus</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;CursorMoved&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -675,7 +559,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">yscrollcommand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scrollbar</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scrollbar</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">()</span>
 
@@ -690,20 +574,99 @@
 <span class="sd">        file fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">tab</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+        <span class="n">tab</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">edit_reset</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">newlines</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="c1"># TODO: show a message box to user?</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; contains mixed line endings: </span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">newlines</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">file</span><span class="o">.</span><span class="n">newlines</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">newlines</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="n">tab</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">newlines</span><span class="p">))</span>
-
-        <span class="n">tab</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">tab</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_char_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="c1"># Why not &#39;end - 1 char&#39;: try .count(&#39;1.0&#39;, &#39;end - 1 char&#39;) with empty text widget</span>
+        <span class="p">(</span><span class="n">n</span><span class="p">,)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">_get_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">string</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_saved_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stat_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">stat_result</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_state</span> <span class="o">=</span> <span class="p">(</span><span class="n">stat_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_char_count</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hash</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FileTab.is_modified"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.is_modified">[docs]</a>    <span class="k">def</span> <span class="nf">is_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return False if the text has changed since previous save.</span>
+
+<span class="sd">        This is set to False automagically when the content is modified.</span>
+<span class="sd">        Use :meth:`mark_saved` to set this to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stat_result</span><span class="p">,</span> <span class="n">char_count</span><span class="p">,</span> <span class="n">save_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_state</span>
+        <span class="c1"># Don&#39;t call _get_hash() if not necessary</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_char_count</span><span class="p">()</span> <span class="o">!=</span> <span class="n">char_count</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hash</span><span class="p">()</span> <span class="o">!=</span> <span class="n">save_hash</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileTab.reload"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.reload">[docs]</a>    <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Read the contents of the file from disk.</span>
+
+<span class="sd">        .. seealso:: :meth:`open_file`, :meth:`other_program_changed_file`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">stat_result</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fstat</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">newlines</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="c1"># TODO: show a message box to user?</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; contains mixed line endings: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">newlines</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">f</span><span class="o">.</span><span class="n">newlines</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">newlines</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">newlines</span><span class="p">))</span>
+
+        <span class="c1"># Reloading can be undoed with Ctrl+Z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">autoseparators</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">edit_separator</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">edit_separator</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">autoseparators</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_saved_state</span><span class="p">(</span><span class="n">stat_result</span><span class="p">)</span>
+
+        <span class="c1"># TODO: document this</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Reloaded&gt;&gt;&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileTab.other_program_changed_file"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.other_program_changed_file">[docs]</a>    <span class="k">def</span> <span class="nf">other_program_changed_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check whether some other program has changed the file.</span>
+
+<span class="sd">        Programs like ``git`` often change the file while it&#39;s open in an</span>
+<span class="sd">        editor. After they do that, this method will return True until the file</span>
+<span class="sd">        is e.g. saved or reloaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">save_stat</span><span class="p">,</span> <span class="n">save_char_count</span><span class="p">,</span> <span class="n">save_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_state</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">save_stat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># We could just reading the contents of the file, but it can often be avoided.</span>
+            <span class="n">actual_stat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">actual_stat</span><span class="o">.</span><span class="n">st_mtime</span> <span class="o">==</span> <span class="n">save_stat</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">: modified time has not changed&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">actual_stat</span><span class="o">.</span><span class="n">st_size</span> <span class="o">!=</span> <span class="n">save_stat</span><span class="o">.</span><span class="n">st_size</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">: size has changed&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;reading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> to figure out if reload is needed&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">actual_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hash</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">actual_hash</span> <span class="o">!=</span> <span class="n">save_hash</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="c1"># Avoid reading file contents again soon</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_saved_state</span> <span class="o">=</span> <span class="p">(</span><span class="n">actual_stat</span><span class="p">,</span> <span class="n">save_char_count</span><span class="p">,</span> <span class="n">save_hash</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">UnicodeError</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error when figuring out if &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; needs reloading, assuming it does&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
 
     <span class="k">def</span> <span class="nf">equivalent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Tab</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>    <span class="c1"># override</span>
         <span class="c1"># this used to have hasattr(other, &quot;path&quot;) instead of isinstance</span>
@@ -715,27 +678,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
                 <span class="n">other</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">samefile</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
-
-    <span class="c1"># TODO: avoid doing this on every keypress?</span>
-    <span class="k">def</span> <span class="nf">_get_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
-
-        <span class="c1"># hash objects don&#39;t define an __eq__ so we need to use a string</span>
-        <span class="c1"># representation of the hash</span>
-        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
-
-<div class="viewcode-block" id="FileTab.mark_saved"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.mark_saved">[docs]</a>    <span class="k">def</span> <span class="nf">mark_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Make :meth:`is_saved` return True.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hash</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="FileTab.is_saved"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.is_saved">[docs]</a>    <span class="k">def</span> <span class="nf">is_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return False if the text has changed since previous save.</span>
-
-<span class="sd">        This is set to False automagically when the content is modified.</span>
-<span class="sd">        Use :meth:`mark_saved` to set this to True.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hash</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
@@ -760,7 +702,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">titles</span> <span class="o">=</span> <span class="n">_short_ways_to_display_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_saved</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_modified</span><span class="p">():</span>
             <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;*</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">*&#39;</span> <span class="k">for</span> <span class="n">title</span> <span class="ow">in</span> <span class="n">titles</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">title_choices</span> <span class="o">=</span> <span class="n">titles</span>
@@ -774,7 +716,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path_string</span><span class="si">}</span><span class="se">\t</span><span class="s2">Line </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">, column </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">can_be_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>    <span class="c1"># override</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_saved</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_modified</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -787,34 +729,34 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">answer</span><span class="p">:</span>
             <span class="c1"># yes</span>
-            <span class="n">save_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">save_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># saving failed</span>
-                <span class="k">return</span> <span class="kc">False</span>
-            <span class="k">elif</span> <span class="n">save_result</span><span class="p">:</span>
-                <span class="c1"># saving succeeded</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># user said no</span>
-                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="c1"># no was clicked, can be closed</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">on_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>    <span class="c1"># override</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">focus_set</span><span class="p">()</span>
-
-<div class="viewcode-block" id="FileTab.save"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<div class="viewcode-block" id="FileTab.save"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check_if_other_program_has_changed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Save the file to the current :attr:`path`.</span>
 
-<span class="sd">        This calls :meth:`save_as` if :attr:`path` is None, and returns</span>
-<span class="sd">        False if the user cancels the save as dialog. None is returned</span>
-<span class="sd">        on errors, and True is returned in all other cases. In other</span>
-<span class="sd">        words, this returns True if saving succeeded.</span>
+<span class="sd">        This returns whether the file was actually saved. This means that</span>
+<span class="sd">        ``False`` is returned when the user cancels a :meth:`save_as` dialog</span>
+<span class="sd">        (can happen when :attr:`path` is None) or an error occurs (the error is</span>
+<span class="sd">        logged).</span>
+
+<span class="sd">        If ``check_if_other_program_has_changed`` is set to True and the saving</span>
+<span class="sd">        would overwrite changes done by other programs than Porcupine, then</span>
+<span class="sd">        before saving, this function will ask whether the user really wants to</span>
+<span class="sd">        save.</span>
 
 <span class="sd">        .. seealso:: The :virtevt:`Save` event.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_as</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">check_if_other_program_has_changed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_program_changed_file</span><span class="p">():</span>
+            <span class="n">user_is_sure</span> <span class="o">=</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askyesno</span><span class="p">(</span>
+                <span class="s2">&quot;File changed&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Another program has changed </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. Are you sure you want to save it?&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">user_is_sure</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Save&gt;&gt;&#39;</span><span class="p">)</span>
 
@@ -824,25 +766,31 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">backup_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">line_ending</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;end - 1 char&#39;</span><span class="p">))</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>   <span class="c1"># needed to get right file size in stat</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_saved_state</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">fstat</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">()))</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">UnicodeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;saving &#39;</span><span class="si">%s</span><span class="s2">&#39; failed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">errordialog</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;Saving failed!&quot;</span><span class="p">,</span>
                               <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_saved_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hash</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="FileTab.save_as"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.save_as">[docs]</a>    <span class="k">def</span> <span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="FileTab.save_as"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.save_as">[docs]</a>    <span class="k">def</span> <span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Ask the user where to save the file and save it there.</span>
 
 <span class="sd">        Returns True if the file was saved, and False if the user</span>
-<span class="sd">        cancelled the dialog.</span>
+<span class="sd">        cancelled the dialog. If a ``path`` is given, it&#39;s used instead of</span>
+<span class="sd">        asking the user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">path_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="o">**</span><span class="n">_state</span><span class="o">.</span><span class="n">filedialog_kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">path_string</span><span class="p">:</span>     <span class="c1"># it may be &#39;&#39; because tkinter</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="o">**</span><span class="n">_state</span><span class="o">.</span><span class="n">filedialog_kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">path_string</span><span class="p">:</span>     <span class="c1"># it may be &#39;&#39; because tkinter</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
 
         <span class="c1"># see equivalent()</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FileTab</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">path</span>
@@ -856,37 +804,36 @@
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">check_if_other_program_has_changed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
     <span class="c1"># FIXME: don&#39;t ignore undo history :/</span>
+    <span class="c1"># FIXME: when called from reload plugin, require saving file first</span>
     <span class="k">def</span> <span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FileTabState</span><span class="p">:</span>
         <span class="c1"># e.g. &quot;New File&quot; tabs are saved even though the .path is None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_saved</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_modified</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_program_changed_file</span><span class="p">():</span>
             <span class="c1"># this is really saved</span>
             <span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;end - 1 char&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">_FileTabState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_FileTabT</span><span class="p">],</span> <span class="n">manager</span><span class="p">:</span> <span class="n">TabManager</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">_FileTabState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FileTabT</span><span class="p">:</span>
-        <span class="n">path</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">save_hash</span><span class="p">,</span> <span class="n">cursor_pos</span> <span class="o">=</span> <span class="n">state</span>
-        <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># nothing has changed since saving, read from the saved file</span>
-            <span class="k">assert</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span>  <span class="c1"># older porcupines used strings</span>
-            <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">_FileTabState</span><span class="p">)</span>   <span class="c1"># not namedtuple in older porcupines</span>
 
-        <span class="c1"># the title depends on the saved hash</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_hash</span> <span class="o">=</span> <span class="n">save_hash</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># nothing has changed since saving, read from the saved file</span>
+            <span class="k">assert</span> <span class="n">state</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># title depends on _saved_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">saved_state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">mark_set</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">,</span> <span class="n">cursor_pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">mark_set</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">cursor_pos</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">see</span><span class="p">(</span><span class="s1">&#39;insert linestart&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 </pre></div>
@@ -916,7 +863,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>

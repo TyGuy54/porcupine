@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.textwidget &#8212; Porcupine API 0.84.2+git.220ba0b1 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.85.0+git.6659f18a documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -298,19 +298,12 @@
                      <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)]</span>
 
             <span class="c1"># &quot;They [index pairs, aka ranges] are sorted [...].&quot;</span>
-            <span class="c1"># TODO: use the fact that (line, column) tuples sort nicely?</span>
-            <span class="k">def</span> <span class="nf">sort_by_range_beginnings</span><span class="p">(</span>
-                    <span class="n">range1</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                    <span class="n">range2</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-                <span class="n">start1</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range1</span>
-                <span class="n">start2</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">range2</span>
-                <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">start2</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-                <span class="k">return</span> <span class="mi">0</span>
+            <span class="c1"># (line, column) tuples sort nicely</span>
+            <span class="k">def</span> <span class="nf">get_range_beginning_as_tuple</span><span class="p">(</span><span class="n">start_and_end</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+                <span class="n">line</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">start_and_end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
 
-            <span class="n">pairs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">cmp_to_key</span><span class="p">(</span><span class="n">sort_by_range_beginnings</span><span class="p">))</span>
+            <span class="n">pairs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">get_range_beginning_as_tuple</span><span class="p">)</span>
 
             <span class="c1"># &quot;If multiple ranges with the same start index are given, then the</span>
             <span class="c1"># longest range is used. If overlapping ranges are given, then they</span>
@@ -816,8 +809,8 @@
     <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="s1">&#39;TkDefaultFont&#39;</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;borderwidth&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;relief&#39;</span><span class="p">,</span> <span class="s1">&#39;flat&#39;</span><span class="p">)</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;wrap&#39;</span><span class="p">,</span> <span class="s1">&#39;word&#39;</span><span class="p">)</span>       <span class="c1"># TODO: remember to mention in docs</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;disabled&#39;</span><span class="p">)</span>  <span class="c1"># TODO: remember to mention in docs</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;wrap&#39;</span><span class="p">,</span> <span class="s1">&#39;word&#39;</span><span class="p">)</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;disabled&#39;</span><span class="p">)</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update_colors</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -870,7 +863,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine — The top level Porcupine package &#8212; Porcupine API 0.84.2+git.220ba0b1 documentation</title>
+    <title>porcupine — The top level Porcupine package &#8212; Porcupine API 0.85.0+git.6659f18a documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -111,6 +111,24 @@ for displaying known filetypes in the dialogs.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="directories">
+<h2>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h2>
+<dl class="py data">
+<dt id="porcupine.dirs">
+<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">dirs</code><em class="property">: appdirs.AppDirs</em><a class="headerlink" href="#porcupine.dirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>See <a class="reference external" href="https://pypi.org/project/appdirs/">appdirs on PyPI</a>.
+For example, <code class="docutils literal notranslate"><span class="pre">porcupine.dirs.user_cache_dir</span></code> is where temporary cache files should go.</p>
+<p>When Porcupine starts, it makes sure that these directories exist:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dirs.user_cache_dir</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dirs.user_config_dir</span></code> and a subdirectory named <code class="docutils literal notranslate"><span class="pre">plugins</span></code> inside it</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dirs.user_log_dir</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -139,7 +157,6 @@ for displaying known filetypes in the dialogs.</p>
 <li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>

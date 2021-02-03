@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader &#8212; Porcupine API 0.84.2+git.220ba0b1 documentation</title>
+    <title>porcupine.pluginloader &#8212; Porcupine API 0.85.0+git.6659f18a documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -145,6 +145,7 @@
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_argument_parser&#39;</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">setup_argument_parser</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -152,13 +153,16 @@
             <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">SETUP_FAILED</span>
             <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
 
+        <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup_argument_parser() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">_import_plugin</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">PluginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="kc">None</span>
 
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to import porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -176,7 +180,7 @@
         <span class="k">if</span> <span class="n">dep_info</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">setup_before</span><span class="p">:</span>
             <span class="n">_dependencies</span><span class="p">[</span><span class="n">dep_info</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
-    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;imported porcupine.plugins.</span><span class="si">%s</span><span class="s2"> in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
 
 
@@ -185,7 +189,7 @@
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
-    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -195,7 +199,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span>
 
-    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
 
 
@@ -294,6 +298,11 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">old_status</span>
 
+    <span class="c1"># If a plugin defines setup_argument_parser, it likely wants it to run on</span>
+    <span class="c1"># startup, and now it&#39;s too late.</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_argument_parser&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
     <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
         <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span> <span class="ow">and</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">deps</span>
         <span class="k">for</span> <span class="n">info</span><span class="p">,</span> <span class="n">deps</span> <span class="ow">in</span> <span class="n">_dependencies</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -344,7 +353,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dirs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.dirs</span></code> — Paths to Porcupine’s files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.utils</span></code> — Handy utility functions and classes</a></li>
