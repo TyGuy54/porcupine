@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs &#8212; Porcupine API 0.85.0+git.6659f18a documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.86.0+git.49ab39a6 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,6 +34,7 @@
   <h1>Source code for porcupine.tabs</h1><div class="highlight"><pre>
 <span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Tabs as in browser tabs, not \t characters.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -237,7 +238,7 @@
 
 
 <div class="viewcode-block" id="Tab"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.Tab">[docs]</a><span class="k">class</span> <span class="nc">Tab</span><span class="p">(</span><span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for widgets that can be added to TabManager.</span>
+    <span class="sd">&quot;&quot;&quot;Base class for widgets that can be added to TabManager.</span>
 
 <span class="sd">    You can easily create custom kinds of tabs by inheriting from this</span>
 <span class="sd">    class. Here&#39;s a very minimal but complete example plugin::</span>
@@ -269,11 +270,6 @@
 <span class="sd">        is bound on the tab and not the tab manager, and hence is automatically</span>
 <span class="sd">        unbound when the tab is destroyed.</span>
 
-<span class="sd">    .. virtualevent:: StatusChanged</span>
-
-<span class="sd">        This event is generated when :attr:`status` is set to a new</span>
-<span class="sd">        value. Use ``event.widget.status`` to access the current status.</span>
-
 <span class="sd">    .. attribute:: title_choices</span>
 
 <span class="sd">        A :class:`typing.Sequence` of strings that can be used as the title of</span>
@@ -284,19 +280,6 @@
 <span class="sd">        For example, if you open a file named ``foo/bar/baz.py``, its title</span>
 <span class="sd">        will be ``baz.py``, but if you also open ``foo/bar2/baz.py`` then the</span>
 <span class="sd">        titles change to ``bar/baz.py`` and ``bar2/baz.py``.</span>
-
-<span class="sd">    .. attribute:: status</span>
-
-<span class="sd">        A human-readable string for showing in e.g. a status bar.</span>
-
-<span class="sd">        The status message can also contain multiple tab-separated</span>
-<span class="sd">        things, e.g. ``&quot;File &#39;thing.py&#39;\tLine 12, column 34&quot;``.</span>
-
-<span class="sd">        This is ``&#39;&#39;`` by default, but that can be changed like</span>
-<span class="sd">        ``tab.status = something_new``.</span>
-
-<span class="sd">        If you&#39;re writing something like a status bar, make sure to</span>
-<span class="sd">        handle ``\t`` characters and bind :virtevt:`~StatusChanged`.</span>
 
 <span class="sd">    .. attribute:: master</span>
 
@@ -322,7 +305,6 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">:</span> <span class="n">TabManager</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">manager</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_titles</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
 
         <span class="c1"># top and bottom frames must be packed first because this way</span>
@@ -335,15 +317,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bottom_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">left_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">right_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
-
-    <span class="nd">@status</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">new_status</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;StatusChanged&gt;&gt;&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">title_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -432,6 +405,11 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">LexerMeta</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;expected a Lexer subclass, got </span><span class="si">{</span><span class="n">klass</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">klass</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">ReloadInfo</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">EventDataclass</span><span class="p">):</span>
+    <span class="n">was_modified</span><span class="p">:</span> <span class="nb">bool</span>
 
 
 <div class="viewcode-block" id="FileTab"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab">[docs]</a><span class="k">class</span> <span class="nc">FileTab</span><span class="p">(</span><span class="n">Tab</span><span class="p">):</span>
@@ -551,8 +529,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_saved_state</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;TabSelected&gt;&gt;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">focus</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PathChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;CursorMoved&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">scrollbar</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_frame</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scrollbar</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
@@ -561,7 +537,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ContentChanged&gt;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FileTab.open_file"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.open_file">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">open_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_FileTabT</span><span class="p">],</span> <span class="n">manager</span><span class="p">:</span> <span class="n">TabManager</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FileTabT</span><span class="p">:</span>
@@ -619,6 +594,8 @@
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">newlines</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;line_ending&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LineEnding</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">newlines</span><span class="p">))</span>
 
+        <span class="n">modified_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_modified</span><span class="p">()</span>
+
         <span class="c1"># Reloading can be undoed with Ctrl+Z</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">autoseparators</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -631,7 +608,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_saved_state</span><span class="p">(</span><span class="n">stat_result</span><span class="p">)</span>
 
         <span class="c1"># TODO: document this</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Reloaded&gt;&gt;&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Reloaded&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ReloadInfo</span><span class="p">(</span><span class="n">was_modified</span><span class="o">=</span><span class="n">modified_before</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="FileTab.other_program_changed_file"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.other_program_changed_file">[docs]</a>    <span class="k">def</span> <span class="nf">other_program_changed_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Check whether some other program has changed the file.</span>
@@ -706,14 +683,6 @@
             <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;*</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">*&#39;</span> <span class="k">for</span> <span class="n">title</span> <span class="ow">in</span> <span class="n">titles</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">title_choices</span> <span class="o">=</span> <span class="n">titles</span>
-
-    <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">path_string</span> <span class="o">=</span> <span class="s2">&quot;New file&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">path_string</span> <span class="o">=</span> <span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
-        <span class="n">line</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path_string</span><span class="si">}</span><span class="se">\t</span><span class="s2">Line </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">, column </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">can_be_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>    <span class="c1"># override</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_modified</span><span class="p">():</span>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.85.0+git.6659f18a documentation</title>
+    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.86.0+git.49ab39a6 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -184,13 +184,6 @@ is bound on the tab and not the tab manager, and hence is automatically
 unbound when the tab is destroyed.</p>
 </dd></dl>
 
-<dl class="py virtualevent">
-<dt id="porcupine.tabs.Tab.StatusChanged">
-<em class="property">virtual event </em><code class="sig-name descname">&lt;&lt;StatusChanged&gt;&gt;</code><a class="headerlink" href="#porcupine.tabs.Tab.StatusChanged" title="Permalink to this definition">¶</a></dt>
-<dd><p>This event is generated when <a class="reference internal" href="#porcupine.tabs.Tab.status" title="porcupine.tabs.Tab.status"><code class="xref py py-attr docutils literal notranslate"><span class="pre">status</span></code></a> is set to a new
-value. Use <code class="docutils literal notranslate"><span class="pre">event.widget.status</span></code> to access the current status.</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt id="porcupine.tabs.Tab.title_choices">
 <code class="sig-name descname">title_choices</code><a class="headerlink" href="#porcupine.tabs.Tab.title_choices" title="Permalink to this definition">¶</a></dt>
@@ -201,18 +194,6 @@ the same first title, then the second title is used instead, and so on.
 For example, if you open a file named <code class="docutils literal notranslate"><span class="pre">foo/bar/baz.py</span></code>, its title
 will be <code class="docutils literal notranslate"><span class="pre">baz.py</span></code>, but if you also open <code class="docutils literal notranslate"><span class="pre">foo/bar2/baz.py</span></code> then the
 titles change to <code class="docutils literal notranslate"><span class="pre">bar/baz.py</span></code> and <code class="docutils literal notranslate"><span class="pre">bar2/baz.py</span></code>.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="porcupine.tabs.Tab.status">
-<code class="sig-name descname">status</code><a class="headerlink" href="#porcupine.tabs.Tab.status" title="Permalink to this definition">¶</a></dt>
-<dd><p>A human-readable string for showing in e.g. a status bar.</p>
-<p>The status message can also contain multiple tab-separated
-things, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;File</span> <span class="pre">'thing.py'\tLine</span> <span class="pre">12,</span> <span class="pre">column</span> <span class="pre">34&quot;</span></code>.</p>
-<p>This is <code class="docutils literal notranslate"><span class="pre">''</span></code> by default, but that can be changed like
-<code class="docutils literal notranslate"><span class="pre">tab.status</span> <span class="pre">=</span> <span class="pre">something_new</span></code>.</p>
-<p>If you’re writing something like a status bar, make sure to
-handle <code class="docutils literal notranslate"><span class="pre">\t</span></code> characters and bind <a class="reference internal" href="#porcupine.tabs.Tab.StatusChanged" title="porcupine.tabs.Tab.StatusChanged"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;StatusChanged&gt;&gt;</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
