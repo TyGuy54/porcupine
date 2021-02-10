@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.86.0+git.49ab39a6 documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.87.0+git.f6bdd0f documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -41,8 +41,8 @@ in the <em>Edit</em> menu.</p>
 <h2>Getting and Setting<a class="headerlink" href="#getting-and-setting" title="Permalink to this headline">¶</a></h2>
 <p>Use these functions for setting and getting values of options:</p>
 <dl class="py function">
-<dt id="porcupine.settings.set">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)">object</a></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">from_config</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="headerlink" href="#porcupine.settings.set" title="Permalink to this definition">¶</a></dt>
+<dt id="porcupine.settings.set_">
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">set_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)">object</a></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">from_config</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="headerlink" href="#porcupine.settings.set_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of an opiton.</p>
 <p>Set <code class="docutils literal notranslate"><span class="pre">from_config=True</span></code> if the value comes from a configuration
 file (see <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a>). That does two things:</p>
@@ -54,13 +54,15 @@ the value won’t be set immediatelly, but instead it gets set
 later when the option is added.</p></li>
 </ul>
 </div></blockquote>
+<p>This function is not named <code class="docutils literal notranslate"><span class="pre">set</span></code> to avoid conflicting with the
+built-in <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> class.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.settings.get">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#porcupine.settings.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">type_</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#porcupine.settings.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current value of an option.
-<em>type</em> should be <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code> depending on what type the option is.
+<em>type_</em> should be e.g. <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code> depending on what type the option is.
 You can also specify <code class="docutils literal notranslate"><span class="pre">object</span></code> to allow any type.</p>
 <p>This method works correctly for <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>,
 but sometimes it returns Any because mypy sucks:</p>
@@ -80,7 +82,7 @@ same type two times):</p>
 <p>Options of mutable types are returned as copies, so things like
 <code class="docutils literal notranslate"><span class="pre">settings.get('something',</span> <span class="pre">List[str])</span></code> always return a new list.
 If you want to change a setting like that, you need to first get a copy
-of the current value, then modify the copy, and finally <a class="reference internal" href="#porcupine.settings.set" title="porcupine.settings.set"><code class="xref py py-func docutils literal notranslate"><span class="pre">set()</span></code></a> it
+of the current value, then modify the copy, and finally <a class="reference internal" href="#porcupine.settings.set_" title="porcupine.settings.set_"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_()</span></code></a> it
 back. This is an easy way to make sure that change events run every
 time the value changes.</p>
 </dd></dl>
@@ -183,11 +185,11 @@ raises an error if the string is invalid.</p></li>
 time Porcupine is restarted.</p>
 <dl class="py function">
 <dt id="porcupine.settings.add_option">
-<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_option</code><span class="sig-paren">(</span><em class="sig-param">option_name: str, default: Any, *, type: Optional[Any] = None, converter: Callable[[Any], Any] = &lt;function Settings.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="headerlink" href="#porcupine.settings.add_option" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">porcupine.settings.</code><code class="sig-name descname">add_option</code><span class="sig-paren">(</span><em class="sig-param">option_name: str, default: Any, type_: Optional[Any] = None, *, converter: Callable[[Any], Any] = &lt;function Settings.&lt;lambda&gt;&gt;, exist_ok: bool = False</em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="headerlink" href="#porcupine.settings.add_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a custom option.</p>
-<p>The type of <em>default</em> determines how <a class="reference internal" href="#porcupine.settings.set" title="porcupine.settings.set"><code class="xref py py-func docutils literal notranslate"><span class="pre">set()</span></code></a> and <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> behave.
+<p>The type of <em>default</em> determines how <a class="reference internal" href="#porcupine.settings.set_" title="porcupine.settings.set_"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_()</span></code></a> and <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> behave.
 For example, if <em>default</em> is a string, then
-calling <a class="reference internal" href="#porcupine.settings.set" title="porcupine.settings.set"><code class="xref py py-func docutils literal notranslate"><span class="pre">set()</span></code></a> with a value that isn’t a string or
+calling <a class="reference internal" href="#porcupine.settings.set_" title="porcupine.settings.set_"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_()</span></code></a> with a value that isn’t a string or
 calling <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> with the type set to something else than <code class="docutils literal notranslate"><span class="pre">str</span></code>
 is an error. You can also provide a custom type with the <em>type</em>
 argument, e.g. <code class="docutils literal notranslate"><span class="pre">add_option('foo',</span> <span class="pre">None,</span> <span class="pre">Optional[pathlib.Path])</span></code>.</p>
@@ -211,6 +213,11 @@ class in the settings object. That’s implemented similarly to this:</p>
 </pre></div>
 </div>
 <p>By default, the converter returns its argument unchanged.</p>
+<p>If an option with the same name exists already, an error is raised by
+default, but if <code class="docutils literal notranslate"><span class="pre">exist_ok=True</span></code> is given, then adding the same
+option again is allowed. When this happens, an error is raised if
+<em>default</em>, <em>type</em> or <em>converter</em> doesn’t match what was passed in when
+the option was added for the first time.</p>
 </dd></dl>
 
 <p>Example:</p>
@@ -442,7 +449,7 @@ such as the documentation of an attribute with type <a class="reference internal
 <dt id="porcupine.settings.Settings.debug_dump">
 <code class="sig-name descname">debug_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#Settings.debug_dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.settings.Settings.debug_dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>These methods are just like the
-<a class="reference internal" href="#porcupine.settings.set" title="porcupine.settings.set"><code class="xref py py-func docutils literal notranslate"><span class="pre">set()</span></code></a>, <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a>, <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> and <a class="reference internal" href="#porcupine.settings.debug_dump" title="porcupine.settings.debug_dump"><code class="xref py py-func docutils literal notranslate"><span class="pre">debug_dump()</span></code></a> functions,
+<a class="reference internal" href="#porcupine.settings.set_" title="porcupine.settings.set_"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_()</span></code></a>, <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a>, <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> and <a class="reference internal" href="#porcupine.settings.debug_dump" title="porcupine.settings.debug_dump"><code class="xref py py-func docutils literal notranslate"><span class="pre">debug_dump()</span></code></a> functions,
 but they do things with the <a class="reference internal" href="#porcupine.settings.Settings" title="porcupine.settings.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a> instance, not with the global settings.</p>
 </dd></dl>
 
@@ -514,7 +521,7 @@ but they do things with the <a class="reference internal" href="#porcupine.setti
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Akuli.
+      &copy; 2017-2021 Akuli.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>

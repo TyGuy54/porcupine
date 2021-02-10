@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.86.0+git.49ab39a6 documentation</title>
+    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.87.0+git.f6bdd0f documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -293,7 +293,7 @@ default, <a class="reference internal" href="#porcupine.tabs.Tab.get_state" titl
 <em class="property">class </em><code class="sig-prename descclassname">porcupine.tabs.</code><code class="sig-name descname">FileTab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">manager</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#porcupine.tabs.TabManager" title="porcupine.tabs.TabManager">porcupine.tabs.TabManager</a></span></em>, <em class="sig-param"><span class="n">content</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)">pathlib.Path</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filetype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/tabs.html#FileTab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.tabs.FileTab" title="Permalink to this definition">¶</a></dt>
 <dd><p>A subclass of <a class="reference internal" href="#porcupine.tabs.Tab" title="porcupine.tabs.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a> that represents an opened file.</p>
 <p>The filetab will have <em>content</em> in it by default when it’s opened. If
-<em>path</em> is given, the file will be saved there when Ctrl+S is
+<em>path</em> is given, the file will be saved there when Ctrl+S (or ⌘S on Mac) is
 pressed. Otherwise this becomes a “New File” tab.</p>
 <p>If you want to open a new tab for editing an existing file,
 use <a class="reference internal" href="#porcupine.tabs.FileTab.open_file" title="porcupine.tabs.FileTab.open_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open_file()</span></code></a>.</p>
@@ -505,7 +505,7 @@ asking the user.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Akuli.
+      &copy; 2017-2021 Akuli.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
