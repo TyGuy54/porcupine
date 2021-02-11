@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.pluginloader &#8212; Porcupine API 0.87.0+git.f6bdd0f documentation</title>
+    <title>porcupine.pluginloader &#8212; Porcupine API 0.87.1+git.b26fd3e documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -220,6 +220,7 @@
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">finder</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_pkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">(</span><span class="n">plugin_paths</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;overview&#39;</span>  <span class="c1"># workaround for #328</span>
     <span class="p">)</span>
     <span class="n">_dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">info</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">plugin_infos</span><span class="p">})</span>
 

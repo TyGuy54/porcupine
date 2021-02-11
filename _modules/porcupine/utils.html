@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils &#8212; Porcupine API 0.87.0+git.f6bdd0f documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.87.1+git.b26fd3e documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -45,12 +45,13 @@
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">import</span> <span class="nn">dacite</span>
 
@@ -161,6 +162,17 @@
 <span class="k">else</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">shlex</span> <span class="kn">import</span> <span class="n">quote</span>
     <span class="n">quote</span> <span class="o">=</span> <span class="n">quote</span>       <span class="c1"># silence pyflakes warning</span>
+
+
+<span class="c1"># Using these with subprocess prevents opening unnecessary cmd windows</span>
+<span class="c1"># TODO: document this</span>
+<span class="n">subprocess_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="c1"># https://stackoverflow.com/a/1813893</span>
+    <span class="c1"># TODO: simplify when Python 3.6 support is dropped</span>
+    <span class="c1">#subprocess_kwargs[&#39;startupinfo&#39;] = subprocess.STARTUPINFO(dwFlags=subprocess.STARTF_USESHOWWINDOW)</span>
+    <span class="n">subprocess_kwargs</span><span class="p">[</span><span class="s1">&#39;startupinfo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTUPINFO</span><span class="p">()</span>
+    <span class="n">subprocess_kwargs</span><span class="p">[</span><span class="s1">&#39;startupinfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dwFlags</span> <span class="o">|=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTF_USESHOWWINDOW</span>
 
 
 <span class="n">_PROJECT_ROOT_THINGS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.editorconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;.git&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
@@ -335,37 +347,39 @@
 
     <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bButton-1\b&#39;</span><span class="p">,</span> <span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
     <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\b[A-Za-z]\b&#39;</span><span class="p">,</span> <span class="n">_handle_letter</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>  <span class="c1"># tk doesn&#39;t like e.g. &lt;Control-ö&gt;</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bKey-\b&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
+    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bKey-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">mac</span><span class="p">:</span>
         <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bMod1\b&#39;</span><span class="p">,</span> <span class="s1">&#39;Command&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>  <span class="c1"># event_info() returns &lt;Mod1-Key-x&gt; for &lt;Command-x&gt;</span>
         <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bplus\b&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
         <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bminus\b&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>   <span class="c1"># e.g. &quot;Command-minus&quot; --&gt; &quot;Command--&quot;</span>
+
+        <span class="k">if</span> <span class="n">menu</span><span class="p">:</span>
+            <span class="c1"># Tk will use the proper symbols automagically, and it expects dash-separated</span>
+            <span class="k">return</span> <span class="n">binding</span>
+
+        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bReturn\b&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⏎&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
+
+        <span class="c1"># &lt;ThePhilgrim&gt; I think it&#39;s like from left to right... so it would be shift -&gt; ctrl -&gt; alt -&gt; cmd</span>
+        <span class="c1"># We need to sub backwards, because each sub puts its thing before everything else</span>
+        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bCommand-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⌘-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
+        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bAlt-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⌥-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
+        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bControl-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⌃-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>   <span class="c1"># look carefully, two different kinds of hats</span>
+        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bShift-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⇧-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
+
+        <span class="c1"># &quot;Command--&quot; --&gt; &quot;Command-&quot;</span>
+        <span class="c1"># &quot;Command-+&quot; --&gt; &quot;Command+&quot;</span>
+        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;-(-?)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
+
+        <span class="c1"># e.g. ⌘-click</span>
+        <span class="k">return</span> <span class="n">binding</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;-click&#39;</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
         <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bControl\b&#39;</span><span class="p">,</span> <span class="s1">&#39;Ctrl&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
         <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\b0\b&#39;</span><span class="p">,</span> <span class="s1">&#39;Zero&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>   <span class="c1"># most fonts don&#39;t distinguishes O and 0 nicely, mac font does</span>
         <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bplus\b&#39;</span><span class="p">,</span> <span class="s1">&#39;Plus&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
         <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bminus\b&#39;</span><span class="p">,</span> <span class="s1">&#39;Minus&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">mac</span><span class="p">:</span>
+        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\bReturn\b&#39;</span><span class="p">,</span> <span class="s1">&#39;Enter&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">binding</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">menu</span><span class="p">:</span>
-        <span class="c1"># Tk will use the proper symbols automagically, and it expects dash-separated</span>
-        <span class="k">return</span> <span class="n">binding</span>
-
-    <span class="c1"># &lt;ThePhilgrim&gt; I think it&#39;s like from left to right... so it would be shift -&gt; ctrl -&gt; alt -&gt; cmd</span>
-    <span class="c1"># We need to sub backwards, because each sub puts its thing before everything else</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bCommand-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⌘-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bAlt-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⌥-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bControl-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⌃-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>   <span class="c1"># look carefully, two different kinds of hats</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*)\bShift-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;⇧-\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-
-    <span class="c1"># &quot;Command--&quot; --&gt; &quot;Command-&quot;</span>
-    <span class="c1"># &quot;Command-+&quot; --&gt; &quot;Command+&quot;</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;-(-?)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1&#39;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-
-    <span class="c1"># e.g. ⌘-click</span>
-    <span class="k">return</span> <span class="n">binding</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;-click&#39;</span><span class="p">)</span>
 
 
 <span class="c1"># TODO: document this</span>
@@ -644,9 +658,13 @@
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">shift_tab</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span></div>
 
 
+<span class="c1"># bigger value --&gt; less sensitive</span>
+<span class="n">MACOS_MOUSE_WHEEL_STEP</span> <span class="o">=</span> <span class="mf">2.5</span>
+
+
 <div class="viewcode-block" id="bind_mouse_wheel"><a class="viewcode-back" href="../../utils.html#porcupine.utils.bind_mouse_wheel">[docs]</a><span class="k">def</span> <span class="nf">bind_mouse_wheel</span><span class="p">(</span>
         <span class="n">widget_or_class_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="s1">&#39;down&#39;</span><span class="p">]],</span> <span class="n">BreakOrNone</span><span class="p">],</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="s1">&#39;down&#39;</span><span class="p">]],</span> <span class="kc">None</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">prefixes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
         <span class="n">add</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -662,10 +680,6 @@
 
 <span class="sd">    If *widget* is a string, then it should be a widget class name for</span>
 <span class="sd">    ``bind_class()``, such as ``Text`` to bind all text widgets.</span>
-
-<span class="sd">    .. note::</span>
-<span class="sd">        This function has not been tested on OSX. If you have a Mac,</span>
-<span class="sd">        please try it out and let me know how much it sucked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">some_widget</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>    <span class="c1"># any widget would do</span>
 
@@ -675,19 +689,37 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">bind</span> <span class="o">=</span> <span class="n">widget_or_class_name</span><span class="o">.</span><span class="n">bind</span>
 
-    <span class="c1"># i needed to cheat and use stackoverflow for the mac stuff :(</span>
-    <span class="c1"># http://stackoverflow.com/a/17457843</span>
     <span class="k">if</span> <span class="n">some_widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;x11&#39;</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BreakOrNone</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
 
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">Button-4&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">Button-5&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
 
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># TODO: test this on OSX</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BreakOrNone</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">some_widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;aqua&#39;</span><span class="p">:</span>
+        <span class="c1"># Handle smooth scrolling</span>
+        <span class="n">accumulator</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">nonlocal</span> <span class="n">accumulator</span>
+            <span class="n">accumulator</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">nonlocal</span> <span class="n">accumulator</span>
+            <span class="n">accumulator</span> <span class="o">+=</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span>
+            <span class="k">if</span> <span class="n">accumulator</span> <span class="o">&gt;</span> <span class="n">MACOS_MOUSE_WHEEL_STEP</span><span class="p">:</span>
+                <span class="n">accumulator</span> <span class="o">-=</span> <span class="n">MACOS_MOUSE_WHEEL_STEP</span>
+                <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">accumulator</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">MACOS_MOUSE_WHEEL_STEP</span><span class="p">:</span>
+                <span class="n">accumulator</span> <span class="o">+=</span> <span class="n">MACOS_MOUSE_WHEEL_STEP</span>
+                <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span>
+
+        <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">MouseWheel&gt;&#39;</span><span class="p">,</span> <span class="n">scroll</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
+        <span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Leave&gt;&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Windows</span>
+        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
 
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">MouseWheel&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span></div>
 
