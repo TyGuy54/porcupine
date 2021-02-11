@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.settings &#8212; Porcupine API 0.87.1+git.b26fd3e documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.88.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -40,7 +40,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
@@ -421,7 +421,7 @@
         <span class="c1"># about it for porcupine, using stupid hard-coded default instead</span>
         <span class="n">fixedfont</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span><span class="p">:</span>
         <span class="c1"># Windows default monospace font sucks, see #245</span>
         <span class="n">default_font_family</span> <span class="o">=</span> <span class="s1">&#39;Consolas&#39;</span>
     <span class="k">else</span><span class="p">:</span>
@@ -643,10 +643,10 @@
     <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Add a :class:`porcupine.utils.Spinbox` to the setting dialog.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">ttk</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Add a :class:`tkinter.ttk.Spinbox` to the setting dialog.</span>
 
-<span class="sd">    All ``**spinbox_kwargs`` go to :class:`utils.Spinbox`.</span>
+<span class="sd">    All ``**spinbox_kwargs`` go to :class:`tkinter.ttk.Spinbox`.</span>
 <span class="sd">    Usually you should pass at least ``from_=some_integer, to=another_integer``.</span>
 
 <span class="sd">    The content of the spinbox is checked whenever it changes.</span>
@@ -654,7 +654,7 @@
 <span class="sd">    then the option given by *option_name* is set to the :class:`int`.</span>
 <span class="sd">    Otherwise |triangle| is shown.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">spinbox</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">(</span><span class="n">get_dialog_content</span><span class="p">(),</span> <span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">)</span>
+    <span class="n">spinbox</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">(</span><span class="n">get_dialog_content</span><span class="p">(),</span> <span class="o">**</span><span class="n">spinbox_kwargs</span><span class="p">)</span>
     <span class="n">triangle</span> <span class="o">=</span> <span class="n">_create_validation_triangle</span><span class="p">(</span>
         <span class="n">spinbox</span><span class="p">,</span> <span class="n">option_name</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">spinbox</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spinbox</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)))</span>
