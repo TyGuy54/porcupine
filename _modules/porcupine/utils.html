@@ -4,15 +4,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.utils &#8212; Porcupine API 0.89.0 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.utils &#8212; Porcupine API 0.90.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -33,6 +32,7 @@
             
   <h1>Source code for porcupine.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Handy utility functions.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
@@ -171,7 +171,7 @@
     <span class="n">subprocess_kwargs</span><span class="p">[</span><span class="s1">&#39;startupinfo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTUPINFO</span><span class="p">(</span><span class="n">dwFlags</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STARTF_USESHOWWINDOW</span><span class="p">)</span>
 
 
-<span class="n">_PROJECT_ROOT_THINGS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.editorconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;.git&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+<span class="n">_LIKELY_PROJECT_ROOT_THINGS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.editorconfig&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
     <span class="n">readme</span> <span class="o">+</span> <span class="n">extension</span>
     <span class="k">for</span> <span class="n">readme</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;README&#39;</span><span class="p">,</span> <span class="s1">&#39;readme&#39;</span><span class="p">,</span> <span class="s1">&#39;Readme&#39;</span><span class="p">,</span> <span class="s1">&#39;ReadMe&#39;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">extension</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;.md&#39;</span><span class="p">,</span> <span class="s1">&#39;.rst&#39;</span><span class="p">]</span>
@@ -182,18 +182,14 @@
 <span class="k">def</span> <span class="nf">find_project_root</span><span class="p">(</span><span class="n">project_file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
     <span class="k">assert</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span>
 
+    <span class="n">likely_root</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="n">path</span> <span class="o">/</span> <span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">for</span> <span class="n">thing</span> <span class="ow">in</span> <span class="n">_PROJECT_ROOT_THINGS</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s1">&#39;.git&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">path</span>   <span class="c1"># trust this the most, if it exists</span>
+        <span class="k">elif</span> <span class="n">likely_root</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">((</span><span class="n">path</span> <span class="o">/</span> <span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">for</span> <span class="n">thing</span> <span class="ow">in</span> <span class="n">_LIKELY_PROJECT_ROOT_THINGS</span><span class="p">):</span>
+            <span class="n">likely_root</span> <span class="o">=</span> <span class="n">path</span>
 
-    <span class="c1"># shitty default</span>
-    <span class="k">return</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">parent</span>
-
-
-<span class="c1"># TODO: get rid of this and use virtual events and keybindings.tcl instead</span>
-<span class="k">def</span> <span class="nf">contmand</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="n">widget</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>    <span class="c1"># any widget would do</span>
-    <span class="k">return</span> <span class="s1">&#39;Command&#39;</span> <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;aqua&quot;</span> <span class="k">else</span> <span class="s1">&#39;Control&#39;</span>
+    <span class="k">return</span> <span class="n">likely_root</span> <span class="ow">or</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">parent</span>
 
 
 <span class="c1"># i know, i shouldn&#39;t do math with rgb colors, but this is good enough</span>
@@ -266,12 +262,12 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">destroy_tipwindow</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># For some reason, toplevels get also notified of their</span>
         <span class="c1"># childrens&#39; events.</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">:</span>
@@ -279,12 +275,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mousex</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x_root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mousey</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span>
 
@@ -475,7 +471,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Like ``widget.bind(sequence, callback)``, but supports the ``data``</span>
 <span class="sd">    argument of ``event_generate()``. Note that the callback takes an argument</span>
-<span class="sd">    of type :class:`EventWithData` rather than a usual ``&#39;tkinter.Event[tkinter.Misc]&#39;``.</span>
+<span class="sd">    of type :class:`EventWithData` rather than a usual ``tkinter.Event[tkinter.Misc]``.</span>
 
 <span class="sd">    Here&#39;s an example::</span>
 
@@ -496,7 +492,7 @@
     <span class="c1"># event objects and runs callback(event)</span>
     <span class="c1">#</span>
     <span class="c1"># TODO: is it possible to do this without a deque?</span>
-    <span class="n">event_objects</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">,</span> <span class="n">EventWithData</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+    <span class="n">event_objects</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">],</span> <span class="n">EventWithData</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">event_objects</span><span class="o">.</span><span class="n">append</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">run_the_callback</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -640,7 +636,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># there&#39;s something for this in more_functools, but it&#39;s a big</span>
     <span class="c1"># dependency for something this simple imo</span>
-    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BreakOrNone</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BreakOrNone</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">on_tab</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">shifted</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;x11&#39;</span><span class="p">:</span>
@@ -686,7 +682,7 @@
         <span class="n">bind</span> <span class="o">=</span> <span class="n">widget_or_class_name</span><span class="o">.</span><span class="n">bind</span>
 
     <span class="k">if</span> <span class="n">some_widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;x11&#39;</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
 
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">Button-4&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
@@ -696,11 +692,11 @@
         <span class="c1"># Handle smooth scrolling</span>
         <span class="n">accumulator</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">nonlocal</span> <span class="n">accumulator</span>
             <span class="n">accumulator</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">nonlocal</span> <span class="n">accumulator</span>
             <span class="n">accumulator</span> <span class="o">+=</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span>
             <span class="k">if</span> <span class="n">accumulator</span> <span class="o">&gt;</span> <span class="n">MACOS_MOUSE_WHEEL_STEP</span><span class="p">:</span>
@@ -714,7 +710,7 @@
         <span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Leave&gt;&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># Windows</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
 
         <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">MouseWheel&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span></div>
@@ -928,7 +924,7 @@
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

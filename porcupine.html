@@ -4,15 +4,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine — The top level Porcupine package &#8212; Porcupine API 0.89.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine — The top level Porcupine package &#8212; Porcupine API 0.90.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="porcupine.menubar — The menu bar at the top of the Porcupine window" href="menubar.html" />
@@ -45,25 +44,25 @@ I recommend reading it first. Then you’ll have a much better idea about what
 <a class="reference internal" href="#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_main_window()</span></code></a> and <a class="reference internal" href="#porcupine.get_tab_manager" title="porcupine.get_tab_manager"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_tab_manager()</span></code></a> do.</p>
 <dl class="py function">
 <dt id="porcupine.get_main_window">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">get_main_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.html#tkinter.Tk" title="(in Python v3.9)">tkinter.Tk</a><a class="reference internal" href="_modules/porcupine/_state.html#get_main_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.get_main_window" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">get_main_window</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.html#tkinter.Tk" title="(in Python v3.9)"><span class="pre">tkinter.Tk</span></a><a class="reference internal" href="_modules/porcupine/_state.html#get_main_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.get_main_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the tkinter root window that Porcupine is using.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.get_tab_manager">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">get_tab_manager</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="tabs.html#porcupine.tabs.TabManager" title="porcupine.tabs.TabManager">porcupine.tabs.TabManager</a><a class="reference internal" href="_modules/porcupine/_state.html#get_tab_manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.get_tab_manager" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">get_tab_manager</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="tabs.html#porcupine.tabs.TabManager" title="porcupine.tabs.TabManager"><span class="pre">porcupine.tabs.TabManager</span></a><a class="reference internal" href="_modules/porcupine/_state.html#get_tab_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.get_tab_manager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the <a class="reference internal" href="tabs.html#porcupine.tabs.TabManager" title="porcupine.tabs.TabManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">porcupine.tabs.TabManager</span></code></a> widget in the main window.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.get_parsed_args">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">get_parsed_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/porcupine/_state.html#get_parsed_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.get_parsed_args" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">get_parsed_args</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/porcupine/_state.html#get_parsed_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.get_parsed_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Porcupine’s arguments as returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">argparse.parse_args()</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="porcupine.quit">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a><a class="reference internal" href="_modules/porcupine/_state.html#quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#porcupine.quit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">quit</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/_state.html#quit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.quit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calling this function is equivalent to clicking the X button in the
 corner of the main window.</p>
 <p>First the <a class="reference internal" href="tabs.html#porcupine.tabs.Tab.can_be_closed" title="porcupine.tabs.Tab.can_be_closed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">can_be_closed()</span></code></a> method of each
@@ -78,12 +77,12 @@ destroyed.</p>
 <h2>Version Information<a class="headerlink" href="#version-information" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
 <dt id="porcupine.version_info">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">version_info</code><a class="headerlink" href="#porcupine.version_info" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">version_info</span></code><a class="headerlink" href="#porcupine.version_info" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt id="porcupine.__version__">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">__version__</code><a class="headerlink" href="#porcupine.__version__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">__version__</span></code><a class="headerlink" href="#porcupine.__version__" title="Permalink to this definition">¶</a></dt>
 <dd><p>These variables contains information about the current Porcupine version.
 <code class="docutils literal notranslate"><span class="pre">version_info</span></code> is a tuple like <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">28,</span> <span class="pre">1)</span></code>, and <code class="docutils literal notranslate"><span class="pre">__version__</span></code> is a
 string such as <code class="docutils literal notranslate"><span class="pre">'0.28.1'</span></code>. Use <code class="docutils literal notranslate"><span class="pre">version_info</span></code> for checking if Porcupine
@@ -101,7 +100,7 @@ supports a specific feature:</p>
 <h2>File Dialogs<a class="headerlink" href="#file-dialogs" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
 <dt id="porcupine.filedialog_kwargs">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">filedialog_kwargs</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span></em><a class="headerlink" href="#porcupine.filedialog_kwargs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">filedialog_kwargs</span></code><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#porcupine.filedialog_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Porcupine uses <a class="reference external" href="https://docs.python.org/3/library/dialog.html#module-tkinter.filedialog" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.filedialog</span></code></a> functions similarly to this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="o">**</span><span class="n">porcupine</span><span class="o">.</span><span class="n">filedialog_kwargs</span><span class="p">)</span>
 </pre></div>
@@ -115,7 +114,7 @@ for displaying known filetypes in the dialogs.</p>
 <h2>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
 <dt id="porcupine.dirs">
-<code class="sig-prename descclassname">porcupine.</code><code class="sig-name descname">dirs</code><em class="property">: appdirs.AppDirs</em><a class="headerlink" href="#porcupine.dirs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.</span></code><code class="sig-name descname"><span class="pre">dirs</span></code><em class="property"><span class="pre">:</span> <span class="pre">appdirs.AppDirs</span></em><a class="headerlink" href="#porcupine.dirs" title="Permalink to this definition">¶</a></dt>
 <dd><p>See <a class="reference external" href="https://pypi.org/project/appdirs/">appdirs on PyPI</a>.
 For example, <code class="docutils literal notranslate"><span class="pre">porcupine.dirs.user_cache_dir</span></code> is where temporary cache files should go.</p>
 <p>When Porcupine starts, it makes sure that these directories exist:</p>
@@ -197,7 +196,7 @@ For example, <code class="docutils literal notranslate"><span class="pre">porcup
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

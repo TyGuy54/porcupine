@@ -4,15 +4,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>porcupine.menubar &#8212; Porcupine API 0.89.0 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>porcupine.menubar &#8212; Porcupine API 0.90.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -32,7 +31,9 @@
           <div class="body" role="main">
             
   <h1>Source code for porcupine.menubar</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">functools</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -82,7 +83,7 @@
     <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
 
-<span class="k">def</span> <span class="nf">_fix_text_widget_bindings</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_fix_text_widget_bindings</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">virtual_event</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">event_info</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">virtual_event</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;Menubar:&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">virtual_event</span><span class="p">):</span>
             <span class="c1"># When the keys are pressed, generate the event on the main</span>
@@ -183,7 +184,7 @@
                 <span class="k">yield</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_menu_event_handler</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="s1">&#39;tkinter.Event[tkinter.Misc]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_menu_event_handler</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">BreakOrNone</span><span class="p">:</span>
     <span class="n">menu</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
@@ -328,12 +329,6 @@
 
         <span class="n">settings</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span><span class="s1">&#39;font_size&#39;</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
 
-    <span class="c1"># trigger change_font_size() with mouse wheel from any text widget</span>
-    <span class="c1"># TODO: only do this in text widgets that actually use the font specified in settings</span>
-    <span class="n">utils</span><span class="o">.</span><span class="n">bind_mouse_wheel</span><span class="p">(</span><span class="s1">&#39;Text&#39;</span><span class="p">,</span> <span class="p">(</span>
-        <span class="k">lambda</span> <span class="n">updn</span><span class="p">:</span> <span class="n">change_font_size</span><span class="p">(</span><span class="s1">&#39;bigger&#39;</span> <span class="k">if</span> <span class="n">updn</span> <span class="o">==</span> <span class="s1">&#39;up&#39;</span> <span class="k">else</span> <span class="s1">&#39;smaller&#39;</span><span class="p">)</span>
-    <span class="p">),</span> <span class="n">prefixes</span><span class="o">=</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">contmand</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;View&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Bigger Font&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">change_font_size</span><span class="p">,</span> <span class="s1">&#39;bigger&#39;</span><span class="p">))</span>
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;View&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Smaller Font&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">change_font_size</span><span class="p">,</span> <span class="s1">&#39;smaller&#39;</span><span class="p">))</span>
     <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;View&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Reset Font Size&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">change_font_size</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">))</span>
@@ -420,7 +415,7 @@
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

@@ -4,15 +4,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.89.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.90.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="porcupine — The top level Porcupine package" href="porcupine.html" />
@@ -121,16 +120,16 @@ always called before our <code class="docutils literal notranslate"><span class=
 implemented as plugins. They come with Porcupine (see <a class="reference internal" href="#where-are-the-plugins">Where are the plugins?</a>
 above), but you can also <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins">read them on GitHub</a>.</p>
 <p>This tutorial is all about writing <em>more</em> plugins, but we’ll start by running
-Porcupine with <em>no</em> plugins at all just to get an idea of how much can be done
-with plugins. Open a command prompt or terminal and run this command on it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">porcu</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">plugins</span>
+Porcupine with <em>no</em> plugins at all, just to get an idea of how much can be done with plugins.
+Open Porcupine’s plugin manager from the <em>Settings</em> menu, select all plugins with shift+click,
+and then click “Disable” and restart Porcupine.
+Alternatively, if you <a class="reference external" href="https://github.com/Akuli/porcupine#installing-porcupine">installed Porcupine</a>
+with <code class="docutils literal notranslate"><span class="pre">pip</span></code>, you can run this command on a terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">porcupine</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">plugins</span>
 </pre></div>
 </div>
-<p>If the <code class="docutils literal notranslate"><span class="pre">porcu</span></code> command doesn’t work you can use <code class="docutils literal notranslate"><span class="pre">pyw</span> <span class="pre">-m</span> <span class="pre">porcupine</span></code> or
-<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">porcupine</span></code> instead of <code class="docutils literal notranslate"><span class="pre">porcu</span></code> as shown in
-<a class="reference external" href="https://github.com/Akuli/porcupine#installing-porcupine">Porcupine’s README</a>.</p>
-<p>This will run Porcupine without any plugins, and it’s a window with only the
-menubar in it. You can still create and open files though.</p>
+<p>Without plugins, Porcupine is a window with just the menubar in it,
+although you can still create and open files.</p>
 </div>
 <div class="section" id="porcupine-s-widgets">
 <h2>Porcupine’s Widgets<a class="headerlink" href="#porcupine-s-widgets" title="Permalink to this headline">¶</a></h2>
@@ -402,7 +401,7 @@ tags in the loop, the <code class="docutils literal notranslate"><span class="pr
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
