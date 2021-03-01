@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget &#8212; Porcupine API 0.90.1 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.91.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -35,7 +35,6 @@
 
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
@@ -64,34 +63,40 @@
 <span class="sd">    \...changes the ``&#39;hello&#39;`` to ``&#39;toot&#39;``, and that&#39;s represented by a</span>
 <span class="sd">    ``Change`` like this::</span>
 
-<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.5&#39;, old_text_len=5, new_text=&#39;toot&#39;)</span>
+<span class="sd">        Change(start=[1, 0], end=[1, 5], old_text_len=5, new_text=&#39;toot&#39;)</span>
 
 <span class="sd">    Insertions are represented with ``Change`` objects having ``old_text_len=0``</span>
 <span class="sd">    and the same ``start`` and ``end``. For example,</span>
 <span class="sd">    ``textwidget.insert(&#39;1.0&#39;, &#39;hello&#39;)`` corresponds to this ``Change``::</span>
 
-<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.0&#39;, old_text_len=0, new_text=&#39;hello&#39;)</span>
+<span class="sd">        Change(start=[1, 0], end=[1, 0], old_text_len=0, new_text=&#39;hello&#39;)</span>
 
 <span class="sd">    For deletions, ``start`` and ``end`` differ and ``new_text`` is empty.</span>
 <span class="sd">    If the first line of a text widget contains at least 5 characters, then</span>
 <span class="sd">    deleting the first 5 characters looks like this::</span>
 
-<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.5&#39;, old_text_len=5, new_text=&#39;&#39;)</span>
+<span class="sd">        Change(start=[1, 0], end=[1, 5], old_text_len=5, new_text=&#39;&#39;)</span>
 
 <span class="sd">    Unlike you might think, the ``old_text_len`` is not redundant. Let&#39;s</span>
 <span class="sd">    say that the text widget contains ``&#39;toot world&#39;`` and all that is</span>
 <span class="sd">    deleted::</span>
 
-<span class="sd">        Change(start=&#39;1.0&#39;, end=&#39;1.10&#39;, old_text_len=10, new_text=&#39;&#39;)</span>
+<span class="sd">        Change(start=[1, 0], end=[1, 10], old_text_len=10, new_text=&#39;&#39;)</span>
 
-<span class="sd">    After the deletion, ``&#39;1.10&#39;`` is no longer a valid index in the text</span>
-<span class="sd">    widget because it contains 0 characters (and 0 is less than 10).</span>
-<span class="sd">    In this case, checking only the ``0`` of ``1.0`` and the ``10`` of ``1.10``</span>
-<span class="sd">    could be used to calculate the 10,</span>
-<span class="sd">    but that doesn&#39;t work right when changing multiple lines.</span>
+<span class="sd">    In this case, ``old_text_len`` happens to be ``10 - 0``, where ``10`` and</span>
+<span class="sd">    ``0`` are the column numbers of ``start`` and ``end``. But for changing</span>
+<span class="sd">    multiple lines, this doesn&#39;t work, because you need to know what exactly</span>
+<span class="sd">    was deleted.</span>
+
+<span class="sd">    Technically, ``start=[1, 0]`` is not same as having the change start at</span>
+<span class="sd">    ``&#39;1.0&#39;``. If there is an embedded window (such as a button widget) at the</span>
+<span class="sd">    beginning of the line, then the text on the line starts at text index</span>
+<span class="sd">    ``&#39;1.1&#39;``, represented as ``[1, 0]`` here.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">start</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">end</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="c1"># These should be Tuple[int, int], but they can&#39;t be because converting to</span>
+    <span class="c1"># json and back turns tuples to lists</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="n">old_text_len</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">new_text</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -108,6 +113,12 @@
 <span class="sd">    because of how :class:`porcupine.utils.EventDataclass` works.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">change_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span></div>
+
+
+<span class="c1"># TODO: document this</span>
+<span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;-chars&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="c1"># tkinter&#39;s .count() method is weird, returns tuples and Nones weirdly</span>
+    <span class="k">return</span> <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_ChangeTracker</span><span class="p">:</span>
@@ -192,14 +203,9 @@
 <span class="s1">                return</span>
 <span class="s1">            }</span>
 
-<span class="s1">            set cursor_may_have_moved 0</span>
-<span class="s1">            set prepared_event &quot;&quot;</span>
-
 <span class="s1">            # only these subcommands can change the text, but they can also</span>
 <span class="s1">            # move the cursor by changing the text before the cursor</span>
-<span class="s1">            if {$subcommand == &quot;delete&quot; ||</span>
-<span class="s1">                    $subcommand == &quot;insert&quot; ||</span>
-<span class="s1">                    $subcommand == &quot;replace&quot;} {</span>
+<span class="s1">            if {$subcommand == &quot;delete&quot; || $subcommand == &quot;insert&quot; || $subcommand == &quot;replace&quot;} {</span>
 <span class="s1">                # Validate and clean up indexes here so that any problems</span>
 <span class="s1">                # result in Tcl error</span>
 <span class="s1">                if {$subcommand == &quot;delete&quot;} {</span>
@@ -214,9 +220,9 @@
 <span class="s1">                    lset args 1 [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args 1]]</span>
 <span class="s1">                    lset args 2 [</span><span class="si">%(actual_widget)s</span><span class="s1"> index [lindex $args 2]]</span>
 <span class="s1">                }</span>
-
-<span class="s1">                set cursor_may_have_moved 1</span>
 <span class="s1">                set prepared_event [</span><span class="si">%(change_event_from_command)s</span><span class="s1"> {*}$args]</span>
+<span class="s1">            } else {</span>
+<span class="s1">                set prepared_event &quot;&quot;</span>
 <span class="s1">            }</span>
 
 <span class="s1">            # it&#39;s important that this comes after the change cb stuff because</span>
@@ -238,13 +244,7 @@
 <span class="s1">            #</span>
 <span class="s1">            # [*] i lied, hehe &gt;:D MUHAHAHA ... inserting text before the</span>
 <span class="s1">            # cursor also changes it</span>
-<span class="s1">            if {$subcommand == &quot;mark&quot; &amp;&amp;</span>
-<span class="s1">                    [lindex $args 1] == &quot;set&quot; &amp;&amp;</span>
-<span class="s1">                    [lindex $args 2] == &quot;insert&quot;} {</span>
-<span class="s1">                set cursor_may_have_moved 1</span>
-<span class="s1">            }</span>
-
-<span class="s1">            if {$cursor_may_have_moved} {</span>
+<span class="s1">            if {[lrange $args 0 2] == {mark set insert} || $prepared_event != &quot;&quot;} {</span>
 <span class="s1">                </span><span class="si">%(cursor_moved_callback)s</span><span class="s1"></span>
 <span class="s1">            }</span>
 
@@ -260,11 +260,11 @@
 
     <span class="k">def</span> <span class="nf">_create_change</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Change</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]+\.[0-9]+&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]+\.[0-9]+&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">start_line</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">end_line</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">Change</span><span class="p">(</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-            <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="p">[</span><span class="n">start_line</span><span class="p">,</span> <span class="n">count</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">start_line</span><span class="si">}</span><span class="s1">.0&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)],</span>
+            <span class="n">end</span><span class="o">=</span><span class="p">[</span><span class="n">end_line</span><span class="p">,</span> <span class="n">count</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">end_line</span><span class="si">}</span><span class="s1">.0&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)],</span>
             <span class="n">old_text_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)),</span>
             <span class="n">new_text</span><span class="o">=</span><span class="n">new_text</span><span class="p">,</span>
         <span class="p">)</span>

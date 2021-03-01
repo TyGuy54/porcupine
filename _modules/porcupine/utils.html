@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.90.1 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.91.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -648,72 +648,6 @@
 
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Tab&gt;&#39;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>   <span class="c1"># bindcheck: ignore</span>
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">shift_tab</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span></div>
-
-
-<span class="c1"># bigger value --&gt; less sensitive</span>
-<span class="n">MACOS_MOUSE_WHEEL_STEP</span> <span class="o">=</span> <span class="mf">2.5</span>
-
-
-<div class="viewcode-block" id="bind_mouse_wheel"><a class="viewcode-back" href="../../utils.html#porcupine.utils.bind_mouse_wheel">[docs]</a><span class="k">def</span> <span class="nf">bind_mouse_wheel</span><span class="p">(</span>
-        <span class="n">widget_or_class_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="s1">&#39;down&#39;</span><span class="p">]],</span> <span class="kc">None</span><span class="p">],</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">prefixes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">add</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Bind mouse wheel events to callback.</span>
-
-<span class="sd">    The callback will be called like ``callback(direction)`` where</span>
-<span class="sd">    *direction* is ``&#39;up&#39;`` or ``&#39;down&#39;``. The *prefixes* argument can</span>
-<span class="sd">    be used to change the binding string. For example,</span>
-<span class="sd">    ``prefixes=&#39;Control-&#39;`` means that callback will be ran when the</span>
-<span class="sd">    user holds down Control and rolls the wheel.</span>
-
-<span class="sd">    *add* has the same meaning as in tkinter&#39;s ``bind()``.</span>
-
-<span class="sd">    If *widget* is a string, then it should be a widget class name for</span>
-<span class="sd">    ``bind_class()``, such as ``Text`` to bind all text widgets.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">some_widget</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>    <span class="c1"># any widget would do</span>
-
-    <span class="n">bind</span><span class="p">:</span> <span class="n">Any</span>   <span class="c1"># because i&#39;m lazy</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget_or_class_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">bind</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">some_widget</span><span class="o">.</span><span class="n">bind_class</span><span class="p">,</span> <span class="n">widget_or_class_name</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">bind</span> <span class="o">=</span> <span class="n">widget_or_class_name</span><span class="o">.</span><span class="n">bind</span>
-
-    <span class="k">if</span> <span class="n">some_widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;x11&#39;</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
-
-        <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">Button-4&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
-        <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">Button-5&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
-
-    <span class="k">elif</span> <span class="n">some_widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;tk&#39;</span><span class="p">,</span> <span class="s1">&#39;windowingsystem&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;aqua&#39;</span><span class="p">:</span>
-        <span class="c1"># Handle smooth scrolling</span>
-        <span class="n">accumulator</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">nonlocal</span> <span class="n">accumulator</span>
-            <span class="n">accumulator</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">nonlocal</span> <span class="n">accumulator</span>
-            <span class="n">accumulator</span> <span class="o">+=</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span>
-            <span class="k">if</span> <span class="n">accumulator</span> <span class="o">&gt;</span> <span class="n">MACOS_MOUSE_WHEEL_STEP</span><span class="p">:</span>
-                <span class="n">accumulator</span> <span class="o">-=</span> <span class="n">MACOS_MOUSE_WHEEL_STEP</span>
-                <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">accumulator</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">MACOS_MOUSE_WHEEL_STEP</span><span class="p">:</span>
-                <span class="n">accumulator</span> <span class="o">+=</span> <span class="n">MACOS_MOUSE_WHEEL_STEP</span>
-                <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span>
-
-        <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">MouseWheel&gt;&#39;</span><span class="p">,</span> <span class="n">scroll</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
-        <span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Leave&gt;&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Windows</span>
-        <span class="k">def</span> <span class="nf">real_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">callback</span><span class="p">(</span><span class="s1">&#39;up&#39;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;down&#39;</span><span class="p">)</span>
-
-        <span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefixes</span><span class="si">}</span><span class="s1">MouseWheel&gt;&#39;</span><span class="p">,</span> <span class="n">real_callback</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="errordialog"><a class="viewcode-back" href="../../utils.html#porcupine.utils.errordialog">[docs]</a><span class="k">def</span> <span class="nf">errordialog</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
