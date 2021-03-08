@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.91.0 documentation</title>
+    <title>porcupine.textwidget — Things for tkinter.Text widgets &#8212; Porcupine API 0.92.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -160,7 +160,13 @@ that, you can use this context manager during the changes, like this:</p>
         <span class="n">textwidget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This does nothing if <a class="reference internal" href="#porcupine.textwidget.track_changes" title="porcupine.textwidget.track_changes"><code class="xref py py-func docutils literal notranslate"><span class="pre">track_changes()</span></code></a> hasn’t been called.</p>
+<p>This context manager also affects some other things, and so it can be
+useful even with text widgets that don’t use <a class="reference internal" href="#porcupine.textwidget.track_changes" title="porcupine.textwidget.track_changes"><code class="xref py py-func docutils literal notranslate"><span class="pre">track_changes()</span></code></a>:
+* Undoing the whole batch is done with one Ctrl+Z press.
+* When the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement ends, the cursor is moved back to where it</p>
+<blockquote>
+<div><p>was when the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement started.</p>
+</div></blockquote>
 <p>See <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/indent_block.py">porcupine/plugins/indent_block.py</a> for a complete example.</p>
 </dd></dl>
 

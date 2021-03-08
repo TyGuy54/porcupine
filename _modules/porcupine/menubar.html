@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.menubar &#8212; Porcupine API 0.91.0 documentation</title>
+    <title>porcupine.menubar &#8212; Porcupine API 0.92.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -36,10 +36,12 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">webbrowser</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">ascii_lowercase</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
@@ -189,17 +191,7 @@
     <span class="k">return</span> <span class="s1">&#39;break&#39;</span>
 
 
-<div class="viewcode-block" id="update_keyboard_shortcuts"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.update_keyboard_shortcuts">[docs]</a><span class="k">def</span> <span class="nf">update_keyboard_shortcuts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This function does two things to the *New File* menu item in the *File*</span>
-<span class="sd">    menu, and similarly to all other menu items in all menus:</span>
-
-<span class="sd">        * Show *Ctrl+N* (or *⌘N* on Mac) next to *New File*.</span>
-<span class="sd">        * Ensure that the menu item&#39;s callback runs when Ctrl+N (or Command+N) is pressed.</span>
-
-<span class="sd">    This has to be called when menus or keyboard shortcuts have been modified.</span>
-<span class="sd">    It&#39;s called automatically when a plugin has been set up.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">_update_keyboard_shortcuts_inside_submenus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">_walk_menu_contents</span><span class="p">():</span>
         <span class="n">event_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;&lt;Menubar:</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&gt;&gt;&#39;</span>
@@ -211,7 +203,43 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">main_window</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">event_name</span><span class="p">):</span>
             <span class="c1"># FIXME: what if menu item is inserted somewhere else than to end, and indexes change?</span>
             <span class="n">command</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_menu_event_handler</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-            <span class="n">main_window</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+            <span class="n">main_window</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Make sure that alt+e opens edit menu</span>
+<span class="k">def</span> <span class="nf">_update_shortcuts_for_opening_submenus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">used_letters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">virtual_event</span> <span class="ow">in</span> <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_info</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">physical_event</span> <span class="ow">in</span> <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_info</span><span class="p">(</span><span class="n">virtual_event</span><span class="p">):</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;Alt-Key-([a-z])&gt;&#39;</span><span class="p">,</span> <span class="n">physical_event</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">used_letters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">menu</span> <span class="o">=</span> <span class="n">get_menu</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">submenu_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">letter_index</span><span class="p">,</span> <span class="n">letter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">submenu_index</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">ascii_lowercase</span> <span class="ow">and</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used_letters</span><span class="p">:</span>
+                <span class="n">menu</span><span class="o">.</span><span class="n">entryconfig</span><span class="p">(</span><span class="n">submenu_index</span><span class="p">,</span> <span class="n">underline</span><span class="o">=</span><span class="n">letter_index</span><span class="p">)</span>
+                <span class="n">used_letters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">menu</span><span class="o">.</span><span class="n">entryconfig</span><span class="p">(</span><span class="n">submenu_index</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="update_keyboard_shortcuts"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.update_keyboard_shortcuts">[docs]</a><span class="k">def</span> <span class="nf">update_keyboard_shortcuts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function does several different things to each menu item. Here&#39;s what</span>
+<span class="sd">    it does to the *Edit* menu and the *Find and Replace* menu item inside it:</span>
+
+<span class="sd">        * Show *Ctrl+F* (or *⌘F* on Mac) next to *Find and Replace*.</span>
+<span class="sd">        * Ensure that the menu item&#39;s callback runs when Ctrl+F (or Command+F) is pressed.</span>
+<span class="sd">        * Allow the *Edit* menu to be accessed by pressing Alt+E.</span>
+
+<span class="sd">    This has to be called when menus or keyboard shortcuts have been modified.</span>
+<span class="sd">    It&#39;s called automatically when a plugin has been set up.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_update_keyboard_shortcuts_inside_submenus</span><span class="p">()</span>
+    <span class="n">_update_shortcuts_for_opening_submenus</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="set_enabled_based_on_tab"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.set_enabled_based_on_tab">[docs]</a><span class="k">def</span> <span class="nf">set_enabled_based_on_tab</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Optional</span><span class="p">[</span><span class="n">tabs</span><span class="o">.</span><span class="n">Tab</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>

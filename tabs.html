@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.91.0 documentation</title>
+    <title>porcupine.tabs — The tab manager and tabs in it &#8212; Porcupine API 0.92.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -335,9 +335,15 @@ This works similarly for other tab settings.</p>
 </dd></dl>
 
 <dl class="py virtualevent">
-<dt id="porcupine.tabs.FileTab.Save">
-<em class="property"><span class="pre">virtual</span> <span class="pre">event</span> </em><code class="sig-name descname"><span class="pre">&lt;&lt;Save&gt;&gt;</span></code><a class="headerlink" href="#porcupine.tabs.FileTab.Save" title="Permalink to this definition">¶</a></dt>
+<dt id="porcupine.tabs.FileTab.BeforeSave">
+<em class="property"><span class="pre">virtual</span> <span class="pre">event</span> </em><code class="sig-name descname"><span class="pre">&lt;&lt;BeforeSave&gt;&gt;</span></code><a class="headerlink" href="#porcupine.tabs.FileTab.BeforeSave" title="Permalink to this definition">¶</a></dt>
 <dd><p>This runs before the file is saved with the <a class="reference internal" href="#porcupine.tabs.FileTab.save" title="porcupine.tabs.FileTab.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="py virtualevent">
+<dt id="porcupine.tabs.FileTab.AfterSave">
+<em class="property"><span class="pre">virtual</span> <span class="pre">event</span> </em><code class="sig-name descname"><span class="pre">&lt;&lt;AfterSave&gt;&gt;</span></code><a class="headerlink" href="#porcupine.tabs.FileTab.AfterSave" title="Permalink to this definition">¶</a></dt>
+<dd><p>This runs after the file is saved with the <a class="reference internal" href="#porcupine.tabs.FileTab.save" title="porcupine.tabs.FileTab.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> method.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -423,7 +429,7 @@ Porcupine, then before saving, this function will ask whether the user
 really wants to save.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>The <a class="reference internal" href="#porcupine.tabs.FileTab.Save" title="porcupine.tabs.FileTab.Save"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;Save&gt;&gt;</span></code></a> event.</p>
+<p>The <a class="reference internal" href="#porcupine.tabs.FileTab.BeforeSave" title="porcupine.tabs.FileTab.BeforeSave"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;BeforeSave&gt;&gt;</span></code></a> and <a class="reference internal" href="#porcupine.tabs.FileTab.AfterSave" title="porcupine.tabs.FileTab.AfterSave"><code class="xref py py-virtevt docutils literal notranslate"><span class="pre">&lt;&lt;AfterSave&gt;&gt;</span></code></a> virtual events.</p>
 </div>
 </dd></dl>
 

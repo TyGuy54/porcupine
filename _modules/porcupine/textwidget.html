@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget &#8212; Porcupine API 0.91.0 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.92.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -480,20 +480,35 @@
 <span class="sd">                textwidget.delete(...)</span>
 <span class="sd">                textwidget.insert(...)</span>
 
-<span class="sd">    This does nothing if :func:`track_changes` hasn&#39;t been called.</span>
+<span class="sd">    This context manager also affects some other things, and so it can be</span>
+<span class="sd">    useful even with text widgets that don&#39;t use :func:`track_changes`:</span>
+<span class="sd">    * Undoing the whole batch is done with one Ctrl+Z press.</span>
+<span class="sd">    * When the ``with`` statement ends, the cursor is moved back to where it</span>
+<span class="sd">      was when the ``with`` statement started.</span>
 
 <span class="sd">    See :source:`porcupine/plugins/indent_block.py` for a complete example.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cursor_pos</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">)</span>
+    <span class="n">autoseparators_value</span> <span class="o">=</span> <span class="n">widget</span><span class="p">[</span><span class="s1">&#39;autoseparators&#39;</span><span class="p">]</span>
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">tracker</span> <span class="o">=</span> <span class="n">_change_trackers</span><span class="p">[</span><span class="n">widget</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">yield</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">tracker</span><span class="o">.</span><span class="n">begin_batch</span><span class="p">()</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">autoseparators</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">edit_separator</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">tracker</span> <span class="o">=</span> <span class="n">_change_trackers</span><span class="p">[</span><span class="n">widget</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">yield</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">tracker</span><span class="o">.</span><span class="n">finish_batch</span><span class="p">()</span></div>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tracker</span><span class="o">.</span><span class="n">begin_batch</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">yield</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">tracker</span><span class="o">.</span><span class="n">finish_batch</span><span class="p">()</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">edit_separator</span><span class="p">()</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">autoseparators</span><span class="o">=</span><span class="n">autoseparators_value</span><span class="p">)</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">mark_set</span><span class="p">(</span><span class="s1">&#39;insert&#39;</span><span class="p">,</span> <span class="n">cursor_pos</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="create_peer_widget"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.create_peer_widget">[docs]</a><span class="k">def</span> <span class="nf">create_peer_widget</span><span class="p">(</span>
@@ -676,7 +691,7 @@
                 <span class="c1"># not deleting from start of line, delete previous char instead</span>
                 <span class="n">location</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> - 1 char&#39;</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">location</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">location</span><span class="p">)</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">return</span> <span class="kc">False</span>
