@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.92.0 documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.92.1 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -317,12 +317,12 @@ Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 <p>All <code class="docutils literal notranslate"><span class="pre">**combobox_kwargs</span></code> go to <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Combobox</span></code></a>.
 Usually you should pass at least <code class="docutils literal notranslate"><span class="pre">values=list_of_strings</span></code>.</p>
 <p>The content of the combobox is checked whenever it changes.
-If it’s in <code class="docutils literal notranslate"><span class="pre">combobox.cget('values')</span></code>
+If it’s in <code class="docutils literal notranslate"><span class="pre">combobox['values']</span></code>
 (given with the <code class="docutils literal notranslate"><span class="pre">values=list_of_strings</span></code> keyword argument or changed
 later by configuring the returned combobox), then the option given by
 <em>option_name</em> is set to the content of the combobox. The converter passed
 to <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> will be used. If the content of the combobox is not
-in <code class="docutils literal notranslate"><span class="pre">combobox.cget('values')</span></code>, then <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
+in <code class="docutils literal notranslate"><span class="pre">combobox['values']</span></code>, then <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -332,7 +332,7 @@ in <code class="docutils literal notranslate"><span class="pre">combobox.cget('v
 <p>All <code class="docutils literal notranslate"><span class="pre">**spinbox_kwargs</span></code> go to <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code></a>.
 Usually you should pass at least <code class="docutils literal notranslate"><span class="pre">from_=some_integer,</span> <span class="pre">to=another_integer</span></code>.</p>
 <p>The content of the spinbox is checked whenever it changes.
-If it’s a valid integer between <code class="docutils literal notranslate"><span class="pre">spinbox.cget('from')</span></code> and <code class="docutils literal notranslate"><span class="pre">spinbox.cget('to')</span></code> (inclusive),
+If it’s a valid integer between <code class="docutils literal notranslate"><span class="pre">spinbox['from']</span></code> and <code class="docutils literal notranslate"><span class="pre">spinbox['to']</span></code> (inclusive),
 then the option given by <em>option_name</em> is set to the <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.
 Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 </dd></dl>

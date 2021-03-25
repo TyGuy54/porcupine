@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine._state &#8212; Porcupine API 0.92.0 documentation</title>
+    <title>porcupine._state &#8212; Porcupine API 0.92.1 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -67,7 +67,7 @@
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init() starts&quot;</span><span class="p">)</span>
     <span class="n">_parsed_args</span> <span class="o">=</span> <span class="n">args</span>
 
-    <span class="n">_root</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">_root</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">(</span><span class="n">className</span><span class="o">=</span><span class="s2">&quot;Porcupine&quot;</span><span class="p">)</span>   <span class="c1"># class name shows up in my alt+tab list</span>
     <span class="n">_root</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="s1">&#39;WM_DELETE_WINDOW&#39;</span><span class="p">,</span> <span class="n">quit</span><span class="p">)</span>
     <span class="n">_root</span><span class="o">.</span><span class="n">report_callback_exception</span> <span class="o">=</span> <span class="n">_log_tkinter_error</span>
 

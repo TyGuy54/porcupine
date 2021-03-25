@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.menubar &#8212; Porcupine API 0.92.0 documentation</title>
+    <title>porcupine.menubar &#8212; Porcupine API 0.92.1 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -127,7 +127,7 @@
 <span class="sd">    If *path* is ``None``, then the menubar itself is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
-    <span class="n">main_menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span> <span class="o">=</span> <span class="n">main_window</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;menu&#39;</span><span class="p">))</span>
+    <span class="n">main_menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span> <span class="o">=</span> <span class="n">main_window</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">main_window</span><span class="p">[</span><span class="s1">&#39;menu&#39;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">main_menu</span>
 

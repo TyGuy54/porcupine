@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget &#8212; Porcupine API 0.92.0 documentation</title>
+    <title>porcupine.textwidget &#8212; Porcupine API 0.92.1 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -633,9 +633,9 @@
 <span class="sd">    affected, not the entire ``textwidget``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">)</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="p">[</span><span class="s1">&#39;font&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">tag_cget</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;font&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">)</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="n">textwidget</span><span class="o">.</span><span class="n">tag_cget</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;font&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">textwidget</span><span class="p">[</span><span class="s1">&#39;font&#39;</span><span class="p">]</span>
 
     <span class="c1"># from the text(3tk) man page: &quot;To achieve a different standard</span>
     <span class="c1"># spacing, for example every 4 characters, simply configure the</span>
