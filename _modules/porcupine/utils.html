@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.92.3 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.92.4 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -704,6 +704,7 @@
     <span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_T</span><span class="p">]],</span> <span class="kc">None</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">check_interval_ms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">daemon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Run ``blocking_function()`` in another thread.</span>
 
@@ -718,6 +719,11 @@
 <span class="sd">    Internally, this function checks whether the thread has completed every</span>
 <span class="sd">    100 milliseconds by default (so 10 times per second). Specify</span>
 <span class="sd">    *check_interval_ms* to customize this.</span>
+
+<span class="sd">    Unlike :class:`threading.Thread`, this function uses a daemon thread by</span>
+<span class="sd">    default. This means that the thread will end forcefully when Porcupine</span>
+<span class="sd">    exits, and it might not get a chance to finish whatever it is doing. Pass</span>
+<span class="sd">    ``daemon=False`` to change this.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>  <span class="c1"># any widget would do</span>
 
@@ -728,8 +734,6 @@
         <span class="k">nonlocal</span> <span class="n">value</span>
         <span class="k">nonlocal</span> <span class="n">error_traceback</span>
 
-        <span class="c1"># the logging module uses locks so calling it from another</span>
-        <span class="c1"># thread should be safe</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">blocking_function</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -745,7 +749,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">done_callback</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">error_traceback</span><span class="p">)</span>
 
-    <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">thread_target</span><span class="p">)</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">thread_target</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="n">daemon</span><span class="p">)</span>
     <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="n">root</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="n">check</span><span class="p">)</span></div>
 
