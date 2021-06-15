@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.92.4 documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.93.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -308,6 +308,30 @@ is called with the text of the entry as its only argument.
 If it returns <code class="docutils literal notranslate"><span class="pre">True</span></code>, then the option given by <em>option_name</em>
 is set to the string that the user typed.
 Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.settings.add_checkbutton">
+<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">add_checkbutton</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">checkbutton_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">tkinter.ttk.Checkbutton</span><a class="reference internal" href="_modules/porcupine/settings.html#add_checkbutton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_checkbutton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Checkbutton</span></code> to the setting dialog.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">**checkbutton_kwargs</span></code> go to <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Checkbutton</span></code>.
+You can do this, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">do_something</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># &#39;bool&#39; here is a keyword and should not be replaced with &#39;True&#39; or &#39;False&#39;</span>
+    <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;foobar&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Foobar enabled&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Foobar disabled&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">setup</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;foobar&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># False is default value</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">add_checkbutton</span><span class="p">(</span><span class="s2">&quot;foobar&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Enable foobar&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Currently it is not possible to display a <img alt="triangle" src="_images/triangle.gif" /> next to the
+checkbutton. Let me know if you need it.</p>
 </dd></dl>
 
 <dl class="py function">

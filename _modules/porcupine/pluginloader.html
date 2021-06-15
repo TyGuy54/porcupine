@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.pluginloader &#8212; Porcupine API 0.92.4 documentation</title>
+    <title>porcupine.pluginloader &#8212; Porcupine API 0.93.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -35,6 +35,7 @@
 <span class="c1"># many things are wrapped in try/except here to allow writing Porcupine</span>
 <span class="c1"># plugins using Porcupine, so Porcupine must run if the plugins are</span>
 <span class="c1"># broken</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -85,8 +86,26 @@
 
 <span class="sd">    .. data:: SETUP_FAILED</span>
 
-<span class="sd">        The plugin was imported successfully, but calling its ``setup()``</span>
-<span class="sd">        function raised an error.</span>
+<span class="sd">        The plugin was imported successfully, but its ``setup()`` function</span>
+<span class="sd">        raised an exception or logged an error.</span>
+
+<span class="sd">        In a plugin named ``foo``, any message logged with severity ``ERROR``</span>
+<span class="sd">        or ``CRITICAL`` to the logger named ``porcupine.plugins.foo`` counts as</span>
+<span class="sd">        logging an error. Therefore you can do this::</span>
+
+<span class="sd">            import logging</span>
+
+<span class="sd">            log = logging.getLogger(__name__)  # __name__ == &quot;porcupine.plugins.foo&quot;</span>
+
+<span class="sd">            def setup() -&gt; None:</span>
+<span class="sd">                if bar_is_installed:</span>
+<span class="sd">                    ...</span>
+<span class="sd">                else:</span>
+<span class="sd">                    log.error(&quot;bar is not installed&quot;)</span>
+
+<span class="sd">        When bar is not installed, this plugin will show a one-line error</span>
+<span class="sd">        message in the plugin manager and the terminal. If an exception is</span>
+<span class="sd">        raised, the full traceback is shown instead.</span>
 
 <span class="sd">    .. data:: CIRCULAR_DEPENDENCY_ERROR</span>
 
@@ -97,6 +116,7 @@
 <span class="sd">        should be set up before *A*, then *A*, *B* and *C* will all fail with</span>
 <span class="sd">        ``CIRCULAR_DEPENDENCY_ERROR``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">LOADING</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
     <span class="n">ACTIVE</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
     <span class="n">DISABLED_BY_SETTINGS</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
@@ -127,6 +147,7 @@
 <span class="sd">        * If *status* is ``CIRCULAR_DEPENDENCY_ERROR``, then *error* is a</span>
 <span class="sd">          user-readable one-line message.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">came_with_porcupine</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">Status</span>
@@ -143,7 +164,7 @@
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_argument_parser&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;setup_argument_parser&quot;</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">setup_argument_parser</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
@@ -153,7 +174,7 @@
             <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
 
         <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup_argument_parser() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup_argument_parser() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_import_plugin</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">PluginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -164,9 +185,9 @@
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">setup_before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_before&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-        <span class="n">setup_after</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_after&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">setup_before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;setup_before&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">setup_after</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;setup_after&quot;</span><span class="p">,</span> <span class="p">[]))</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;can&#39;t import porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">IMPORT_FAILED</span>
@@ -180,7 +201,7 @@
             <span class="n">_dependencies</span><span class="p">[</span><span class="n">dep_info</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
     <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;imported porcupine.plugins.</span><span class="si">%s</span><span class="s2"> in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;imported porcupine.plugins.</span><span class="si">%s</span><span class="s2"> in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
 
 <span class="c1"># Remember to generate &lt;&lt;PluginsLoaded&gt;&gt; when this succeeds</span>
@@ -188,18 +209,31 @@
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
+    <span class="n">error_log</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;porcupine.plugins.</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">()</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">emit</span> <span class="o">=</span> <span class="n">error_log</span><span class="o">.</span><span class="n">append</span>  <span class="c1"># type: ignore</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.setup() doesn&#39;t work&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.setup() doesn&#39;t work&quot;</span><span class="p">)</span>
         <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">SETUP_FAILED</span>
         <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span>
+        <span class="k">if</span> <span class="n">error_log</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">SETUP_FAILED</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">levelname</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">error_log</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span>
 
     <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ran </span><span class="si">%s</span><span class="s2">.setup() in </span><span class="si">%.3f</span><span class="s2"> milliseconds&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_did_plugin_come_with_porcupine</span><span class="p">(</span><span class="n">finder</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -207,7 +241,7 @@
 
 
 <span class="c1"># workaround for #328</span>
-<span class="n">_plugins_that_no_longer_exist</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;overview&#39;</span><span class="p">,</span> <span class="s1">&#39;drag_to_open&#39;</span><span class="p">,</span> <span class="s1">&#39;xbutton&#39;</span><span class="p">}</span>
+<span class="n">_plugins_that_no_longer_exist</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;overview&quot;</span><span class="p">,</span> <span class="s2">&quot;drag_to_open&quot;</span><span class="p">,</span> <span class="s2">&quot;xbutton&quot;</span><span class="p">}</span>
 
 
 <span class="c1"># undocumented on purpose, don&#39;t use in plugins</span>
@@ -222,7 +256,7 @@
             <span class="n">error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">finder</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_pkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">(</span><span class="n">plugin_paths</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_plugins_that_no_longer_exist</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_plugins_that_no_longer_exist</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">_dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">info</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">plugin_infos</span><span class="p">})</span>
 
@@ -230,7 +264,7 @@
         <span class="c1"># If it&#39;s disabled in settings and on command line, then status is set</span>
         <span class="c1"># to DISABLED_BY_SETTINGS. This makes more sense for the user of the</span>
         <span class="c1"># plugin manager dialog.</span>
-        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;disabled_plugins&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;disabled_plugins&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
             <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">DISABLED_BY_SETTINGS</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">disabled_on_command_line</span><span class="p">:</span>
@@ -274,14 +308,14 @@
 
         <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">imported_infos</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">loading_order</span><span class="p">):</span>
             <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">CIRCULAR_DEPENDENCY_ERROR</span>
-            <span class="n">parts</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> depends on </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> depends on </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
             <span class="n">info</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Circular dependency error: </span><span class="si">{</span><span class="n">parts</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">loading_order</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
         <span class="n">_run_setup</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
-    <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PluginsLoaded&gt;&gt;&#39;</span><span class="p">)</span>
+    <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;PluginsLoaded&gt;&gt;&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="can_setup_while_running"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.can_setup_while_running">[docs]</a><span class="k">def</span> <span class="nf">can_setup_while_running</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">PluginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -303,13 +337,24 @@
 
     <span class="c1"># If a plugin defines setup_argument_parser, it likely wants it to run on</span>
     <span class="c1"># startup, and now it&#39;s too late.</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;setup_argument_parser&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;setup_argument_parser&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
-        <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span> <span class="ow">and</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">deps</span>
-        <span class="k">for</span> <span class="n">info</span><span class="p">,</span> <span class="n">deps</span> <span class="ow">in</span> <span class="n">_dependencies</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-    <span class="p">)</span></div>
+    <span class="c1"># Check whether no other active plugin depends on loading after this plugin</span>
+    <span class="n">setup_preventors</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">other</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">for</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_must_setup_after_these</span> <span class="ow">in</span> <span class="n">_dependencies</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span> <span class="ow">and</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">other_must_setup_after_these</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">setup_preventors</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;can&#39;t setup </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> now because it must be done before setting up the following&quot;</span>
+            <span class="s2">&quot; plugins, which are already active: &quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">setup_preventors</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="setup_while_running"><a class="viewcode-back" href="../../pluginloader.html#porcupine.pluginloader.setup_while_running">[docs]</a><span class="k">def</span> <span class="nf">setup_while_running</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">PluginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -328,7 +373,7 @@
     <span class="n">_run_setup</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
     <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span>
-        <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;PluginsLoaded&gt;&gt;&#39;</span><span class="p">)</span></div>
+        <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;PluginsLoaded&gt;&gt;&quot;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.92.4 documentation</title>
+    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.93.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -78,8 +78,25 @@ setting. See <a class="reference internal" href="settings.html#module-porcupine.
 <dl class="py data">
 <dt id="porcupine.pluginloader.Status.SETUP_FAILED">
 <code class="sig-name descname"><span class="pre">SETUP_FAILED</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.SETUP_FAILED" title="Permalink to this definition">¶</a></dt>
-<dd><p>The plugin was imported successfully, but calling its <code class="docutils literal notranslate"><span class="pre">setup()</span></code>
-function raised an error.</p>
+<dd><p>The plugin was imported successfully, but its <code class="docutils literal notranslate"><span class="pre">setup()</span></code> function
+raised an exception or logged an error.</p>
+<p>In a plugin named <code class="docutils literal notranslate"><span class="pre">foo</span></code>, any message logged with severity <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>
+or <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code> to the logger named <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.foo</span></code> counts as
+logging an error. Therefore you can do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>  <span class="c1"># __name__ == &quot;porcupine.plugins.foo&quot;</span>
+
+<span class="k">def</span> <span class="nf">setup</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">bar_is_installed</span><span class="p">:</span>
+        <span class="o">...</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;bar is not installed&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When bar is not installed, this plugin will show a one-line error
+message in the plugin manager and the terminal. If an exception is
+raised, the full traceback is shown instead.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -97,7 +114,7 @@ should be set up before <em>A</em>, then <em>A</em>, <em>B</em> and <em>C</em> w
 
 <dl class="py class">
 <dt id="porcupine.pluginloader.PluginInfo">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></code><code class="sig-name descname"><span class="pre">PluginInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">came_with_porcupine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.Status" title="porcupine.pluginloader.Status"><span class="pre">porcupine.pluginloader.Status</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#PluginInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.PluginInfo" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></code><code class="sig-name descname"><span class="pre">PluginInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">came_with_porcupine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.Status" title="porcupine.pluginloader.Status"><span class="pre">Status</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#PluginInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.PluginInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#module-dataclasses" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataclass</span></code></a> represents a plugin.</p>
 <p>It’s usually better to use <code class="docutils literal notranslate"><span class="pre">info.setup_before</span></code>
 instead of accessing <code class="docutils literal notranslate"><span class="pre">info.module.setup_before</span></code> directly.
