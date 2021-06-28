@@ -133,7 +133,7 @@ Nested dataclasses don’t need to inherit from EventDataclass. Example:</p>
 </div>
 <div class="section" id="other-tkinter-utilities">
 <h2>Other Tkinter Utilities<a class="headerlink" href="#other-tkinter-utilities" title="Permalink to this headline">¶</a></h2>
-<p>See <a class="reference internal" href="textwidget.html#module-porcupine.textwidget" title="porcupine.textwidget"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code></a> for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> specific things.</p>
+<p>See <a class="reference internal" href="textutils.html#module-porcupine.textutils" title="porcupine.textutils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textutils</span></code></a> for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> specific things.</p>
 <dl class="py function">
 <dt id="porcupine.utils.set_tooltip">
 <code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">set_tooltip</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#set_tooltip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.set_tooltip" title="Permalink to this definition">¶</a></dt>
@@ -151,7 +151,7 @@ anything from it in my editor.</p>
 
 <dl class="py function">
 <dt id="porcupine.utils.bind_tab_key">
-<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">bind_tab_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">widget:</span> <span class="pre">tkinter.Widget,</span> <span class="pre">on_tab:</span> <span class="pre">Callable[[tkinter.Event[Any],</span> <span class="pre">bool],</span> <span class="pre">Optional[typing_extensions.Literal[break]]],</span> <span class="pre">**bind_kwargs:</span> <span class="pre">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#bind_tab_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.bind_tab_key" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">bind_tab_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_tab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">tkinter.Event[Any]</span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">bind_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#bind_tab_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.bind_tab_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenience function for binding Tab and Shift+Tab.</p>
 <p>Use this function like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">on_tab</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">shifted</span><span class="p">):</span>
@@ -171,7 +171,7 @@ also works on X11.</p>
 
 <dl class="py function">
 <dt id="porcupine.utils.add_scroll_command">
-<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">add_scroll_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">typing_extensions.Literal</span><span class="p"><span class="pre">[</span></span><span class="pre">xscrollcommand</span><span class="p"><span class="pre">,</span> </span><span class="pre">yscrollcommand</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#add_scroll_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.add_scroll_command" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">add_scroll_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="pre">xscrollcommand</span><span class="p"><span class="pre">,</span> </span><span class="pre">yscrollcommand</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#add_scroll_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.add_scroll_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedule <code class="docutils literal notranslate"><span class="pre">callback</span></code> to run with no arguments when <code class="docutils literal notranslate"><span class="pre">widget</span></code> is scrolled.</p>
 <p>The option should be <code class="docutils literal notranslate"><span class="pre">'xscrollcommand'</span></code> for horizontal scrolling or
 <code class="docutils literal notranslate"><span class="pre">'yscrollcommand'</span></code> for vertical scrolling.</p>
@@ -215,45 +215,6 @@ the message in a <code class="docutils literal notranslate"><span class="pre">tk
                       <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py class">
-<dt id="porcupine.utils.TemporaryBind">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">TemporaryBind</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">widget:</span> <span class="pre">tkinter.Misc,</span> <span class="pre">sequence:</span> <span class="pre">str,</span> <span class="pre">func:</span> <span class="pre">Callable[[porcupine.utils.EventWithData],</span> <span class="pre">Optional[typing_extensions.Literal[break]]]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#TemporaryBind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.TemporaryBind" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bind and unbind a callback.</p>
-<p>It’s possible (and in Porcupine plugins, highly recommended) to use
-<code class="docutils literal notranslate"><span class="pre">add=True</span></code> when binding. This way more than one function can be
-bound to the same key sequence at the same time.</p>
-<p>Unfortunately tkinter provodes no good way to unbind functions bound
-with <code class="docutils literal notranslate"><span class="pre">add=True</span></code> one by one, and the <code class="docutils literal notranslate"><span class="pre">unbind()</span></code> method always
-unbinds <em>everything</em> (see the source code). This function only
-unbinds the function it bound, and doesn’t touch anything else.</p>
-<p>Use this as a context manager, like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">TemporaryBind</span><span class="p">(</span><span class="n">some_widget</span><span class="p">,</span> <span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="n">on_click</span><span class="p">):</span>
-    <span class="c1"># now clicking the widget runs on_click() and whatever was</span>
-    <span class="c1"># bound before (unless on_click() returns &#39;break&#39;)</span>
-    <span class="o">...</span>
-<span class="c1"># now on_click() doesn&#39;t run when the widget is clicked, but</span>
-<span class="c1"># everything else still runs</span>
-</pre></div>
-</div>
-<p>Or call the <code class="docutils literal notranslate"><span class="pre">.unbind()</span></code> method when you want to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">binding</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">TemporaryBind</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="n">binding</span><span class="o">.</span><span class="n">unbind</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Calls to this function may be nested, and other things can be bound
-inside the <code class="docutils literal notranslate"><span class="pre">with</span></code> block as long as <code class="docutils literal notranslate"><span class="pre">add=True</span></code> is used.</p>
-<p>The event objects are just like with <a class="reference internal" href="#porcupine.utils.bind_with_data" title="porcupine.utils.bind_with_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">bind_with_data()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt id="porcupine.utils.BreakOrNone">
-<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">BreakOrNone</span></code><a class="headerlink" href="#porcupine.utils.BreakOrNone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Same as <code class="docutils literal notranslate"><span class="pre">Optional[Literal['break']]</span></code>, where <code class="docutils literal notranslate"><span class="pre">Optional</span></code> and <code class="docutils literal notranslate"><span class="pre">Literal</span></code> come from <a class="reference external" href="https://docs.python.org/3/library/typing.html#module-typing" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">typing</span></code></a>,
-except that this uses <code class="docutils literal notranslate"><span class="pre">typing_extensions.Literal</span></code> on Python versions that don’t have <code class="docutils literal notranslate"><span class="pre">typing.Literal</span></code>.
-This is the correct return type for tkinter bind callbacks.</p>
 </dd></dl>
 
 </div>
@@ -337,7 +298,7 @@ running commands in the Windows command prompt or a POSIX-compatible shell.</p>
 <li class="toctree-l1"><a class="reference internal" href="porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textutils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textutils</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
@@ -378,7 +339,7 @@ running commands in the Windows command prompt or a POSIX-compatible shell.</p>
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

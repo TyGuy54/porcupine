@@ -41,7 +41,6 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shlex</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
@@ -50,6 +49,7 @@
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">TYPE_CHECKING</span><span class="p">,</span>
@@ -65,6 +65,7 @@
     <span class="n">Union</span><span class="p">,</span>
     <span class="n">cast</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">url2pathname</span>
 
 <span class="kn">import</span> <span class="nn">dacite</span>
 
@@ -81,14 +82,13 @@
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_T&quot;</span><span class="p">)</span>
-<span class="n">BreakOrNone</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;break&quot;</span><span class="p">]]</span>
 
 
 <span class="c1"># nsis installs a python to e.g. C:\Users\Akuli\AppData\Local\Porcupine\Python</span>
 <span class="n">_installed_with_pynsist</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span>
-    <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span>
-    <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;porcupine&quot;</span>
+    <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span>
+    <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;porcupine&quot;</span>
 <span class="p">)</span>
 
 
@@ -102,7 +102,7 @@
         <span class="n">_installed_with_pynsist</span>
         <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="ow">is</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
         <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># not sure if necessary</span>
-        <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">])</span>
+        <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">])</span>
     <span class="p">):</span>
         <span class="c1"># pynsist generates a script that does this:</span>
         <span class="c1">#</span>
@@ -130,10 +130,10 @@
     <span class="n">running_pythonw</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<span class="n">python_executable</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">running_pythonw</span> <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;pythonw.exe&quot;</span><span class="p">:</span>
+<span class="n">python_executable</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">running_pythonw</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;pythonw.exe&quot;</span><span class="p">:</span>
     <span class="c1"># get rid of the &#39;w&#39; and hope for the best...</span>
-    <span class="n">_possible_python</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;python.exe&quot;</span><span class="p">)</span>
+    <span class="n">_possible_python</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;python.exe&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">_possible_python</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
         <span class="n">python_executable</span> <span class="o">=</span> <span class="n">_possible_python</span>
 
@@ -187,6 +187,25 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="n">substitutions</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">]</span>
 
 
+<span class="c1"># There doesn&#39;t seem to be standard library trick that works in all cases</span>
+<span class="c1"># https://stackoverflow.com/q/5977576</span>
+<span class="c1">#</span>
+<span class="c1"># TODO: document this?</span>
+<span class="k">def</span> <span class="nf">file_url_to_path</span><span class="p">(</span><span class="n">file_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">file_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;file://&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;file:///&quot;</span><span class="p">):</span>
+            <span class="c1"># File on this computer: &#39;file:///C:/Users/Akuli/Foo%20Bar.txt&#39;</span>
+            <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">url2pathname</span><span class="p">(</span><span class="n">file_url</span><span class="p">[</span><span class="mi">8</span><span class="p">:]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Network share: &#39;file://Server2/Share/Test/Foo%20Bar.txt&#39;</span>
+            <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">url2pathname</span><span class="p">(</span><span class="n">file_url</span><span class="p">[</span><span class="mi">5</span><span class="p">:]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># &#39;file:///home/akuli/foo%20bar.txt&#39;</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">url2pathname</span><span class="p">(</span><span class="n">file_url</span><span class="p">[</span><span class="mi">7</span><span class="p">:]))</span>
+
+
 <span class="c1"># Using these with subprocess prevents opening unnecessary cmd windows</span>
 <span class="c1"># TODO: document this</span>
 <span class="n">subprocess_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -205,7 +224,7 @@
 
 
 <span class="c1"># TODO: document this</span>
-<span class="k">def</span> <span class="nf">find_project_root</span><span class="p">(</span><span class="n">project_file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">find_project_root</span><span class="p">(</span><span class="n">project_file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">assert</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span>
 
     <span class="n">likely_root</span> <span class="o">=</span> <span class="kc">None</span>
@@ -565,82 +584,9 @@
     <span class="n">widget</span><span class="p">[</span><span class="n">option</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">tcl_code</span></div>
 
 
-<div class="viewcode-block" id="TemporaryBind"><a class="viewcode-back" href="../../utils.html#porcupine.utils.TemporaryBind">[docs]</a><span class="k">class</span> <span class="nc">TemporaryBind</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Bind and unbind a callback.</span>
-
-<span class="sd">    It&#39;s possible (and in Porcupine plugins, highly recommended) to use</span>
-<span class="sd">    ``add=True`` when binding. This way more than one function can be</span>
-<span class="sd">    bound to the same key sequence at the same time.</span>
-
-<span class="sd">    Unfortunately tkinter provodes no good way to unbind functions bound</span>
-<span class="sd">    with ``add=True`` one by one, and the ``unbind()`` method always</span>
-<span class="sd">    unbinds *everything* (see the source code). This function only</span>
-<span class="sd">    unbinds the function it bound, and doesn&#39;t touch anything else.</span>
-
-<span class="sd">    Use this as a context manager, like this::</span>
-
-<span class="sd">        with utils.TemporaryBind(some_widget, &#39;&lt;Button-1&gt;&#39;, on_click):</span>
-<span class="sd">            # now clicking the widget runs on_click() and whatever was</span>
-<span class="sd">            # bound before (unless on_click() returns &#39;break&#39;)</span>
-<span class="sd">            ...</span>
-<span class="sd">        # now on_click() doesn&#39;t run when the widget is clicked, but</span>
-<span class="sd">        # everything else still runs</span>
-
-<span class="sd">    Or call the ``.unbind()`` method when you want to::</span>
-
-<span class="sd">        binding = utils.TemporaryBind(...)</span>
-<span class="sd">        ...</span>
-<span class="sd">        binding.unbind()</span>
-
-<span class="sd">    Calls to this function may be nested, and other things can be bound</span>
-<span class="sd">    inside the ``with`` block as long as ``add=True`` is used.</span>
-
-<span class="sd">    The event objects are just like with :func:`bind_with_data`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">sequence</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">EventWithData</span><span class="p">],</span> <span class="n">BreakOrNone</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span> <span class="o">=</span> <span class="n">widget</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span> <span class="o">=</span> <span class="n">sequence</span>
-
-        <span class="n">not_bound_commands</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcl_command</span> <span class="o">=</span> <span class="n">bind_with_data</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">bound_commands</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">bound_commands</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">not_bound_commands</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_new_things</span> <span class="o">=</span> <span class="n">bound_commands</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">not_bound_commands</span><span class="p">)</span> <span class="p">:]</span>
-
-    <span class="k">def</span> <span class="nf">unbind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># other stuff might be bound too while this thing was yielding</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">bound_and_stuff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="o">.</span><span class="n">winfo_exists</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">e</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># widget is already destroyed, no need to do anything</span>
-                <span class="k">return</span>
-
-        <span class="k">assert</span> <span class="n">bound_and_stuff</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_things</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>  <span class="c1"># bindcheck: ignore</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span><span class="p">,</span> <span class="n">bound_and_stuff</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_things</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="c1"># tkinter&#39;s unbind() does this too to avoid memory leaks</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="o">.</span><span class="n">deletecommand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcl_command</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">error</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unbind</span><span class="p">()</span></div>
-
-
 <span class="c1"># this is not bind_tab to avoid confusing with tabs.py, as in browser tabs</span>
 <div class="viewcode-block" id="bind_tab_key"><a class="viewcode-back" href="../../utils.html#porcupine.utils.bind_tab_key">[docs]</a><span class="k">def</span> <span class="nf">bind_tab_key</span><span class="p">(</span>
-    <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span>
-    <span class="n">on_tab</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;tkinter.Event[Any]&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">BreakOrNone</span><span class="p">],</span>
-    <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">on_tab</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;tkinter.Event[Any]&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">:</span> <span class="n">Any</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A convenience function for binding Tab and Shift+Tab.</span>
 
@@ -662,7 +608,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># there&#39;s something for this in more_functools, but it&#39;s a big</span>
     <span class="c1"># dependency for something this simple imo</span>
-    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BreakOrNone</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">shifted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">on_tab</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">shifted</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;tk&quot;</span><span class="p">,</span> <span class="s2">&quot;windowingsystem&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;x11&quot;</span><span class="p">:</span>
@@ -781,7 +727,7 @@
 
 <span class="c1"># how to type hint context manager: https://stackoverflow.com/a/49736916</span>
 <div class="viewcode-block" id="backup_open"><a class="viewcode-back" href="../../utils.html#porcupine.utils.backup_open">[docs]</a><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
-<span class="k">def</span> <span class="nf">backup_open</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">backup_open</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Like :func:`open`, but uses a backup file if needed.</span>
 
 <span class="sd">    This is useless with modes like ``&#39;r&#39;`` because they don&#39;t modify</span>
@@ -846,7 +792,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../textutils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textutils</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
@@ -888,7 +834,7 @@
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

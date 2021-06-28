@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textwidget &#8212; Porcupine API 0.93.2 documentation</title>
+    <title>porcupine.textutils &#8212; Porcupine API 0.93.2 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -30,7 +30,7 @@
 
           <div class="body" role="main">
             
-  <h1>Source code for porcupine.textwidget</h1><div class="highlight"><pre>
+  <h1>Source code for porcupine.textutils</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">contextlib</span>
@@ -48,7 +48,7 @@
     <span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">tabs</span>
 
 
-<div class="viewcode-block" id="Change"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.Change">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<div class="viewcode-block" id="Change"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.Change">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Change</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This :mod:`dataclass &lt;dataclasses&gt;` represents any change in a</span>
@@ -101,7 +101,7 @@
     <span class="n">new_text</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="Changes"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.Changes">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<div class="viewcode-block" id="Changes"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.Changes">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Changes</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">EventDataclass</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This :mod:`dataclass &lt;dataclasses&gt;` represents a list of several</span>
@@ -412,7 +412,7 @@
 <span class="p">]</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakKeyDictionary</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="track_changes"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.track_changes">[docs]</a><span class="k">def</span> <span class="nf">track_changes</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="track_changes"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.track_changes">[docs]</a><span class="k">def</span> <span class="nf">track_changes</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make the text widget emit virtual events whenever its content is modified</span>
 <span class="sd">    or the cursor moves.</span>
@@ -474,7 +474,7 @@
     <span class="n">_change_trackers</span><span class="p">[</span><span class="n">widget</span><span class="p">]</span> <span class="o">=</span> <span class="n">tracker</span></div>
 
 
-<div class="viewcode-block" id="change_batch"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.change_batch">[docs]</a><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<div class="viewcode-block" id="change_batch"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.change_batch">[docs]</a><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">change_batch</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;A context manager to optimize doing many changes to a text widget.</span>
 
@@ -520,7 +520,7 @@
         <span class="n">widget</span><span class="o">.</span><span class="n">mark_set</span><span class="p">(</span><span class="s2">&quot;insert&quot;</span><span class="p">,</span> <span class="n">cursor_pos</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_peer_widget"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.create_peer_widget">[docs]</a><span class="k">def</span> <span class="nf">create_peer_widget</span><span class="p">(</span>
+<div class="viewcode-block" id="create_peer_widget"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.create_peer_widget">[docs]</a><span class="k">def</span> <span class="nf">create_peer_widget</span><span class="p">(</span>
     <span class="n">original_text_widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">the_widget_that_becomes_a_peer</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -581,7 +581,7 @@
 <span class="nd">@overload</span>
 <span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 <span class="c1"># fmt: on</span>
-<div class="viewcode-block" id="use_pygments_theme"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.use_pygments_theme">[docs]</a><span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span>
+<div class="viewcode-block" id="use_pygments_theme"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.use_pygments_theme">[docs]</a><span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span>
     <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -630,7 +630,7 @@
     <span class="n">on_style_changed</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="config_tab_displaying"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.config_tab_displaying">[docs]</a><span class="k">def</span> <span class="nf">config_tab_displaying</span><span class="p">(</span>
+<div class="viewcode-block" id="config_tab_displaying"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.config_tab_displaying">[docs]</a><span class="k">def</span> <span class="nf">config_tab_displaying</span><span class="p">(</span>
     <span class="n">textwidget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">indent_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Make ``textwidget`` display tabs as ``indent_size`` characters wide.</span>
@@ -655,7 +655,7 @@
     <span class="n">textwidget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">tabs</span><span class="o">=</span><span class="p">(</span><span class="n">indent_size</span> <span class="o">*</span> <span class="n">measure_result</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">),</span> <span class="n">tabstyle</span><span class="o">=</span><span class="s2">&quot;wordprocessor&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MainText"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.MainText">[docs]</a><span class="k">class</span> <span class="nc">MainText</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">):</span>
+<div class="viewcode-block" id="MainText"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.MainText">[docs]</a><span class="k">class</span> <span class="nc">MainText</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Don&#39;t use this. It may be changed later.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab</span><span class="p">:</span> <span class="n">tabs</span><span class="o">.</span><span class="n">FileTab</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -730,7 +730,7 @@
         <span class="k">return</span> <span class="n">start</span> <span class="o">!=</span> <span class="n">end</span></div>
 
 
-<div class="viewcode-block" id="create_passive_text_widget"><a class="viewcode-back" href="../../textwidget.html#porcupine.textwidget.create_passive_text_widget">[docs]</a><span class="k">def</span> <span class="nf">create_passive_text_widget</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">:</span>
+<div class="viewcode-block" id="create_passive_text_widget"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.create_passive_text_widget">[docs]</a><span class="k">def</span> <span class="nf">create_passive_text_widget</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Create a text widget that is meant to be used for displaying text, not for editing.</span>
 
 <span class="sd">    The returned text widget is disabled by default (``state=&#39;disabled&#39;``),</span>
@@ -805,7 +805,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../porcupine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine</span></code> — The top level Porcupine package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../menubar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code> — The menu bar at the top of the Porcupine window</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tabs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code> — The tab manager and tabs in it</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../textwidget.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textwidget</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../textutils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textutils</span></code> — Things for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.images</span></code> — Load images that come with Porcupine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../settings.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code> — Porcupine’s setting manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pluginloader.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code> — The module that loads plugins on startup</a></li>
@@ -847,7 +847,7 @@
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
