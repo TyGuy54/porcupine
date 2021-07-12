@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.pluginloader &#8212; Porcupine API 0.93.2 documentation</title>
+    <title>porcupine.pluginloader &#8212; Porcupine API 0.94.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -46,7 +46,7 @@
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">toposort</span>  <span class="c1"># type: ignore[import]</span>
 
@@ -151,13 +151,13 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">came_with_porcupine</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">Status</span>
-    <span class="n">module</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
-    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+    <span class="n">module</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span>  <span class="c1"># you have to check for None, otherwise mypy won&#39;t complain</span>
+    <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span></div>
 
 
-<span class="n">_mutable_plugin_infos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">_mutable_plugin_infos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">plugin_infos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mutable_plugin_infos</span>  <span class="c1"># changing content is mypy error</span>
-<span class="n">_dependencies</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_dependencies</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <span class="k">def</span> <span class="nf">_run_setup_argument_parser_function</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">PluginInfo</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -205,7 +205,7 @@
 
 
 <span class="c1"># Remember to generate &lt;&lt;PluginsLoaded&gt;&gt; when this succeeds</span>
-<span class="k">def</span> <span class="nf">_run_setup</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">PluginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_run_setup_and_set_status</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">PluginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
@@ -245,7 +245,7 @@
 
 
 <span class="c1"># undocumented on purpose, don&#39;t use in plugins</span>
-<span class="k">def</span> <span class="nf">import_plugins</span><span class="p">(</span><span class="n">disabled_on_command_line</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">import_plugins</span><span class="p">(</span><span class="n">disabled_on_command_line</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">assert</span> <span class="ow">not</span> <span class="n">_mutable_plugin_infos</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_dependencies</span>
     <span class="n">_mutable_plugin_infos</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
         <span class="n">PluginInfo</span><span class="p">(</span>
@@ -288,11 +288,11 @@
     <span class="c1"># the toposort will partially work even if there&#39;s a circular</span>
     <span class="c1"># dependency, the CircularDependencyError is raised after doing</span>
     <span class="c1"># everything possible (see source code)</span>
-    <span class="n">loading_order</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">loading_order</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">toposort_result</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]]</span> <span class="o">=</span> <span class="n">toposort</span><span class="o">.</span><span class="n">toposort</span><span class="p">(</span><span class="n">_dependencies</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">infos</span> <span class="ow">in</span> <span class="n">toposort_result</span><span class="p">:</span>
-            <span class="n">load_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginInfo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">info</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">infos</span> <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span><span class="p">]</span>
+            <span class="n">load_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">info</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">infos</span> <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
                 <span class="c1"># for plugin developers wanting to make sure that the</span>
                 <span class="c1"># dependencies specified in setup_before and setup_after</span>
@@ -313,7 +313,7 @@
 
     <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">loading_order</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
-        <span class="n">_run_setup</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">_run_setup_and_set_status</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
     <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;PluginsLoaded&gt;&gt;&quot;</span><span class="p">)</span>
 
@@ -370,7 +370,7 @@
     <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span><span class="p">:</span>  <span class="c1"># error</span>
         <span class="k">return</span>
 
-    <span class="n">_run_setup</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+    <span class="n">_run_setup_and_set_status</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">Status</span><span class="o">.</span><span class="n">LOADING</span>
     <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">Status</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span>
         <span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;PluginsLoaded&gt;&gt;&quot;</span><span class="p">)</span></div>

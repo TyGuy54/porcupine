@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.93.2 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.94.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -51,20 +51,7 @@
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">Deque</span><span class="p">,</span>
-    <span class="n">Dict</span><span class="p">,</span>
-    <span class="n">Iterator</span><span class="p">,</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">TextIO</span><span class="p">,</span>
-    <span class="n">Type</span><span class="p">,</span>
-    <span class="n">TypeVar</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-    <span class="n">cast</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">url2pathname</span>
 
 <span class="kn">import</span> <span class="nn">dacite</span>
@@ -208,7 +195,7 @@
 
 <span class="c1"># Using these with subprocess prevents opening unnecessary cmd windows</span>
 <span class="c1"># TODO: document this</span>
-<span class="n">subprocess_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">subprocess_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
     <span class="c1"># https://stackoverflow.com/a/1813893</span>
     <span class="n">subprocess_kwargs</span><span class="p">[</span><span class="s2">&quot;startupinfo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTUPINFO</span><span class="p">(</span>
@@ -310,7 +297,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>  <span class="c1"># can be changed after creating tooltip manager</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">destroy_tipwindow</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">destroy_tipwindow</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="o">=</span> <span class="kc">None</span>
@@ -461,6 +448,12 @@
 <span class="sd">        ...</span>
 <span class="sd">        foos = [Foo(&#39;ab&#39;, 123), Foo(&#39;cd&#39;, 456)]</span>
 <span class="sd">        some_widget.event_generate(&#39;&lt;&lt;Thingy&gt;&gt;&#39;, data=Bar(foos))</span>
+
+<span class="sd">    Note that before Python 3.10, you need ``List[str]`` instead of</span>
+<span class="sd">    ``list[str]``, even if you use ``from __future__ import annotations``. This</span>
+<span class="sd">    is because Porcupine uses a library that needs to evaluate the type</span>
+<span class="sd">    annotations even if ``from __future__ import annotations``</span>
+<span class="sd">    was used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -504,7 +497,7 @@
 <div class="viewcode-block" id="bind_with_data"><a class="viewcode-back" href="../../utils.html#porcupine.utils.bind_with_data">[docs]</a><span class="k">def</span> <span class="nf">bind_with_data</span><span class="p">(</span>
     <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span>
     <span class="n">sequence</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">EventWithData</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">EventWithData</span><span class="p">],</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span>
     <span class="n">add</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -531,22 +524,19 @@
     <span class="c1"># event objects and runs callback(event)</span>
     <span class="c1">#</span>
     <span class="c1"># TODO: is it possible to do this without a deque?</span>
-    <span class="n">event_objects</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">],</span> <span class="n">EventWithData</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+    <span class="n">event_objects</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">event_objects</span><span class="o">.</span><span class="n">append</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">run_the_callback</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="n">event</span> <span class="o">=</span> <span class="n">event_objects</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">run_the_callback</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]</span> <span class="o">|</span> <span class="n">EventWithData</span> <span class="o">=</span> <span class="n">event_objects</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
         <span class="n">event</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">EventWithData</span>  <span class="c1"># evil haxor muhaha</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">EventWithData</span><span class="p">)</span>
         <span class="n">event</span><span class="o">.</span><span class="n">data_string</span> <span class="o">=</span> <span class="n">data_string</span>
         <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>  <span class="c1"># may return &#39;break&#39;</span>
 
-    <span class="c1"># tkinter&#39;s bind() ignores the add argument when the callback is a</span>
-    <span class="c1"># string :(</span>
+    <span class="c1"># tkinter&#39;s bind() ignores the add argument when the callback is a string :(</span>
     <span class="n">funcname</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">run_the_callback</span><span class="p">)</span>
-    <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span>
-        <span class="s1">&#39;bind </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> {+ if {&quot;[</span><span class="si">%s</span><span class="s1"> </span><span class="si">%%</span><span class="s1">d]&quot; == &quot;break&quot;} break }&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">funcname</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">widget</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;bind&quot;</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="s1">&#39;+ if {&quot;[</span><span class="si">%s</span><span class="s1"> </span><span class="si">%%</span><span class="s1">d]&quot; == &quot;break&quot;} break&#39;</span> <span class="o">%</span> <span class="n">funcname</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">funcname</span></div>
 
 
@@ -622,7 +612,7 @@
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">shift_tab</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span></div>
 
 
-<div class="viewcode-block" id="errordialog"><a class="viewcode-back" href="../../utils.html#porcupine.utils.errordialog">[docs]</a><span class="k">def</span> <span class="nf">errordialog</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">monospace_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="errordialog"><a class="viewcode-back" href="../../utils.html#porcupine.utils.errordialog">[docs]</a><span class="k">def</span> <span class="nf">errordialog</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">monospace_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This is a lot like ``tkinter.messagebox.showerror``.</span>
 
 <span class="sd">    This function can be called with or without creating a root window</span>
@@ -672,7 +662,7 @@
 
 <div class="viewcode-block" id="run_in_thread"><a class="viewcode-back" href="../../utils.html#porcupine.utils.run_in_thread">[docs]</a><span class="k">def</span> <span class="nf">run_in_thread</span><span class="p">(</span>
     <span class="n">blocking_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">_T</span><span class="p">],</span>
-    <span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_T</span><span class="p">]],</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">_T</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">check_interval_ms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="n">daemon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -699,7 +689,7 @@
     <span class="n">root</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span>  <span class="c1"># any widget would do</span>
 
     <span class="n">value</span><span class="p">:</span> <span class="n">_T</span>
-    <span class="n">error_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">error_traceback</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">thread_target</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">nonlocal</span> <span class="n">value</span>

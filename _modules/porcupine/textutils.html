@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textutils &#8212; Porcupine API 0.93.2 documentation</title>
+    <title>porcupine.textutils &#8212; Porcupine API 0.94.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -38,7 +38,7 @@
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>  <span class="c1"># type: ignore[import]</span>
 
@@ -126,7 +126,7 @@
     <span class="c1"># event_receiver_widget will receive the change events</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_receiver_widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_receiver_widget</span> <span class="o">=</span> <span class="n">event_receiver_widget</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_batch</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">old_cursor_pos</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;insert&quot;</span><span class="p">)</span>  <span class="c1"># must be widget specific</span>
@@ -277,7 +277,7 @@
     <span class="k">def</span> <span class="nf">_change_event_from_command</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args_tuple</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Change</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">changes</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># search for &#39;pathName delete&#39; in text(3tk)... it&#39;s a wall of text,</span>
         <span class="c1"># and this thing has to implement every detail of that wall</span>
@@ -305,7 +305,7 @@
 
             <span class="c1"># &quot;They [index pairs, aka ranges] are sorted [...].&quot;</span>
             <span class="c1"># (line, column) tuples sort nicely</span>
-            <span class="k">def</span> <span class="nf">get_range_beginning_as_tuple</span><span class="p">(</span><span class="n">start_and_end</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+            <span class="k">def</span> <span class="nf">get_range_beginning_as_tuple</span><span class="p">(</span><span class="n">start_and_end</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
                 <span class="n">line</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">start_and_end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
                 <span class="k">return</span> <span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
 
@@ -317,7 +317,7 @@
             <span class="c1"># outside the given ranges due to text shifted during deletion.&quot;</span>
             <span class="k">def</span> <span class="nf">merge_index_ranges</span><span class="p">(</span>
                 <span class="n">start1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end2</span><span class="p">:</span> <span class="nb">str</span>
-            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
                 <span class="n">start</span> <span class="o">=</span> <span class="n">start1</span> <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">start1</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="n">start2</span><span class="p">)</span> <span class="k">else</span> <span class="n">start2</span>
                 <span class="n">end</span> <span class="o">=</span> <span class="n">end1</span> <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span> <span class="k">else</span> <span class="n">end2</span>
                 <span class="k">return</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
@@ -582,7 +582,7 @@
 <span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 <span class="c1"># fmt: on</span>
 <div class="viewcode-block" id="use_pygments_theme"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.use_pygments_theme">[docs]</a><span class="k">def</span> <span class="nf">use_pygments_theme</span><span class="p">(</span>
-    <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Configure *widget* to use the colors of the Pygments theme whenever the</span>
@@ -631,7 +631,7 @@
 
 
 <div class="viewcode-block" id="config_tab_displaying"><a class="viewcode-back" href="../../textutils.html#porcupine.textutils.config_tab_displaying">[docs]</a><span class="k">def</span> <span class="nf">config_tab_displaying</span><span class="p">(</span>
-    <span class="n">textwidget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">indent_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">textwidget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">indent_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Make ``textwidget`` display tabs as ``indent_size`` characters wide.</span>
 

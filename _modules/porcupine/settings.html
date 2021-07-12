@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings &#8212; Porcupine API 0.93.2 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.94.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -45,7 +45,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">import</span> <span class="nn">dacite</span>
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>  <span class="c1"># type: ignore[import]</span>
@@ -103,11 +103,11 @@
     <span class="n">CRLF</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span></div>
 
 
-<span class="k">def</span> <span class="nf">_type_check</span><span class="p">(</span><span class="n">type_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_type_check</span><span class="p">(</span><span class="n">type_</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
     <span class="c1"># dacite tricks needed for validating e.g. objects of type Optional[pathlib.Path]</span>
     <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
     <span class="k">class</span> <span class="nc">ValueContainer</span><span class="p">:</span>
-        <span class="vm">__annotations__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">type_</span><span class="p">}</span>  <span class="c1"># avoid the string &#39;type_&#39;</span>
+        <span class="vm">__annotations__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">type_</span><span class="p">}</span>
 
     <span class="n">parsed</span> <span class="o">=</span> <span class="n">dacite</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">ValueContainer</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">parsed</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># type: ignore</span>
@@ -130,14 +130,14 @@
 
 
 <div class="viewcode-block" id="Settings"><a class="viewcode-back" href="../../settings.html#porcupine.settings.Settings">[docs]</a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change_event_widget</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">],</span> <span class="n">change_event_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change_event_widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">change_event_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># &#39;&lt;&lt;Foo:{}&gt;&gt;&#39;</span>
         <span class="k">assert</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">change_event_format</span>
         <span class="k">assert</span> <span class="n">change_event_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;&quot;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">change_event_format</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_Option</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_Option</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_change_event_widget</span> <span class="o">=</span> <span class="n">change_event_widget</span>  <span class="c1"># None to notify all widgets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_change_event_format</span> <span class="o">=</span> <span class="n">change_event_format</span>
 
@@ -145,7 +145,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">default</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-        <span class="n">type_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">type_</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">converter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">),</span>
         <span class="n">exist_ok</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -298,8 +298,13 @@
 <span class="sd">        Use a type annotation to work around this (and make sure to write the</span>
 <span class="sd">        same type two times)::</span>
 
-<span class="sd">            good_bar: Optional[pathlib.Path] = settings.get(&#39;something&#39;, Optional[pathlib.Path])</span>
+<span class="sd">            good_bar: pathlib.Path | None = settings.get(&#39;something&#39;, Optional[pathlib.Path])</span>
 <span class="sd">            reveal_type(good_bar)  # Optional[pathlib.Path]</span>
+
+<span class="sd">        Before Python 3.10, you can&#39;t use the new ``|`` syntax as an argument to ``settings.get()``,</span>
+<span class="sd">        even though it otherwise works with ``from __future__ import annotations``.</span>
+<span class="sd">        The same goes for built-in generics,</span>
+<span class="sd">        such as ``list[str]`` with lower-case ``list``.</span>
 
 <span class="sd">        Options of mutable types are returned as copies, so things like</span>
 <span class="sd">        ``settings.get(&#39;something&#39;, List[str])`` always return a new list.</span>
@@ -364,7 +369,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">default</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
 
-    <span class="n">writing</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">writing</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">_global_settings</span><span class="o">.</span><span class="n">_unknown_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="c1"># don&#39;t wipe unknown stuff from config file</span>
     <span class="n">writing</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">currently_known_defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()})</span>
@@ -429,7 +434,7 @@
     <span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;font_size&quot;</span><span class="p">,</span> <span class="n">fixedfont</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">])</span>
 
     <span class="c1"># keep TkFixedFont up to date with settings</span>
-    <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">update_fixedfont</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># can&#39;t bind to get_tab_manager() as recommended in docs because tab</span>
         <span class="c1"># manager isn&#39;t ready yet when settings get inited</span>
         <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="o">==</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">():</span>
@@ -472,7 +477,7 @@
     <span class="k">return</span> <span class="n">content</span>
 
 
-<span class="n">_dialog_content</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_dialog_content</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="show_dialog"><a class="viewcode-back" href="../../settings.html#porcupine.settings.show_dialog">[docs]</a><span class="k">def</span> <span class="nf">show_dialog</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -529,7 +534,7 @@
     <span class="k">return</span> <span class="n">_dialog_content</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_blank_triangle_sized_image</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">_cache</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_get_blank_triangle_sized_image</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">_cache</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">:</span>
     <span class="c1"># see images/__init__.py</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_cache</span><span class="p">:</span>
         <span class="n">_cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -557,7 +562,7 @@
     <span class="k">def</span> <span class="nf">var_changed</span><span class="p">(</span><span class="o">*</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">value_string</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
-        <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_StrOrInt</span><span class="p">]</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">_StrOrInt</span> <span class="o">|</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">type_</span><span class="p">(</span><span class="n">value_string</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># e.g. int(&#39;foo&#39;)</span>
@@ -584,7 +589,7 @@
 
 
 <span class="k">def</span> <span class="nf">_grid_widgets</span><span class="p">(</span>
-    <span class="n">label_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chooser</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">triangle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">]</span>
+    <span class="n">label_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chooser</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">triangle</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">chooser</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">label_text</span><span class="p">)</span>
     <span class="n">label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
@@ -713,7 +718,7 @@
 
 <span class="c1"># TODO: document this</span>
 <span class="k">def</span> <span class="nf">remember_divider_positions</span><span class="p">(</span>
-    <span class="n">panedwindow</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Panedwindow</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">defaults</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">panedwindow</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Panedwindow</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">defaults</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># exist_ok=True to allow e.g. calling this once for each tab</span>
     <span class="n">add_option</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">defaults</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -782,7 +787,7 @@
     <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
 
 
-<span class="k">def</span> <span class="nf">_get_monospace_font_families</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_get_monospace_font_families</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">cache_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dirs</span><span class="o">.</span><span class="n">user_cache_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;font_cache.json&quot;</span>
     <span class="n">all_families</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">families</span><span class="p">()))</span>
 
