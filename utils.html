@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.94.1 documentation</title>
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.94.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -139,21 +139,6 @@ was used.</p>
 <div class="section" id="other-tkinter-utilities">
 <h2>Other Tkinter Utilities<a class="headerlink" href="#other-tkinter-utilities" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference internal" href="textutils.html#module-porcupine.textutils" title="porcupine.textutils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textutils</span></code></a> for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> specific things.</p>
-<dl class="py function">
-<dt id="porcupine.utils.set_tooltip">
-<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">set_tooltip</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#set_tooltip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.set_tooltip" title="Permalink to this definition">¶</a></dt>
-<dd><p>A simple tooltip implementation with tkinter.</p>
-<p>After calling <code class="docutils literal notranslate"><span class="pre">set_tooltip(some_widget,</span> <span class="pre">&quot;hello&quot;)</span></code>, “hello” will be
-displayed in a small window when the user moves the mouse over the
-widget and waits for 1 second.</p>
-<p>If you have read some of IDLE’s source code (if you haven’t, that’s
-good; IDLE’s source code is ugly), you might be wondering what this
-thing has to do with <code class="docutils literal notranslate"><span class="pre">idlelib/tooltip.py</span></code>. Don’t worry, I didn’t
-copy/paste any code from idlelib and I didn’t read idlelib while I
-wrote the tooltip code! Idlelib is awful and I don’t want to use
-anything from it in my editor.</p>
-</dd></dl>
-
 <dl class="py function">
 <dt id="porcupine.utils.bind_tab_key">
 <code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">bind_tab_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_tab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">tkinter.Event[Any]</span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">bind_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#bind_tab_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.bind_tab_key" title="Permalink to this definition">¶</a></dt>

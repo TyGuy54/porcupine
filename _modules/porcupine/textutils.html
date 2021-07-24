@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textutils &#8212; Porcupine API 0.94.1 documentation</title>
+    <title>porcupine.textutils &#8212; Porcupine API 0.94.2 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -701,7 +701,9 @@
                 <span class="c1"># not deleting from start of line, delete previous char instead</span>
                 <span class="n">location</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> - 1 char&quot;</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">location</span><span class="p">)</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+            <span class="c1"># Deleting spaces this way is annoying. But that is somewhat</span>
+            <span class="c1"># intentional because mixing tabs and spaces is bad.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">location</span><span class="p">)</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">}:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">return</span> <span class="kc">False</span>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.94.1 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.94.2 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -280,80 +280,6 @@
         <span class="k">yield</span> <span class="n">parent</span>
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">winfo_children</span><span class="p">():</span>
         <span class="k">yield from</span> <span class="n">get_children_recursively</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">include_parent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">_TooltipManager</span><span class="p">:</span>
-
-    <span class="c1"># This needs to be shared by all instances because there&#39;s only one</span>
-    <span class="c1"># mouse pointer.</span>
-    <span class="n">tipwindow</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Toplevel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Enter&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">enter</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Leave&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">leave</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Motion&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">widget</span> <span class="o">=</span> <span class="n">widget</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>  <span class="c1"># can be changed after creating tooltip manager</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">destroy_tipwindow</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">tipwindow</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># For some reason, toplevels get also notified of their</span>
-        <span class="c1"># childrens&#39; events.</span>
-        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">def</span> <span class="nf">motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mousex</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x_root</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mousey</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span>
-
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">got_mouse</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">()</span>
-            <span class="n">tipwindow</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tipwindow</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">()</span>
-            <span class="n">tipwindow</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;+</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mousex</span> <span class="o">+</span> <span class="mi">10</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mousey</span> <span class="o">-</span> <span class="mi">10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">tipwindow</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Motion&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">destroy_tipwindow</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">tipwindow</span><span class="o">.</span><span class="n">overrideredirect</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-            <span class="c1"># If you modify this, make sure to always define either no</span>
-            <span class="c1"># colors at all or both foreground and background. Otherwise</span>
-            <span class="c1"># the label will have light text on a light background or</span>
-            <span class="c1"># dark text on a dark background on some systems.</span>
-            <span class="n">tkinter</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">tipwindow</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
-
-
-<div class="viewcode-block" id="set_tooltip"><a class="viewcode-back" href="../../utils.html#porcupine.utils.set_tooltip">[docs]</a><span class="k">def</span> <span class="nf">set_tooltip</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A simple tooltip implementation with tkinter.</span>
-
-<span class="sd">    After calling ``set_tooltip(some_widget, &quot;hello&quot;)``, &quot;hello&quot; will be</span>
-<span class="sd">    displayed in a small window when the user moves the mouse over the</span>
-<span class="sd">    widget and waits for 1 second.</span>
-
-<span class="sd">    If you have read some of IDLE&#39;s source code (if you haven&#39;t, that&#39;s</span>
-<span class="sd">    good; IDLE&#39;s source code is ugly), you might be wondering what this</span>
-<span class="sd">    thing has to do with ``idlelib/tooltip.py``. Don&#39;t worry, I didn&#39;t</span>
-<span class="sd">    copy/paste any code from idlelib and I didn&#39;t read idlelib while I</span>
-<span class="sd">    wrote the tooltip code! Idlelib is awful and I don&#39;t want to use</span>
-<span class="sd">    anything from it in my editor.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">manager</span><span class="p">:</span> <span class="n">_TooltipManager</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span><span class="o">.</span><span class="n">_tooltip_manager</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span><span class="o">.</span><span class="n">_tooltip_manager</span> <span class="o">=</span> <span class="n">_TooltipManager</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-        <span class="k">return</span>
-    <span class="n">manager</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span></div>
 
 
 <span class="k">def</span> <span class="nf">_handle_letter</span><span class="p">(</span><span class="n">match</span><span class="p">:</span> <span class="n">Match</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
