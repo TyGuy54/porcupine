@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.94.2 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.94.3 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -56,14 +56,10 @@
 
 <span class="kn">import</span> <span class="nn">dacite</span>
 
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">Match</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
-<span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Match</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Match</span>
 
 <span class="kn">import</span> <span class="nn">porcupine</span>
 
@@ -282,60 +278,76 @@
         <span class="k">yield from</span> <span class="n">get_children_recursively</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">include_parent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_handle_letter</span><span class="p">(</span><span class="n">match</span><span class="p">:</span> <span class="n">Match</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
-        <span class="k">return</span> <span class="s2">&quot;Shift-&quot;</span> <span class="o">+</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-
-
+<span class="c1"># This doesn&#39;t handle all possible cases, see bind(3tk)</span>
 <span class="k">def</span> <span class="nf">_format_binding</span><span class="p">(</span><span class="n">binding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">menu</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="c1"># this doesn&#39;t handle all possible cases, see bind(3tk)</span>
-    <span class="n">mac</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;tk&quot;</span><span class="p">,</span> <span class="s2">&quot;windowingsystem&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;aqua&quot;</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">binding</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+    <span class="n">mac</span> <span class="o">=</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;tk windowingsystem&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;aqua&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">binding</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
 
     <span class="c1"># don&#39;t know how to show click in mac menus</span>
-    <span class="k">if</span> <span class="n">mac</span> <span class="ow">and</span> <span class="n">menu</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bButton-1\b&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">mac</span> <span class="ow">and</span> <span class="n">menu</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Button-1&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">))):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bButton-1\b&quot;</span><span class="p">,</span> <span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\b[A-Za-z]\b&quot;</span><span class="p">,</span> <span class="n">_handle_letter</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>  <span class="c1"># tk doesn&#39;t like e.g. &lt;Control-ö&gt;</span>
-    <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bKey-&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
+    <span class="c1"># Must recompute length on every iteration, because length changes</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;Double&quot;</span><span class="p">,</span> <span class="s2">&quot;Button&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">]:</span>
+            <span class="n">parts</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;double-click&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;Button&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">]:</span>
+            <span class="n">parts</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;click&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[a-z]&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[A-Z]&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Shift&quot;</span><span class="p">)</span>
+            <span class="c1"># Increment beyond the added &quot;Shift&quot; and letter</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
+            <span class="k">continue</span>
+
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="s2">&quot;Key&quot;</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;Key&quot;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">mac</span><span class="p">:</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;\bMod1\b&quot;</span><span class="p">,</span> <span class="s2">&quot;Command&quot;</span><span class="p">,</span> <span class="n">binding</span>
-        <span class="p">)</span>  <span class="c1"># event_info() returns &lt;Mod1-Key-x&gt; for &lt;Command-x&gt;</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bplus\b&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bminus\b&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>  <span class="c1"># e.g. &quot;Command-minus&quot; --&gt; &quot;Command--&quot;</span>
+        <span class="c1"># event_info() returns &lt;Mod1-Key-x&gt; for &lt;Command-x&gt;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;Mod1&quot;</span><span class="p">:</span> <span class="s2">&quot;Command&quot;</span><span class="p">,</span> <span class="s2">&quot;plus&quot;</span><span class="p">:</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;minus&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">menu</span><span class="p">:</span>
-            <span class="c1"># Tk will use the proper symbols automagically, and it expects dash-separated</span>
-            <span class="k">return</span> <span class="n">binding</span>
-
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bReturn\b&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;⏎&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-
+    <span class="k">if</span> <span class="n">mac</span><span class="p">:</span>
         <span class="c1"># &lt;ThePhilgrim&gt; I think it&#39;s like from left to right... so it would be shift -&gt; ctrl -&gt; alt -&gt; cmd</span>
-        <span class="c1"># We need to sub backwards, because each sub puts its thing before everything else</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(.*)\bCommand-&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;⌘-\1&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(.*)\bAlt-&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;⌥-\1&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="c1"># look carefully, two different kinds of hats</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(.*)\bControl-&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;⌃-\1&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(.*)\bShift-&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;⇧-\1&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-
-        <span class="c1"># &quot;Command--&quot; --&gt; &quot;Command-&quot;</span>
-        <span class="c1"># &quot;Command-+&quot; --&gt; &quot;Command+&quot;</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;-(-?)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\1&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-
-        <span class="c1"># e.g. ⌘-click</span>
-        <span class="k">return</span> <span class="n">binding</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="s2">&quot;-click&quot;</span><span class="p">)</span>
-
+        <span class="n">sort_order</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Shift&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Control&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Alt&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Command&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+        <span class="n">symbol_mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Shift&quot;</span><span class="p">:</span> <span class="s2">&quot;⇧&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Control&quot;</span><span class="p">:</span> <span class="s2">&quot;⌃&quot;</span><span class="p">,</span>  <span class="c1"># NOT same as ascii &quot;^&quot;</span>
+            <span class="s2">&quot;Alt&quot;</span><span class="p">:</span> <span class="s2">&quot;⌥&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Command&quot;</span><span class="p">:</span> <span class="s2">&quot;⌘&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Return&quot;</span><span class="p">:</span> <span class="s2">&quot;⏎&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bControl\b&quot;</span><span class="p">,</span> <span class="s2">&quot;Ctrl&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="c1"># most fonts don&#39;t distinguish O and 0 nicely, mac font does</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\b0\b&quot;</span><span class="p">,</span> <span class="s2">&quot;Zero&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bplus\b&quot;</span><span class="p">,</span> <span class="s2">&quot;Plus&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bminus\b&quot;</span><span class="p">,</span> <span class="s2">&quot;Minus&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="n">binding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bReturn\b&quot;</span><span class="p">,</span> <span class="s2">&quot;Enter&quot;</span><span class="p">,</span> <span class="n">binding</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">binding</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
+        <span class="n">sort_order</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Control&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Alt&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Shift&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="n">symbol_mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Control&quot;</span><span class="p">:</span> <span class="s2">&quot;Ctrl&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;Zero&quot;</span><span class="p">,</span>  <span class="c1"># not needed on mac, its font distinguishes 0 and O well</span>
+            <span class="s2">&quot;plus&quot;</span><span class="p">:</span> <span class="s2">&quot;Plus&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;minus&quot;</span><span class="p">:</span> <span class="s2">&quot;Minus&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Return&quot;</span><span class="p">:</span> <span class="s2">&quot;Enter&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">part</span><span class="p">:</span> <span class="n">sort_order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="n">mac</span> <span class="ow">and</span> <span class="n">menu</span><span class="p">:</span>
+        <span class="c1"># Tk will use the proper symbols automagically, and it expects dash-separated</span>
+        <span class="c1"># Even &quot;Command--&quot; for command and minus key works</span>
+        <span class="k">return</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">symbol_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">mac</span><span class="p">:</span>
+        <span class="c1"># e.g. &quot;⌘-double-click&quot;</span>
+        <span class="c1"># But not like this:  [&quot;double-click&quot;] --&gt; [&quot;-double-click&quot;]</span>
+        <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;click&quot;</span><span class="p">:</span> <span class="s2">&quot;-click&quot;</span><span class="p">,</span> <span class="s2">&quot;double-click&quot;</span><span class="p">:</span> <span class="s2">&quot;-double-click&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">mac</span> <span class="k">else</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
 
 
 <span class="c1"># TODO: document this</span>
