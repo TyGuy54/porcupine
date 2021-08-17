@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.94.3 documentation</title>
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.95.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -43,7 +43,9 @@ plugins can use freely.</p>
 <dd><p>This is True if Python is running in pythonw.exe on Windows.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">pythonw.exe</span></code> program runs Python scripts without a command
 prompt, so you need to check for that when doing things like
-starting a new command prompt from Python.</p>
+starting a new command prompt from Python. This is also <code class="docutils literal notranslate"><span class="pre">True</span></code>
+if Porcupine is running as <code class="docutils literal notranslate"><span class="pre">Porcupine.exe</span></code>, which it is when
+launched from start menu.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -250,6 +252,30 @@ the file, but this is useful when overwriting the user’s files.</p>
 </pre></div>
 </div>
 <p>This automatically restores from the backup on failure.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.utils.find_project_root">
+<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">find_project_root</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)"><span class="pre">pathlib.Path</span></a><a class="reference internal" href="_modules/porcupine/utils.html#find_project_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.find_project_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an absolute path to a file, figure out what project it belongs to.</p>
+<p>The concept of a project is explained
+<a class="reference external" href="https://github.com/Akuli/porcupine/wiki/Working-with-projects">in Porcupine wiki</a>.
+Currently, the logic for finding the project root is:</p>
+<ol class="arabic simple">
+<li><p>If the file is inside a Git repository, then the Git repository becomes
+the project root. For example, the file I’m currently editing is
+<code class="docutils literal notranslate"><span class="pre">/home/akuli/porcu/porcupine/utils.py</span></code>, and Porcupine has detected
+<code class="docutils literal notranslate"><span class="pre">/home/akuli/porcu</span></code> as its project because I use Git to develop Porcupine.</p></li>
+<li><p>If Git isn’t used but there is a readme file or an <code class="docutils literal notranslate"><span class="pre">.editorconfig</span></code> file,
+then the project root is the folder containing the readme or the <code class="docutils literal notranslate"><span class="pre">.editorconfig</span></code> file.
+(Porcupine supports editorconfig files.
+You can read more about them at <a class="reference external" href="https://editorconfig.org/">editorconfig.org</a>.)
+So, even if Porcupine didn’t use Git, it would still recognize the
+project correctly, because there is <code class="docutils literal notranslate"><span class="pre">/home/akuli/porcu/README.md</span></code>.
+Porcupine recognizes several different capitalizations and file extensions,
+such as <code class="docutils literal notranslate"><span class="pre">README.md</span></code>, <code class="docutils literal notranslate"><span class="pre">ReadMe.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">readme.rst</span></code> for example.</p></li>
+<li><p>If all else fails, the directory containing the file is used.</p></li>
+</ol>
 </dd></dl>
 
 <dl class="py function">

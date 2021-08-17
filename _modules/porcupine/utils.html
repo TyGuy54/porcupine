@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.94.3 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.95.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -40,7 +40,6 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shlex</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
@@ -51,7 +50,7 @@
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">url2pathname</span>
 
 <span class="kn">import</span> <span class="nn">dacite</span>
@@ -67,61 +66,15 @@
 <span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_T&quot;</span><span class="p">)</span>
 
 
-<span class="c1"># nsis installs a python to e.g. C:\Users\Akuli\AppData\Local\Porcupine\Python</span>
-<span class="n">_installed_with_pynsist</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span>
-    <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span>
-    <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;porcupine&quot;</span>
-<span class="p">)</span>
-
-
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
-    <span class="c1"># Casting because mypy thinks stdout and stderr can&#39;t be None</span>
-    <span class="k">if</span> <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">sys</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">sys</span><span class="p">)</span><span class="o">.</span><span class="n">stderr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># running in pythonw.exe so there&#39;s no console window, print still</span>
-        <span class="c1"># works because it checks if sys.stdout is None</span>
-        <span class="n">running_pythonw</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">elif</span> <span class="p">(</span>
-        <span class="n">_installed_with_pynsist</span>
-        <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="ow">is</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
-        <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># not sure if necessary</span>
-        <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">])</span>
-    <span class="p">):</span>
-        <span class="c1"># pynsist generates a script that does this:</span>
-        <span class="c1">#</span>
-        <span class="c1">#   sys.stdout = sys.stderr = open(blablabla, &#39;w&#39;, **kw)</span>
-        <span class="c1">#</span>
-        <span class="c1"># where blablabla is a file directly in %APPDATA%... that&#39;s dumb and</span>
-        <span class="c1"># non-standard imo, and not suitable for porcupine because porcupine</span>
-        <span class="c1"># takes care of that itself, so... let&#39;s undo what it just did</span>
-        <span class="c1">#</span>
-        <span class="c1"># TODO: it&#39;s possible to write a custom startup script, do that? there</span>
-        <span class="c1">#       are docs somewhere</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-        <span class="c1"># mypy doesn&#39;t know about how std streams can be None</span>
-        <span class="c1"># https://github.com/python/mypy/issues/8823</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="n">running_pythonw</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># seems like python was started from e.g. a cmd or powershell</span>
-        <span class="n">running_pythonw</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="c1"># nsis install puts Porcupine.exe and python.exe in same place</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="sa">r</span><span class="s2">&quot;\Porcupine.exe&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\pythonw.exe&quot;</span><span class="p">)):</span>
+    <span class="n">running_pythonw</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">python_executable</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;python.exe&quot;</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">running_pythonw</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">python_executable</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
 
 
-<span class="n">python_executable</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">running_pythonw</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;pythonw.exe&quot;</span><span class="p">:</span>
-    <span class="c1"># get rid of the &#39;w&#39; and hope for the best...</span>
-    <span class="n">_possible_python</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;python.exe&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">_possible_python</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-        <span class="n">python_executable</span> <span class="o">=</span> <span class="n">_possible_python</span>
-
-
-<span class="n">quote</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span>
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
     <span class="c1"># this is mostly copy/pasted from subprocess.list2cmdline</span>
     <span class="k">def</span> <span class="nf">quote</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -206,8 +159,27 @@
 <span class="p">]</span>
 
 
-<span class="c1"># TODO: document this</span>
-<span class="k">def</span> <span class="nf">find_project_root</span><span class="p">(</span><span class="n">project_file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<div class="viewcode-block" id="find_project_root"><a class="viewcode-back" href="../../utils.html#porcupine.utils.find_project_root">[docs]</a><span class="k">def</span> <span class="nf">find_project_root</span><span class="p">(</span><span class="n">project_file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Given an absolute path to a file, figure out what project it belongs to.</span>
+
+<span class="sd">    The concept of a project is explained</span>
+<span class="sd">    `in Porcupine wiki &lt;https://github.com/Akuli/porcupine/wiki/Working-with-projects&gt;`_.</span>
+<span class="sd">    Currently, the logic for finding the project root is:</span>
+
+<span class="sd">    1.  If the file is inside a Git repository, then the Git repository becomes</span>
+<span class="sd">        the project root. For example, the file I&#39;m currently editing is</span>
+<span class="sd">        ``/home/akuli/porcu/porcupine/utils.py``, and Porcupine has detected</span>
+<span class="sd">        ``/home/akuli/porcu`` as its project because I use Git to develop Porcupine.</span>
+<span class="sd">    2.  If Git isn&#39;t used but there is a readme file or an ``.editorconfig`` file,</span>
+<span class="sd">        then the project root is the folder containing the readme or the ``.editorconfig`` file.</span>
+<span class="sd">        (Porcupine supports editorconfig files.</span>
+<span class="sd">        You can read more about them at `editorconfig.org &lt;https://editorconfig.org/&gt;`_.)</span>
+<span class="sd">        So, even if Porcupine didn&#39;t use Git, it would still recognize the</span>
+<span class="sd">        project correctly, because there is ``/home/akuli/porcu/README.md``.</span>
+<span class="sd">        Porcupine recognizes several different capitalizations and file extensions,</span>
+<span class="sd">        such as ``README.md``, ``ReadMe.txt`` and ``readme.rst`` for example.</span>
+<span class="sd">    3.  If all else fails, the directory containing the file is used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span>
 
     <span class="n">likely_root</span> <span class="o">=</span> <span class="kc">None</span>
@@ -219,7 +191,7 @@
         <span class="p">):</span>
             <span class="n">likely_root</span> <span class="o">=</span> <span class="n">path</span>
 
-    <span class="k">return</span> <span class="n">likely_root</span> <span class="ow">or</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">parent</span>
+    <span class="k">return</span> <span class="n">likely_root</span> <span class="ow">or</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">parent</span></div>
 
 
 <span class="c1"># i know, i shouldn&#39;t do math with rgb colors, but this is good enough</span>
