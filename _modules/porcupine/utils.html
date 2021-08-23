@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.95.0 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.96.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -49,8 +49,7 @@
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">url2pathname</span>
 
 <span class="kn">import</span> <span class="nn">dacite</span>
@@ -115,6 +114,28 @@
 
 <span class="k">else</span><span class="p">:</span>
     <span class="n">quote</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span>
+
+
+<span class="c1"># https://github.com/python/typing/issues/769</span>
+<div class="viewcode-block" id="copy_type"><a class="viewcode-back" href="../../utils.html#porcupine.utils.copy_type">[docs]</a><span class="k">def</span> <span class="nf">copy_type</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">_T</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;A decorator to tell mypy that one function or method has the same type as another.</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        from typing import Any</span>
+<span class="sd">        from porcupine.utils import copy_type</span>
+
+<span class="sd">        def foo(x: int) -&gt; None:</span>
+<span class="sd">            print(x)</span>
+
+<span class="sd">        @copy_type(foo)</span>
+<span class="sd">        def bar(*args: Any, **kwargs: Any) -&gt; Any:</span>
+<span class="sd">            foo(*args, **kwargs)</span>
+
+<span class="sd">        bar(1)      # ok</span>
+<span class="sd">        bar(&quot;lol&quot;)  # mypy error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span></div>
 
 
 <span class="c1"># TODO: document this?</span>
@@ -192,6 +213,26 @@
             <span class="n">likely_root</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="k">return</span> <span class="n">likely_root</span> <span class="ow">or</span> <span class="n">project_file_path</span><span class="o">.</span><span class="n">parent</span></div>
+
+
+<div class="viewcode-block" id="PanedWindow"><a class="viewcode-back" href="../../utils.html#porcupine.utils.PanedWindow">[docs]</a><span class="k">class</span> <span class="nc">PanedWindow</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">PanedWindow</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Like :class:`tkinter.PanedWindow`, but uses Ttk colors.</span>
+
+<span class="sd">    Do not waste your time with ``ttk.Panedwindow``. It lacks options to</span>
+<span class="sd">    control the sizes of the panes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@copy_type</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">PanedWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># even non-ttk widgets can handle &lt;&lt;ThemeChanged&gt;&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ThemeChanged&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_colors</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_colors</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_update_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junk_event</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ttk_bg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;ttk::style lookup TLabel.label -background&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">ttk_bg</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;bg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk_bg</span></div>
 
 
 <span class="c1"># i know, i shouldn&#39;t do math with rgb colors, but this is good enough</span>
@@ -522,54 +563,6 @@
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">shift_tab</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span></div>
 
 
-<div class="viewcode-block" id="errordialog"><a class="viewcode-back" href="../../utils.html#porcupine.utils.errordialog">[docs]</a><span class="k">def</span> <span class="nf">errordialog</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">monospace_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This is a lot like ``tkinter.messagebox.showerror``.</span>
-
-<span class="sd">    This function can be called with or without creating a root window</span>
-<span class="sd">    first. If *monospace_text* is not None, it will be displayed below</span>
-<span class="sd">    the message in a ``tkinter.Text`` widget.</span>
-
-<span class="sd">    Example::</span>
-
-<span class="sd">        try:</span>
-<span class="sd">            do something</span>
-<span class="sd">        except SomeError:</span>
-<span class="sd">            utils.errordialog(&quot;Oh no&quot;, &quot;Doing something failed!&quot;,</span>
-<span class="sd">                              traceback.format_exc())</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">window</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">()</span>
-    <span class="n">window</span><span class="o">.</span><span class="n">transient</span><span class="p">(</span><span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">())</span>
-
-    <span class="c1"># there&#39;s nothing but this frame in the window because ttk widgets</span>
-    <span class="c1"># may use a different background color than the window</span>
-    <span class="n">big_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
-    <span class="n">big_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">monospace_text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">label</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="s2">&quot;250x150&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">label</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
-        <span class="c1"># there&#39;s no ttk.Text 0_o this looks very different from</span>
-        <span class="c1"># everything else and it sucks :(</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">text</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">text</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="n">monospace_text</span><span class="p">)</span>
-        <span class="n">text</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="p">)</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="s2">&quot;400x300&quot;</span>
-
-    <span class="n">button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;OK&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">destroy</span><span class="p">)</span>
-    <span class="n">button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">button</span><span class="o">.</span><span class="n">focus</span><span class="p">()</span>
-    <span class="n">button</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Return&gt;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">button</span><span class="o">.</span><span class="n">invoke</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-
-    <span class="n">window</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
-    <span class="n">window</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-    <span class="n">window</span><span class="o">.</span><span class="n">wait_window</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="run_in_thread"><a class="viewcode-back" href="../../utils.html#porcupine.utils.run_in_thread">[docs]</a><span class="k">def</span> <span class="nf">run_in_thread</span><span class="p">(</span>
     <span class="n">blocking_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">_T</span><span class="p">],</span>
     <span class="n">done_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">_T</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
@@ -625,9 +618,9 @@
     <span class="n">root</span><span class="o">.</span><span class="n">after_idle</span><span class="p">(</span><span class="n">check</span><span class="p">)</span></div>
 
 
-<span class="c1"># how to type hint context manager: https://stackoverflow.com/a/49736916</span>
-<div class="viewcode-block" id="backup_open"><a class="viewcode-back" href="../../utils.html#porcupine.utils.backup_open">[docs]</a><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
-<span class="k">def</span> <span class="nf">backup_open</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]:</span>
+<div class="viewcode-block" id="backup_open"><a class="viewcode-back" href="../../utils.html#porcupine.utils.backup_open">[docs]</a><span class="nd">@copy_type</span><span class="p">(</span><span class="nb">open</span><span class="p">)</span>
+<span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span> <span class="nf">backup_open</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Like :func:`open`, but uses a backup file if needed.</span>
 
 <span class="sd">    This is useless with modes like ``&#39;r&#39;`` because they don&#39;t modify</span>
@@ -643,6 +636,7 @@
 
 <span class="sd">    This automatically restores from the backup on failure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="c1"># there&#39;s something to back up</span>
         <span class="c1">#</span>

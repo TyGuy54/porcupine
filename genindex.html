@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; Porcupine API 0.95.0 documentation</title>
+    <title>Index &#8212; Porcupine API 0.96.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -158,13 +158,15 @@
 </li>
       <li><a href="textutils.html#porcupine.textutils.change_batch">change_batch() (in module porcupine.textutils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textutils.html#porcupine.textutils.Changes">Changes (class in porcupine.textutils)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tabs.html#porcupine.tabs.TabManager.close_tab">close_tab() (porcupine.tabs.TabManager method)</a>
 </li>
       <li><a href="textutils.html#porcupine.textutils.config_tab_displaying">config_tab_displaying() (in module porcupine.textutils)</a>
+</li>
+      <li><a href="utils.html#porcupine.utils.copy_type">copy_type() (in module porcupine.utils)</a>
 </li>
       <li><a href="textutils.html#porcupine.textutils.create_passive_text_widget">create_passive_text_widget() (in module porcupine.textutils)</a>
 </li>
@@ -178,16 +180,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils.html#porcupine.utils.EventWithData.data_class">data_class() (porcupine.utils.EventWithData method)</a>
 </li>
-      <li><a href="utils.html#porcupine.utils.EventWithData.data_string">data_string (porcupine.utils.EventWithData attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="settings.html#porcupine.settings.debug_dump">debug_dump() (in module porcupine.settings)</a>
-
-      <ul>
-        <li><a href="settings.html#porcupine.settings.Settings.debug_dump">(porcupine.settings.Settings method)</a>
+      <li><a href="utils.html#porcupine.utils.EventWithData.data_string">data_string (porcupine.utils.EventWithData attribute)</a>
 </li>
-      </ul></li>
       <li><a href="porcupine.html#porcupine.dirs">dirs (in module porcupine)</a>
 </li>
   </ul></td>
@@ -202,8 +198,6 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utils.html#porcupine.utils.errordialog">errordialog() (in module porcupine.utils)</a>
-</li>
       <li><a href="utils.html#porcupine.utils.EventDataclass">EventDataclass (class in porcupine.utils)</a>
 </li>
       <li><a href="utils.html#porcupine.utils.EventWithData">EventWithData (class in porcupine.utils)</a>
@@ -260,6 +254,10 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tabs.html#porcupine.tabs.FileTab.has_unsaved_changes">has_unsaved_changes() (porcupine.tabs.FileTab method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tabs.html#porcupine.tabs.TabManager.hide">hide() (porcupine.tabs.TabManager method)</a>
 </li>
   </ul></td>
@@ -273,8 +271,6 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils.html#porcupine.utils.invert_color">invert_color() (in module porcupine.utils)</a>
-</li>
-      <li><a href="tabs.html#porcupine.tabs.FileTab.is_modified">is_modified() (porcupine.tabs.FileTab method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -333,7 +329,7 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tabs.html#porcupine.tabs.FileTab.open_file">open_file() (porcupine.tabs.FileTab class method)</a>
+      <li><a href="tabs.html#porcupine.tabs.TabManager.open_file">open_file() (porcupine.tabs.TabManager method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -345,6 +341,10 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#porcupine.utils.PanedWindow">PanedWindow (class in porcupine.utils)</a>
+</li>
+      <li><a href="tabs.html#porcupine.tabs.FileTab.panedwindow">panedwindow (porcupine.tabs.FileTab attribute)</a>
+</li>
       <li><a href="tabs.html#porcupine.tabs.FileTab.path">path (porcupine.tabs.FileTab attribute)</a>
 </li>
       <li><a href="pluginloader.html#porcupine.pluginloader.plugin_infos">plugin_infos (in module porcupine.pluginloader)</a>
@@ -372,6 +372,8 @@
         <li><a href="menubar.html#module-porcupine.menubar">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     porcupine.pluginloader
 
@@ -379,8 +381,6 @@
         <li><a href="pluginloader.html#module-porcupine.pluginloader">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     porcupine.settings
 
@@ -510,6 +510,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tabs.html#porcupine.tabs.FileTab.textwidget">textwidget (porcupine.tabs.FileTab attribute)</a>
+</li>
+      <li><a href="textutils.html#porcupine.textutils.textwidget_size">textwidget_size() (in module porcupine.textutils)</a>
 </li>
       <li><a href="tabs.html#porcupine.tabs.Tab.title_choices">title_choices (porcupine.tabs.Tab attribute)</a>
 </li>

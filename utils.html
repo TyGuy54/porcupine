@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.95.0 documentation</title>
+    <title>porcupine.utils — Handy utility functions and classes &#8212; Porcupine API 0.96.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -140,7 +140,10 @@ was used.</p>
 </div>
 <div class="section" id="other-tkinter-utilities">
 <h2>Other Tkinter Utilities<a class="headerlink" href="#other-tkinter-utilities" title="Permalink to this headline">¶</a></h2>
-<p>See <a class="reference internal" href="textutils.html#module-porcupine.textutils" title="porcupine.textutils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textutils</span></code></a> for <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> specific things.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="textutils.html#module-porcupine.textutils" title="porcupine.textutils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.textutils</span></code></a> contains <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> specific things.</p>
+</div>
 <dl class="py function">
 <dt id="porcupine.utils.bind_tab_key">
 <code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">bind_tab_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_tab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">tkinter.Event[Any]</span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">bind_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#bind_tab_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.bind_tab_key" title="Permalink to this definition">¶</a></dt>
@@ -192,21 +195,12 @@ exits, and it might not get a chance to finish whatever it is doing. Pass
 <code class="docutils literal notranslate"><span class="pre">daemon=False</span></code> to change this.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt id="porcupine.utils.errordialog">
-<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">errordialog</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">monospace_text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a> <span class="p"><span class="pre">|</span></span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/utils.html#errordialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.errordialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a lot like <code class="docutils literal notranslate"><span class="pre">tkinter.messagebox.showerror</span></code>.</p>
-<p>This function can be called with or without creating a root window
-first. If <em>monospace_text</em> is not None, it will be displayed below
-the message in a <code class="docutils literal notranslate"><span class="pre">tkinter.Text</span></code> widget.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do</span> <span class="n">something</span>
-<span class="k">except</span> <span class="n">SomeError</span><span class="p">:</span>
-    <span class="n">utils</span><span class="o">.</span><span class="n">errordialog</span><span class="p">(</span><span class="s2">&quot;Oh no&quot;</span><span class="p">,</span> <span class="s2">&quot;Doing something failed!&quot;</span><span class="p">,</span>
-                      <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-</pre></div>
-</div>
+<dl class="py class">
+<dt id="porcupine.utils.PanedWindow">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">PanedWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/utils.html#PanedWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.PanedWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.PanedWindow</span></code>, but uses Ttk colors.</p>
+<p>Do not waste your time with <code class="docutils literal notranslate"><span class="pre">ttk.Panedwindow</span></code>. It lacks options to
+control the sizes of the panes.</p>
 </dd></dl>
 
 </div>
@@ -239,7 +233,7 @@ resulting color will be 80% <code class="docutils literal notranslate"><span cla
 
 <dl class="py function">
 <dt id="porcupine.utils.backup_open">
-<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">backup_open</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">TextIO</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/porcupine/utils.html#backup_open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.backup_open" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">backup_open</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/porcupine/utils.html#backup_open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.backup_open" title="Permalink to this definition">¶</a></dt>
 <dd><p>Like <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>, but uses a backup file if needed.</p>
 <p>This is useless with modes like <code class="docutils literal notranslate"><span class="pre">'r'</span></code> because they don’t modify
 the file, but this is useful when overwriting the user’s files.</p>
@@ -276,6 +270,27 @@ Porcupine recognizes several different capitalizations and file extensions,
 such as <code class="docutils literal notranslate"><span class="pre">README.md</span></code>, <code class="docutils literal notranslate"><span class="pre">ReadMe.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">readme.rst</span></code> for example.</p></li>
 <li><p>If all else fails, the directory containing the file is used.</p></li>
 </ol>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.utils.copy_type">
+<code class="sig-prename descclassname"><span class="pre">porcupine.utils.</span></code><code class="sig-name descname"><span class="pre">copy_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">_T</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">_T</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/porcupine/utils.html#copy_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.utils.copy_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator to tell mypy that one function or method has the same type as another.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">porcupine.utils</span> <span class="kn">import</span> <span class="n">copy_type</span>
+
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="nd">@copy_type</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="n">foo</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="n">bar</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>      <span class="c1"># ok</span>
+<span class="n">bar</span><span class="p">(</span><span class="s2">&quot;lol&quot;</span><span class="p">)</span>  <span class="c1"># mypy error</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.textutils — Things for tkinter.Text widgets &#8212; Porcupine API 0.95.0 documentation</title>
+    <title>porcupine.textutils — Things for tkinter.Text widgets &#8212; Porcupine API 0.96.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -234,6 +234,16 @@ to add text to it:</p>
 <span class="n">widget</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;disabled&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="porcupine.textutils.textwidget_size">
+<code class="sig-prename descclassname"><span class="pre">porcupine.textutils.</span></code><code class="sig-name descname"><span class="pre">textwidget_size</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Text</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><span class="pre">tuple</span></a><a class="reference internal" href="_modules/porcupine/textutils.html#textwidget_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.textutils.textwidget_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the width and height of the text widget.</p>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">text.winfo_width()</span></code> and <code class="docutils literal notranslate"><span class="pre">text.winfo_height()</span></code>,
+this function excludes all padding.
+The size returned by this function is good for scrolling calculations and
+for adding other widgets inside the text widget with <code class="docutils literal notranslate"><span class="pre">.place()</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
