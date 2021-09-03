@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.menubar &#8212; Porcupine API 0.96.0 documentation</title>
+    <title>porcupine.menubar &#8212; Porcupine API 0.97.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -119,7 +119,23 @@
     <span class="k">return</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="get_menu"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.get_menu">[docs]</a><span class="k">def</span> <span class="nf">get_menu</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">:</span>
+<span class="c1"># &quot;//&quot; means literal backslash, lol</span>
+<span class="k">def</span> <span class="nf">_join</span><span class="p">(</span><span class="n">parts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;//&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">string</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;//&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?&lt;!/)/(?!/)&quot;</span><span class="p">,</span> <span class="n">string</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">_split_parent</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="o">*</span><span class="n">parent_parts</span><span class="p">,</span> <span class="n">child</span> <span class="o">=</span> <span class="n">_split</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">parent_parts</span><span class="p">),</span> <span class="n">child</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_menu"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.get_menu">[docs]</a><span class="k">def</span> <span class="nf">get_menu</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find a menu widget, creating menus as necessary.</span>
 
@@ -127,15 +143,14 @@
 <span class="sd">    *Python* from a menu named *Tools*. The *Tools* menu is created if it</span>
 <span class="sd">    doesn&#39;t already exist.</span>
 
-<span class="sd">    If *path* is ``None``, then the menubar itself is returned.</span>
+<span class="sd">    If *path* is the empty string, then the menubar itself is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
     <span class="n">main_menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span> <span class="o">=</span> <span class="n">main_window</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">main_window</span><span class="p">[</span><span class="s2">&quot;menu&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">main_menu</span>
 
     <span class="n">menu</span> <span class="o">=</span> <span class="n">main_menu</span>
-    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">_split</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="n">submenu_index</span> <span class="o">=</span> <span class="n">_find_item</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">submenu_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Need to pass the menu as an explicit argument to tkinter.Menu.</span>
@@ -158,33 +173,32 @@
     <span class="k">return</span> <span class="n">menu</span></div>
 
 
-<div class="viewcode-block" id="add_config_file_button"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.add_config_file_button">[docs]</a><span class="k">def</span> <span class="nf">add_config_file_button</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="add_config_file_button"><a class="viewcode-back" href="../../menubar.html#porcupine.menubar.add_config_file_button">[docs]</a><span class="k">def</span> <span class="nf">add_config_file_button</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">menu</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Settings/Config Files&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Add a button to *Settings/Config Files* that opens a file in Porcupine when</span>
-<span class="sd">    it&#39;s clicked.</span>
+<span class="sd">    Add a button to *Settings/Config Files* (or some other menu)</span>
+<span class="sd">    that opens a file in Porcupine when it&#39;s clicked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;Settings/Config Files&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span>
-        <span class="n">label</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="n">get_menu</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="n">text</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
     <span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_walk_menu_contents</span><span class="p">(</span>
-    <span class="n">menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">path_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">path_prefix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-
-    <span class="k">if</span> <span class="n">menu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">menu</span> <span class="o">=</span> <span class="n">get_menu</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
     <span class="n">last_index</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;end&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
     <span class="k">if</span> <span class="n">last_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># menu not empty</span>
         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">last_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">menu</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;cascade&quot;</span><span class="p">:</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
                 <span class="n">submenu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;menu&quot;</span><span class="p">))</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-                <span class="n">new_prefix</span> <span class="o">=</span> <span class="n">path_prefix</span> <span class="o">+</span> <span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+                <span class="n">new_prefix</span> <span class="o">=</span> <span class="n">path_prefix</span> <span class="o">+</span> <span class="p">[</span><span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">)]</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
                 <span class="k">yield from</span> <span class="n">_walk_menu_contents</span><span class="p">(</span><span class="n">submenu</span><span class="p">,</span> <span class="n">new_prefix</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">menu</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_MENU_ITEM_TYPES_WITH_LABEL</span><span class="p">:</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">path_prefix</span> <span class="o">+</span> <span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-                <span class="k">yield</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path_prefix</span> <span class="o">+</span> <span class="p">[</span><span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">)]</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_menu_event_handler</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Menu</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">junk</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Event</span><span class="p">[</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Misc</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -194,7 +208,7 @@
 
 <span class="k">def</span> <span class="nf">_update_keyboard_shortcuts_inside_submenus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">main_window</span> <span class="o">=</span> <span class="n">get_main_window</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">_walk_menu_contents</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">_walk_menu_contents</span><span class="p">(</span><span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)):</span>
         <span class="n">event_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;&lt;Menubar:</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&gt;&gt;&quot;</span>
 
         <span class="c1"># show keyboard shortcuts in menus</span>
@@ -216,7 +230,7 @@
             <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">used_letters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="n">menu</span> <span class="o">=</span> <span class="n">get_menu</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">menu</span> <span class="o">=</span> <span class="n">get_menu</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">submenu_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;end&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
         <span class="k">for</span> <span class="n">letter_index</span><span class="p">,</span> <span class="n">letter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">entrycget</span><span class="p">(</span><span class="n">submenu_index</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
             <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">ascii_lowercase</span> <span class="ow">and</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used_letters</span><span class="p">:</span>
@@ -279,8 +293,9 @@
 
     <span class="k">def</span> <span class="nf">update_enabledness</span><span class="p">(</span><span class="o">*</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="n">get_tab_manager</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-        <span class="n">menu</span> <span class="o">=</span> <span class="n">get_menu</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">path</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">_find_item</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">parent</span><span class="p">,</span> <span class="n">child</span> <span class="o">=</span> <span class="n">_split_parent</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">menu</span> <span class="o">=</span> <span class="n">get_menu</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">_find_item</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;menu item </span><span class="si">{</span><span class="n">path</span><span class="si">!r}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
         <span class="n">menu</span><span class="o">.</span><span class="n">entryconfig</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;normal&quot;</span> <span class="k">if</span> <span class="n">callback</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;disabled&quot;</span><span class="p">))</span>
@@ -343,7 +358,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">_get_filetab</span><span class="p">())</span>  <span class="c1"># type: ignore</span>
 
-    <span class="n">menu_path</span><span class="p">,</span> <span class="n">item_text</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">menu_path</span><span class="p">,</span> <span class="n">item_text</span> <span class="o">=</span> <span class="n">_split_parent</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">get_menu</span><span class="p">(</span><span class="n">menu_path</span><span class="p">)</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">item_text</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">command</span><span class="p">)</span>
 
 

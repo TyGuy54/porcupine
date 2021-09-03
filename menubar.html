@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.96.0 documentation</title>
+    <title>porcupine.menubar — The menu bar at the top of the Porcupine window &#8212; Porcupine API 0.97.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -38,12 +38,12 @@
 any <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins">plugin that Porcupine comes with</a> for example usage.</p>
 <dl class="py function">
 <dt id="porcupine.menubar.get_menu">
-<code class="sig-prename descclassname"><span class="pre">porcupine.menubar.</span></code><code class="sig-name descname"><span class="pre">get_menu</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a> <span class="p"><span class="pre">|</span></span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">tkinter.Menu</span><a class="reference internal" href="_modules/porcupine/menubar.html#get_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.menubar.get_menu" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">porcupine.menubar.</span></code><code class="sig-name descname"><span class="pre">get_menu</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">tkinter.Menu</span><a class="reference internal" href="_modules/porcupine/menubar.html#get_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.menubar.get_menu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find a menu widget, creating menus as necessary.</p>
 <p>For example, <code class="docutils literal notranslate"><span class="pre">get_menu(&quot;Tools/Python&quot;)</span></code> returns a submenu labelled
 <em>Python</em> from a menu named <em>Tools</em>. The <em>Tools</em> menu is created if it
 doesn’t already exist.</p>
-<p>If <em>path</em> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the menubar itself is returned.</p>
+<p>If <em>path</em> is the empty string, then the menubar itself is returned.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -93,9 +93,9 @@ which one of these virtual events, such as <code class="docutils literal notrans
 
 <dl class="py function">
 <dt id="porcupine.menubar.add_config_file_button">
-<code class="sig-prename descclassname"><span class="pre">porcupine.menubar.</span></code><code class="sig-name descname"><span class="pre">add_config_file_button</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/menubar.html#add_config_file_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.menubar.add_config_file_button" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a button to <em>Settings/Config Files</em> that opens a file in Porcupine when
-it’s clicked.</p>
+<code class="sig-prename descclassname"><span class="pre">porcupine.menubar.</span></code><code class="sig-name descname"><span class="pre">add_config_file_button</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.9)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Settings/Config</span> <span class="pre">Files'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a> <span class="p"><span class="pre">|</span></span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/menubar.html#add_config_file_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.menubar.add_config_file_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a button to <em>Settings/Config Files</em> (or some other menu)
+that opens a file in Porcupine when it’s clicked.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -114,6 +114,13 @@ it does to the <em>Edit</em> menu and the <em>Find and Replace</em> menu item in
 It’s called automatically when a plugin has been set up.</p>
 </dd></dl>
 
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Menu labels must be ASCII only, because they are used in virtual events.
+Let me know if this limitation bothers you.</p>
+<p>Slashes can be escaped by doubling them. For example, <code class="docutils literal notranslate"><span class="pre">&quot;Foobar/Send//Receive&quot;</span></code>
+means an entry <em>Send/Receive</em> inside a menu named <em>Foobar</em>.</p>
+</div>
 </div>
 
 

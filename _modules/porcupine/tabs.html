@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.tabs &#8212; Porcupine API 0.96.0 documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.97.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,7 +34,6 @@
 <span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Tabs as in browser tabs, not \t characters.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
@@ -445,73 +444,6 @@
     <span class="n">had_unsaved_changes</span><span class="p">:</span> <span class="nb">bool</span>
 
 
-<span class="k">def</span> <span class="nf">_ask_encoding</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">encoding_that_didnt_work</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">label_width</span> <span class="o">=</span> <span class="mi">400</span>
-
-    <span class="n">dialog</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">_state</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">winfo_viewable</span><span class="p">():</span>
-        <span class="n">dialog</span><span class="o">.</span><span class="n">transient</span><span class="p">(</span><span class="n">_state</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">())</span>
-    <span class="n">dialog</span><span class="o">.</span><span class="n">resizable</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-    <span class="n">big_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">dialog</span><span class="p">)</span>
-    <span class="n">big_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
-        <span class="n">big_frame</span><span class="p">,</span>
-        <span class="n">text</span><span class="o">=</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;The content of &quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&quot; is not valid </span><span class="si">{</span><span class="n">encoding_that_didnt_work</span><span class="si">}</span><span class="s1">. Choose an encoding&#39;</span>
-            <span class="s2">&quot; to use instead:&quot;</span>
-        <span class="p">),</span>
-        <span class="n">wraplength</span><span class="o">=</span><span class="n">label_width</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-
-    <span class="n">var</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
-    <span class="n">entry</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
-    <span class="n">entry</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-    <span class="n">entry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">encoding_that_didnt_work</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-
-    <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
-        <span class="n">big_frame</span><span class="p">,</span>
-        <span class="n">text</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;You can create a project-specific .editorconfig file to change the encoding&quot;</span>
-            <span class="s2">&quot; permanently.&quot;</span>
-        <span class="p">),</span>
-        <span class="n">wraplength</span><span class="o">=</span><span class="n">label_width</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">button_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">big_frame</span><span class="p">)</span>
-    <span class="n">button_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-
-    <span class="n">selected_encoding</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">select_encoding</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">nonlocal</span> <span class="n">selected_encoding</span>
-        <span class="n">selected_encoding</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-        <span class="n">dialog</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
-
-    <span class="n">cancel_button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">button_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">dialog</span><span class="o">.</span><span class="n">destroy</span><span class="p">)</span>
-    <span class="n">cancel_button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">ok_button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">button_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;OK&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">select_encoding</span><span class="p">)</span>
-    <span class="n">ok_button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">validate_encoding</span><span class="p">(</span><span class="o">*</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">encoding</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">codecs</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
-            <span class="n">ok_button</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ok_button</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
-
-    <span class="n">var</span><span class="o">.</span><span class="n">trace_add</span><span class="p">(</span><span class="s2">&quot;write&quot;</span><span class="p">,</span> <span class="n">validate_encoding</span><span class="p">)</span>
-
-    <span class="n">entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Return&gt;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">ok_button</span><span class="o">.</span><span class="n">invoke</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-    <span class="n">entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Escape&gt;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">cancel_button</span><span class="o">.</span><span class="n">invoke</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-    <span class="n">entry</span><span class="o">.</span><span class="n">select_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
-    <span class="n">entry</span><span class="o">.</span><span class="n">focus</span><span class="p">()</span>
-
-    <span class="n">dialog</span><span class="o">.</span><span class="n">wait_window</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">selected_encoding</span>
-
-
 <span class="c1"># Runs in O(n) time where n = max(old_content.count(&#39;\n&#39;), new_content.count(&#39;\n&#39;))</span>
 <span class="k">def</span> <span class="nf">_find_changed_part</span><span class="p">(</span><span class="n">old_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="n">old_lines</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">old_content</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -664,7 +596,9 @@
         <span class="p">)</span>
 
         <span class="c1"># I don&#39;t know why this needs a type annotation for self.panedwindow</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">panedwindow</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">PanedWindow</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">PanedWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panedwindow</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">PanedWindow</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">PanedWindow</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">borderwidth</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># we need to set width and height to 1 to make sure it&#39;s never too</span>
@@ -690,6 +624,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ContentChanged&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;PathChanged&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;TabSettingChanged:encoding&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;TabSettingChanged:line_ending&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_titles</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_previous_reload_failed</span> <span class="o">=</span> <span class="kc">False</span>
@@ -759,8 +695,11 @@
                         <span class="k">continue</span>
 
             <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
-                <span class="n">user_selected_encoding</span> <span class="o">=</span> <span class="n">_ask_encoding</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;encoding&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="n">bad_encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;encoding&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="n">user_selected_encoding</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">ask_encoding</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The content of &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&quot; is not valid </span><span class="si">{</span><span class="n">bad_encoding</span><span class="si">}</span><span class="s1">. Choose an encoding&#39;</span>
+                    <span class="s2">&quot; to use instead:&quot;</span><span class="p">,</span>
+                    <span class="n">bad_encoding</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">user_selected_encoding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;encoding&quot;</span><span class="p">,</span> <span class="n">user_selected_encoding</span><span class="p">)</span>

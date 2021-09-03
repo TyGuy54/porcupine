@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.utils &#8212; Porcupine API 0.96.0 documentation</title>
+    <title>porcupine.utils &#8212; Porcupine API 0.97.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,6 +34,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Handy utility functions.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -49,6 +50,7 @@
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">url2pathname</span>
 
@@ -561,6 +563,170 @@
 
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Tab&gt;&quot;</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span>
     <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">shift_tab</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">bind_kwargs</span><span class="p">)</span>  <span class="c1"># bindcheck: ignore</span></div>
+
+
+<span class="c1"># list of encodings supported by python 3.7 https://stackoverflow.com/a/25584253</span>
+<span class="n">_list_of_encodings</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ascii&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;big5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;big5hkscs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp037&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp273&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp424&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp437&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp500&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp720&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp737&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp775&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp850&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp852&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp855&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp856&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp857&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp858&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp860&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp861&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp862&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp863&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp864&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp865&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp866&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp869&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp874&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp875&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp932&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp949&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp950&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1006&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1026&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1125&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1140&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1250&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1251&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1252&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1253&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1254&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1255&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1256&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1257&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp1258&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cp65001&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;euc-jis-2004&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;euc-jisx0213&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;euc-jp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;euc-kr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gb2312&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gb18030&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gbk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hz&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso2022-jp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso2022-jp-1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso2022-jp-2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso2022-jp-3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso2022-jp-2004&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso2022-jp-ext&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso2022-kr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-6&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-7&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-8&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-9&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-10&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-11&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-13&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-14&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-15&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iso8859-16&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;johab&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;koi8-r&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;koi8-t&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;koi8-u&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;kz1048&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;latin-1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mac-cyrillic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mac-greek&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mac-iceland&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mac-latin2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mac-roman&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mac-turkish&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ptcp154&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shift-jis&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shift-jis-2004&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shift-jisx0213&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-7&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-8-sig&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-16&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-16-be&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-16-le&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-32&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-32-be&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utf-32-le&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="c1"># TODO: document this?</span>
+<span class="k">def</span> <span class="nf">ask_encoding</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">old_encoding</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">label_width</span> <span class="o">=</span> <span class="mi">400</span>
+
+    <span class="n">dialog</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">()</span><span class="o">.</span><span class="n">winfo_viewable</span><span class="p">():</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">transient</span><span class="p">(</span><span class="n">porcupine</span><span class="o">.</span><span class="n">get_main_window</span><span class="p">())</span>
+    <span class="n">dialog</span><span class="o">.</span><span class="n">resizable</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">dialog</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Choose an encoding&quot;</span><span class="p">)</span>
+
+    <span class="n">big_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">dialog</span><span class="p">)</span>
+    <span class="n">big_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">wraplength</span><span class="o">=</span><span class="n">label_width</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">var</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">combobox</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="n">big_frame</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">_list_of_encodings</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
+    <span class="n">combobox</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+    <span class="n">combobox</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">old_encoding</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+
+    <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="n">big_frame</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;You can create a project-specific .editorconfig file to change the encoding&quot;</span>
+            <span class="s2">&quot; permanently.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">wraplength</span><span class="o">=</span><span class="n">label_width</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">button_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">big_frame</span><span class="p">)</span>
+    <span class="n">button_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">selected_encoding</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">select_encoding</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">nonlocal</span> <span class="n">selected_encoding</span>
+        <span class="n">selected_encoding</span> <span class="o">=</span> <span class="n">combobox</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+    <span class="n">cancel_button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">button_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">dialog</span><span class="o">.</span><span class="n">destroy</span><span class="p">)</span>
+    <span class="n">cancel_button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ok_button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">button_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;OK&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">select_encoding</span><span class="p">)</span>
+    <span class="n">ok_button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate_encoding</span><span class="p">(</span><span class="o">*</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="n">combobox</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">codecs</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+            <span class="n">ok_button</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ok_button</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+
+    <span class="n">var</span><span class="o">.</span><span class="n">trace_add</span><span class="p">(</span><span class="s2">&quot;write&quot;</span><span class="p">,</span> <span class="n">validate_encoding</span><span class="p">)</span>
+    <span class="n">combobox</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Return&gt;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">ok_button</span><span class="o">.</span><span class="n">invoke</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+    <span class="n">combobox</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Escape&gt;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">cancel_button</span><span class="o">.</span><span class="n">invoke</span><span class="p">()),</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+    <span class="n">combobox</span><span class="o">.</span><span class="n">select_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+    <span class="n">combobox</span><span class="o">.</span><span class="n">focus</span><span class="p">()</span>
+
+    <span class="n">dialog</span><span class="o">.</span><span class="n">wait_window</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">selected_encoding</span>
 
 
 <div class="viewcode-block" id="run_in_thread"><a class="viewcode-back" href="../../utils.html#porcupine.utils.run_in_thread">[docs]</a><span class="k">def</span> <span class="nf">run_in_thread</span><span class="p">(</span>
