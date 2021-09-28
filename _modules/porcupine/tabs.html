@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.tabs &#8212; Porcupine API 0.97.0 documentation</title>
+    <title>porcupine.tabs &#8212; Porcupine API 0.98.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -41,9 +41,9 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tkinter</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span><span class="p">,</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 
@@ -64,7 +64,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">itemlist</span> <span class="k">for</span> <span class="n">itemlist</span> <span class="ow">in</span> <span class="n">items_by_key</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">itemlist</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_short_ways_to_display_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_short_ways_to_display_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
         <span class="n">first_part</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">first_part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
@@ -164,9 +164,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># tkinter has a bug that makes the original tabs() return widget name</span>
         <span class="c1"># strings instead of widget objects</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">tabs</span><span class="p">())</span>  <span class="c1"># type: ignore[no-untyped-call]</span></div>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nametowidget</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">tabs</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="TabManager.open_file"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.open_file">[docs]</a>    <span class="k">def</span> <span class="nf">open_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileTab</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="TabManager.open_file"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.TabManager.open_file">[docs]</a>    <span class="k">def</span> <span class="nf">open_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileTab</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add a :class:`FileTab` for editing a file and select it.</span>
 
 <span class="sd">        If the file can&#39;t be opened, this method displays an error to the user</span>
@@ -210,7 +210,7 @@
                 <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">existing_tab</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_tab_titles</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">select</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
@@ -233,7 +233,7 @@
 
 <span class="sd">        .. seealso:: The :meth:`.Tab.can_be_closed` method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">forget</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forget</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_tab_titles</span><span class="p">()</span></div>
 
@@ -423,7 +423,7 @@
 
 
 <span class="k">class</span> <span class="nc">_FileTabState</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">saved_state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">stat_result</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="n">cursor_pos</span><span class="p">:</span> <span class="nb">str</span>
@@ -571,9 +571,7 @@
 <span class="sd">        .. seealso:: The :virtevt:`PathChanged` virtual event.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">:</span> <span class="n">TabManager</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">:</span> <span class="n">TabManager</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">manager</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -608,7 +606,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="p">:</span> <span class="n">textutils</span><span class="o">.</span><span class="n">MainText</span> <span class="o">=</span> <span class="n">textutils</span><span class="o">.</span><span class="n">MainText</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">3</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s2">&quot;always&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s2">&quot;always&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">textwidget</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
@@ -791,11 +789,11 @@
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
 
     <span class="nd">@path</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">new_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">new_path</span> <span class="o">=</span> <span class="n">new_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
@@ -834,7 +832,7 @@
         <span class="c1"># no was clicked, can be closed</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_do_the_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_do_the_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;BeforeSave&gt;&gt;&quot;</span><span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -911,7 +909,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_the_save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FileTab.save_as"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.save_as">[docs]</a>    <span class="k">def</span> <span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="FileTab.save_as"><a class="viewcode-back" href="../../tabs.html#porcupine.tabs.FileTab.save_as">[docs]</a>    <span class="k">def</span> <span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Ask the user where to save the file and save it there.</span>
 
 <span class="sd">        Returns True if the file was saved, and False if the user</span>
@@ -919,10 +917,10 @@
 <span class="sd">        asking the user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">path_string</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="o">**</span><span class="n">_state</span><span class="o">.</span><span class="n">filedialog_kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+            <span class="n">path_string</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="o">**</span><span class="n">_state</span><span class="o">.</span><span class="n">filedialog_kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">path_string</span><span class="p">:</span>  <span class="c1"># it may be &#39;&#39; because tkinter</span>
                 <span class="k">return</span> <span class="kc">False</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
 
         <span class="c1"># see equivalent()</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>

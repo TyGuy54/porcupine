@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pathlib &#8212; Porcupine API 0.97.0 documentation</title>
+    <title>pathlib &#8212; Porcupine API 0.98.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -165,16 +165,25 @@
     <span class="n">ext_namespace_prefix</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\\\\</span><span class="s1">?</span><span class="se">\\</span><span class="s1">&#39;</span>
 
     <span class="n">reserved_names</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">{</span><span class="s1">&#39;CON&#39;</span><span class="p">,</span> <span class="s1">&#39;PRN&#39;</span><span class="p">,</span> <span class="s1">&#39;AUX&#39;</span><span class="p">,</span> <span class="s1">&#39;NUL&#39;</span><span class="p">}</span> <span class="o">|</span>
-        <span class="p">{</span><span class="s1">&#39;COM</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)}</span> <span class="o">|</span>
-        <span class="p">{</span><span class="s1">&#39;LPT</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)}</span>
+        <span class="p">{</span><span class="s1">&#39;CON&#39;</span><span class="p">,</span> <span class="s1">&#39;PRN&#39;</span><span class="p">,</span> <span class="s1">&#39;AUX&#39;</span><span class="p">,</span> <span class="s1">&#39;NUL&#39;</span><span class="p">,</span> <span class="s1">&#39;CONIN$&#39;</span><span class="p">,</span> <span class="s1">&#39;CONOUT$&#39;</span><span class="p">}</span> <span class="o">|</span>
+        <span class="p">{</span><span class="s1">&#39;COM</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;123456789</span><span class="se">\xb9\xb2\xb3</span><span class="s1">&#39;</span><span class="p">}</span> <span class="o">|</span>
+        <span class="p">{</span><span class="s1">&#39;LPT</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;123456789</span><span class="se">\xb9\xb2\xb3</span><span class="s1">&#39;</span><span class="p">}</span>
         <span class="p">)</span>
 
     <span class="c1"># Interesting findings about extended paths:</span>
-    <span class="c1"># - &#39;\\?\c:\a&#39;, &#39;//?/c:\a&#39; and &#39;//?/c:/a&#39; are all supported</span>
-    <span class="c1">#   but &#39;\\?\c:/a&#39; is not</span>
-    <span class="c1"># - extended paths are always absolute; &quot;relative&quot; extended paths will</span>
-    <span class="c1">#   fail.</span>
+    <span class="c1"># * &#39;\\?\c:\a&#39; is an extended path, which bypasses normal Windows API</span>
+    <span class="c1">#   path processing. Thus relative paths are not resolved and slash is not</span>
+    <span class="c1">#   translated to backslash. It has the native NT path limit of 32767</span>
+    <span class="c1">#   characters, but a bit less after resolving device symbolic links,</span>
+    <span class="c1">#   such as &#39;\??\C:&#39; =&gt; &#39;\Device\HarddiskVolume2&#39;.</span>
+    <span class="c1"># * &#39;\\?\c:/a&#39; looks for a device named &#39;C:/a&#39; because slash is a</span>
+    <span class="c1">#   regular name character in the object namespace.</span>
+    <span class="c1"># * &#39;\\?\c:\foo/bar&#39; is invalid because &#39;/&#39; is illegal in NT filesystems.</span>
+    <span class="c1">#   The only path separator at the filesystem level is backslash.</span>
+    <span class="c1"># * &#39;//?/c:\a&#39; and &#39;//?/c:/a&#39; are effectively equivalent to &#39;\\.\c:\a&#39; and</span>
+    <span class="c1">#   thus limited to MAX_PATH.</span>
+    <span class="c1"># * Prior to Windows 8, ANSI API bytes paths are limited to MAX_PATH,</span>
+    <span class="c1">#   even with the &#39;\\?\&#39; prefix.</span>
 
     <span class="k">def</span> <span class="nf">splitroot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">):</span>
         <span class="n">first</span> <span class="o">=</span> <span class="n">part</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
@@ -264,15 +273,16 @@
 
     <span class="k">def</span> <span class="nf">is_reserved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parts</span><span class="p">):</span>
         <span class="c1"># NOTE: the rules for reserved names seem somewhat complicated</span>
-        <span class="c1"># (e.g. r&quot;..\NUL&quot; is reserved but not r&quot;foo\NUL&quot;).</span>
-        <span class="c1"># We err on the side of caution and return True for paths which are</span>
-        <span class="c1"># not considered reserved by Windows.</span>
+        <span class="c1"># (e.g. r&quot;..\NUL&quot; is reserved but not r&quot;foo\NUL&quot; if &quot;foo&quot; does not</span>
+        <span class="c1"># exist). We err on the side of caution and return True for paths</span>
+        <span class="c1"># which are not considered reserved by Windows.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">parts</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\\\</span><span class="s1">&#39;</span><span class="p">):</span>
             <span class="c1"># UNC paths are never reserved</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reserved_names</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reserved_names</span>
 
     <span class="k">def</span> <span class="nf">make_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="c1"># Under Windows, file URIs use the UTF-8 encoding.</span>

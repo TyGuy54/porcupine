@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings &#8212; Porcupine API 0.97.0 documentation</title>
+    <title>porcupine.settings &#8212; Porcupine API 0.98.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -40,10 +40,10 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">tkinter.font</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">ttk</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
 
@@ -104,7 +104,7 @@
 
 
 <span class="k">def</span> <span class="nf">_type_check</span><span class="p">(</span><span class="n">type_</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
-    <span class="c1"># dacite tricks needed for validating e.g. objects of type Optional[pathlib.Path]</span>
+    <span class="c1"># dacite tricks needed for validating e.g. objects of type Optional[Path]</span>
     <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
     <span class="k">class</span> <span class="nc">ValueContainer</span><span class="p">:</span>
         <span class="vm">__annotations__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">type_</span><span class="p">}</span>
@@ -293,7 +293,7 @@
     <span class="c1"># https://stackoverflow.com/q/61471700</span>
     <span class="c1"># fmt: off</span>
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span> <span class="o">...</span>
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">LineEnding</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineEnding</span><span class="p">:</span> <span class="o">...</span>
     <span class="nd">@overload</span>
@@ -317,14 +317,15 @@
 <span class="sd">            foo = settings.get(&#39;something&#39;, str)</span>
 <span class="sd">            reveal_type(foo)  # str</span>
 
-<span class="sd">            shitty_bar = settings.get(&#39;something&#39;, Optional[pathlib.Path])</span>
+<span class="sd">            from pathlib import Path</span>
+<span class="sd">            shitty_bar = settings.get(&#39;something&#39;, Optional[Path])</span>
 <span class="sd">            reveal_type(shitty_bar)  # Any</span>
 
 <span class="sd">        Use a type annotation to work around this (and make sure to write the</span>
 <span class="sd">        same type two times)::</span>
 
-<span class="sd">            good_bar: pathlib.Path | None = settings.get(&#39;something&#39;, Optional[pathlib.Path])</span>
-<span class="sd">            reveal_type(good_bar)  # Optional[pathlib.Path]</span>
+<span class="sd">            good_bar: Path | None = settings.get(&#39;something&#39;, Optional[Path])</span>
+<span class="sd">            reveal_type(good_bar)  # Optional[Path]</span>
 
 <span class="sd">        Before Python 3.10, you can&#39;t use the new ``|`` syntax as an argument to ``settings.get()``,</span>
 <span class="sd">        even though it otherwise works with ``from __future__ import annotations``.</span>
@@ -385,8 +386,8 @@
     <span class="k">return</span> <span class="n">obj</span>
 
 
-<span class="k">def</span> <span class="nf">get_json_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dirs</span><span class="o">.</span><span class="n">user_config_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;settings.json&quot;</span>
+<span class="k">def</span> <span class="nf">get_json_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">dirs</span><span class="o">.</span><span class="n">user_config_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;settings.json&quot;</span>
 
 
 <div class="viewcode-block" id="save"><a class="viewcode-back" href="../../settings.html#porcupine.settings.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -495,8 +496,8 @@
     <span class="p">)</span>
     <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;OK&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">dialog</span><span class="o">.</span><span class="n">withdraw</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
-    <span class="n">content</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
-    <span class="n">content</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+    <span class="n">content</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">content</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">content</span>
 
 
@@ -748,7 +749,7 @@
 
     <span class="k">def</span> <span class="nf">settings2panedwindow</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span>
-        <span class="n">pane_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">panes</span><span class="p">())</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+        <span class="n">pane_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">panes</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="n">pane_count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;setting panedwindow widths from </span><span class="si">{</span><span class="n">option_name</span><span class="si">}</span><span class="s2"> setting: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -769,7 +770,7 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">panedwindow2settings</span><span class="p">(</span><span class="n">junk</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">set_</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="p">[</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">sashpos</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">panes</span><span class="p">())</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+        <span class="n">set_</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="p">[</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">sashpos</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">panedwindow</span><span class="o">.</span><span class="n">panes</span><span class="p">())</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
 
     <span class="c1"># don&#39;t know why after_idle is needed, but it is</span>
     <span class="n">panedwindow</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
@@ -788,8 +789,7 @@
     <span class="n">tcl_interpreter</span> <span class="o">=</span> <span class="n">get_dialog_content</span><span class="p">()</span><span class="o">.</span><span class="n">tk</span>
 
     <span class="c1"># https://core.tcl-lang.org/tk/info/3767882e06</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">tcl_interpreter</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;info patchlevel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
-    <span class="k">if</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;emoji&quot;</span> <span class="ow">in</span> <span class="n">font_family</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+    <span class="k">if</span> <span class="s2">&quot;emoji&quot;</span> <span class="ow">in</span> <span class="n">font_family</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="c1"># Let&#39;s first ask Tcl whether the font is fixed. This is fastest but</span>
@@ -811,7 +811,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_monospace_font_families</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dirs</span><span class="o">.</span><span class="n">user_cache_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;font_cache.json&quot;</span>
+    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">dirs</span><span class="o">.</span><span class="n">user_cache_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;font_cache.json&quot;</span>
     <span class="n">all_families</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">families</span><span class="p">()))</span>
 
     <span class="c1"># This is surprisingly slow when there are lots of fonts. Let&#39;s cache.</span>

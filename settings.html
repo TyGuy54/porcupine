@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.97.0 documentation</title>
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.98.0 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -70,14 +70,15 @@ but sometimes it returns Any because mypy sucks:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">foo</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 <span class="n">reveal_type</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>  <span class="c1"># str</span>
 
-<span class="n">shitty_bar</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;something&#39;</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">])</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="n">shitty_bar</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;something&#39;</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span>
 <span class="n">reveal_type</span><span class="p">(</span><span class="n">shitty_bar</span><span class="p">)</span>  <span class="c1"># Any</span>
 </pre></div>
 </div>
 <p>Use a type annotation to work around this (and make sure to write the
 same type two times):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">good_bar</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;something&#39;</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">])</span>
-<span class="n">reveal_type</span><span class="p">(</span><span class="n">good_bar</span><span class="p">)</span>  <span class="c1"># Optional[pathlib.Path]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">good_bar</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;something&#39;</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span>
+<span class="n">reveal_type</span><span class="p">(</span><span class="n">good_bar</span><span class="p">)</span>  <span class="c1"># Optional[Path]</span>
 </pre></div>
 </div>
 <p>Before Python 3.10, you can’t use the new <code class="docutils literal notranslate"><span class="pre">|</span></code> syntax as an argument to <code class="docutils literal notranslate"><span class="pre">settings.get()</span></code>,
