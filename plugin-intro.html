@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.98.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Introduction to Writing Plugins &#8212; Porcupine API 0.99.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="introduction-to-writing-plugins">
+  <section id="introduction-to-writing-plugins">
 <span id="plugin-intro"></span><h1>Introduction to Writing Plugins<a class="headerlink" href="#introduction-to-writing-plugins" title="Permalink to this headline">¶</a></h1>
 <p>Porcupine is written in Python 3, and it can be extended a lot by writing
 plugins for it in Python 3. Writing plugins is easy, but this tutorial and
@@ -44,7 +45,7 @@ Porcupine’s API documentation assume
 whole tutorial, read at least
 <a class="reference internal" href="#plugin-intro-pitfalls"><span class="std std-ref">the pitfall section</span></a>.</p>
 </div>
-<div class="section" id="where-are-the-plugins">
+<section id="where-are-the-plugins">
 <h2>Where are the plugins?<a class="headerlink" href="#where-are-the-plugins" title="Permalink to this headline">¶</a></h2>
 <p>At the time of writing this guide, making a new plugin usually requires some
 changes to the rest of Porcupine, so you should start by following
@@ -69,8 +70,8 @@ The plugins that come with Porcupine are in a different <code class="docutils li
 will put your plugin. It can be either of the two <code class="docutils literal notranslate"><span class="pre">plugins</span></code> folders.
 If you want your plugin to come with Porcupine, then you shouldn’t use your
 user-specific <code class="docutils literal notranslate"><span class="pre">plugins</span></code> folder.</p>
-</div>
-<div class="section" id="hello-world">
+</section>
+<section id="hello-world">
 <h2>Hello World!<a class="headerlink" href="#hello-world" title="Permalink to this headline">¶</a></h2>
 <p>Create a <code class="docutils literal notranslate"><span class="pre">hello.py</span></code> to your plugin directory, and add this code to it:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span>
@@ -117,8 +118,8 @@ always called before our <code class="docutils literal notranslate"><span class=
 </li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="a-step-back">
+</section>
+<section id="a-step-back">
 <h2>A Step Back<a class="headerlink" href="#a-step-back" title="Permalink to this headline">¶</a></h2>
 <p>Porcupine’s plugin API is powerful, and many of Porcupine’s features are
 implemented as plugins. They come with Porcupine (see <a class="reference internal" href="#where-are-the-plugins">Where are the plugins?</a>
@@ -134,8 +135,8 @@ with <code class="docutils literal notranslate"><span class="pre">pip</span></co
 </div>
 <p>Without plugins, Porcupine is a window with just the menubar in it,
 although you can still create and open files.</p>
-</div>
-<div class="section" id="porcupine-s-widgets">
+</section>
+<section id="porcupine-s-widgets">
 <h2>Porcupine’s Widgets<a class="headerlink" href="#porcupine-s-widgets" title="Permalink to this headline">¶</a></h2>
 <p>Here are the widgets that Porcupine itself creates without any plugins:</p>
 <img alt="_images/no-plugins.png" src="_images/no-plugins.png" />
@@ -162,8 +163,8 @@ file, but you can also create custom tabs that contain any tkinter widgets.
 See <a class="reference internal" href="tabs.html#module-porcupine.tabs" title="porcupine.tabs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.tabs</span></code></a> for more documentation about tabs.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="virtual-events">
+</section>
+<section id="virtual-events">
 <span id="id1"></span><h2>Virtual Events<a class="headerlink" href="#virtual-events" title="Permalink to this headline">¶</a></h2>
 <p>I added this short section here because not all tkinter users have seen virtual
 events before. For example, code like this prints <code class="docutils literal notranslate"><span class="pre">hi</span></code>:</p>
@@ -181,12 +182,12 @@ to them in plugins.</p>
 <code class="docutils literal notranslate"><span class="pre">&lt;&lt;PrintHi&gt;&gt;</span></code> event anywhere, so if we spell <code class="docutils literal notranslate"><span class="pre">&lt;PrintHi&gt;&gt;</span></code> correctly in one
 place and misspell it like <code class="docutils literal notranslate"><span class="pre">&lt;&lt;PirntHi&gt;&gt;</span></code> somewhere else we don’t get any
 errors.</p>
-</div>
-<div class="section" id="potential-pitfalls">
+</section>
+<section id="potential-pitfalls">
 <span id="plugin-intro-pitfalls"></span><h2>Potential Pitfalls<a class="headerlink" href="#potential-pitfalls" title="Permalink to this headline">¶</a></h2>
 <p>Most tkinter things work in Porcupine like you would expect them to work, but
 there are a few things that you should be aware of.</p>
-<div class="section" id="use-add-true">
+<section id="use-add-true">
 <h3>Use add=True<a class="headerlink" href="#use-add-true" title="Permalink to this headline">¶</a></h3>
 <p>When you bind something that another plugin might need to bind as well, use the
 <code class="docutils literal notranslate"><span class="pre">add=True</span></code> argument to <code class="docutils literal notranslate"><span class="pre">bind()</span></code>. For example, let’s say you have something
@@ -212,8 +213,8 @@ if we had done this instead:</p>
 <p>Unfortunately tkinter’s <code class="docutils literal notranslate"><span class="pre">unbind()</span></code> method is stupid and it unbinds
 everything, regardless of the second argument passed into it (see
 <a class="reference external" href="https://github.com/python/cpython/blob/dff9b5f9d62a/Lib/tkinter/__init__.py#L1249">the source code</a>).</p>
-</div>
-<div class="section" id="binding-key-presses-globally">
+</section>
+<section id="binding-key-presses-globally">
 <h3>Binding Key Presses Globally<a class="headerlink" href="#binding-key-presses-globally" title="Permalink to this headline">¶</a></h3>
 <p>If you want to bind a key press so that pressing it anywhere in Porcupine does something,
 you should probably add a menu item for it with <a class="reference internal" href="menubar.html#module-porcupine.menubar" title="porcupine.menubar"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.menubar</span></code></a>,
@@ -224,8 +225,8 @@ which key combination (if any) does your thing.</p>
 <em>Settings</em> menu at top, then <em>Config Files</em>.
 By default, it contains a link to Porcupine’s <code class="docutils literal notranslate"><span class="pre">default_keybindings.tcl</span></code> in a comment,
 and that contains many example key bindings.</p>
-</div>
-<div class="section" id="shift-tab">
+</section>
+<section id="shift-tab">
 <h3>Shift-Tab<a class="headerlink" href="#shift-tab" title="Permalink to this headline">¶</a></h3>
 <p>A common thing to do in plugins is to bind something on the text widget of
 every <a class="reference internal" href="tabs.html#porcupine.tabs.FileTab" title="porcupine.tabs.FileTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTab</span></code></a>. The callbacks may
@@ -279,9 +280,9 @@ notified of those tab presses that this plugin was able to autocomplete with
 </pre></div>
 </div>
 <p>See <a class="reference external" href="https://github.com/Akuli/porcupine/tree/master/porcupine/plugins/indent_block.py">porcupine/plugins/indent_block.py</a> for a complete example plugin.</p>
-</div>
-</div>
-<div class="section" id="cleaning-up-bindings">
+</section>
+</section>
+<section id="cleaning-up-bindings">
 <h2>Cleaning Up Bindings<a class="headerlink" href="#cleaning-up-bindings" title="Permalink to this headline">¶</a></h2>
 <p>A binding like <code class="docutils literal notranslate"><span class="pre">widget.bind('&lt;Foo&gt;',</span> <span class="pre">callback,</span> <span class="pre">...)</span></code> creates a Tcl command that runs
 the Python <code class="docutils literal notranslate"><span class="pre">callback</span></code> function. By default, those Tcl commands are cleaned up when
@@ -327,8 +328,8 @@ get added.</p>
 <p>A “better” fix is to avoid running the same bind code multiple times.
 For example, you could create one tag that includes all the bindings, and then apply two
 tags in the loop, the <code class="docutils literal notranslate"><span class="pre">f'foo_{index}'</span></code> tag and the tag that does the bindings.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -383,7 +384,7 @@ tags in the loop, the <code class="docutils literal notranslate"><span class="pr
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -405,7 +406,7 @@ tags in the loop, the <code class="docutils literal notranslate"><span class="pr
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

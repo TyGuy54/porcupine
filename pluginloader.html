@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.98.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>porcupine.pluginloader — The module that loads plugins on startup &#8212; Porcupine API 0.99.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,52 +33,52 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-porcupine.pluginloader">
+  <section id="module-porcupine.pluginloader">
 <span id="porcupine-pluginloader-the-module-that-loads-plugins-on-startup"></span><h1><a class="reference internal" href="#module-porcupine.pluginloader" title="porcupine.pluginloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code></a> — The module that loads plugins on startup<a class="headerlink" href="#module-porcupine.pluginloader" title="Permalink to this headline">¶</a></h1>
 <p>In this documentation, a plugin name means no file extension or
 <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.</span></code> prefix, e.g. <code class="docutils literal notranslate"><span class="pre">highlight</span></code> instead of <code class="docutils literal notranslate"><span class="pre">highlight.py</span></code>
 or <code class="docutils literal notranslate"><span class="pre">porcupine.plugins.highlight</span></code>.</p>
 <dl class="py class">
-<dt id="porcupine.pluginloader.Status">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></code><code class="sig-name descname"><span class="pre">Status</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#Status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.Status" title="Permalink to this definition">¶</a></dt>
-<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code></a> represents the status of the plugin in the
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></span><span class="sig-name descname"><span class="pre">Status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/pluginloader.py#L26-L93"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.Status" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code></a> represents the status of the plugin in the
 currently running Porcupine process.</p>
 <dl class="py data">
-<dt id="porcupine.pluginloader.Status.LOADING">
-<code class="sig-name descname"><span class="pre">LOADING</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.LOADING" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status.LOADING">
+<span class="sig-name descname"><span class="pre">LOADING</span></span><a class="headerlink" href="#porcupine.pluginloader.Status.LOADING" title="Permalink to this definition">¶</a></dt>
 <dd><p>The plugin hasn’t been set up successfully yet, but no errors
 preventing the setup have occurred.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.pluginloader.Status.ACTIVE">
-<code class="sig-name descname"><span class="pre">ACTIVE</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.ACTIVE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status.ACTIVE">
+<span class="sig-name descname"><span class="pre">ACTIVE</span></span><a class="headerlink" href="#porcupine.pluginloader.Status.ACTIVE" title="Permalink to this definition">¶</a></dt>
 <dd><p>The plugin was imported and its <code class="docutils literal notranslate"><span class="pre">setup()</span></code> function was called successfully.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.pluginloader.Status.DISABLED_BY_SETTINGS">
-<code class="sig-name descname"><span class="pre">DISABLED_BY_SETTINGS</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.DISABLED_BY_SETTINGS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status.DISABLED_BY_SETTINGS">
+<span class="sig-name descname"><span class="pre">DISABLED_BY_SETTINGS</span></span><a class="headerlink" href="#porcupine.pluginloader.Status.DISABLED_BY_SETTINGS" title="Permalink to this definition">¶</a></dt>
 <dd><p>The plugin wasn’t loaded because it’s in the <code class="docutils literal notranslate"><span class="pre">disabled_plugins</span></code>
 setting. See <a class="reference internal" href="settings.html#module-porcupine.settings" title="porcupine.settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.pluginloader.Status.DISABLED_ON_COMMAND_LINE">
-<code class="sig-name descname"><span class="pre">DISABLED_ON_COMMAND_LINE</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.DISABLED_ON_COMMAND_LINE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status.DISABLED_ON_COMMAND_LINE">
+<span class="sig-name descname"><span class="pre">DISABLED_ON_COMMAND_LINE</span></span><a class="headerlink" href="#porcupine.pluginloader.Status.DISABLED_ON_COMMAND_LINE" title="Permalink to this definition">¶</a></dt>
 <dd><p>The plugin wasn’t loaded because it was listed in a
 <code class="docutils literal notranslate"><span class="pre">--without-plugins</span></code> argument given to Porcupine.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.pluginloader.Status.IMPORT_FAILED">
-<code class="sig-name descname"><span class="pre">IMPORT_FAILED</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.IMPORT_FAILED" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status.IMPORT_FAILED">
+<span class="sig-name descname"><span class="pre">IMPORT_FAILED</span></span><a class="headerlink" href="#porcupine.pluginloader.Status.IMPORT_FAILED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Importing the plugin raised an error.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.pluginloader.Status.SETUP_FAILED">
-<code class="sig-name descname"><span class="pre">SETUP_FAILED</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.SETUP_FAILED" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status.SETUP_FAILED">
+<span class="sig-name descname"><span class="pre">SETUP_FAILED</span></span><a class="headerlink" href="#porcupine.pluginloader.Status.SETUP_FAILED" title="Permalink to this definition">¶</a></dt>
 <dd><p>The plugin was imported successfully, but its <code class="docutils literal notranslate"><span class="pre">setup()</span></code> function
 raised an exception or logged an error.</p>
 <p>In a plugin named <code class="docutils literal notranslate"><span class="pre">foo</span></code>, any message logged with severity <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>
@@ -100,8 +101,8 @@ raised, the full traceback is shown instead.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.pluginloader.Status.CIRCULAR_DEPENDENCY_ERROR">
-<code class="sig-name descname"><span class="pre">CIRCULAR_DEPENDENCY_ERROR</span></code><a class="headerlink" href="#porcupine.pluginloader.Status.CIRCULAR_DEPENDENCY_ERROR" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.Status.CIRCULAR_DEPENDENCY_ERROR">
+<span class="sig-name descname"><span class="pre">CIRCULAR_DEPENDENCY_ERROR</span></span><a class="headerlink" href="#porcupine.pluginloader.Status.CIRCULAR_DEPENDENCY_ERROR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plugins with this status were imported, but their <code class="docutils literal notranslate"><span class="pre">setup_before</span></code> and
 <code class="docutils literal notranslate"><span class="pre">setup_after</span></code> lists make it impossible to determine the correct order
 for calling their <code class="docutils literal notranslate"><span class="pre">setup()</span></code> function. For example, if plugin <em>A</em>
@@ -113,9 +114,9 @@ should be set up before <em>A</em>, then <em>A</em>, <em>B</em> and <em>C</em> w
 </dd></dl>
 
 <dl class="py class">
-<dt id="porcupine.pluginloader.PluginInfo">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></code><code class="sig-name descname"><span class="pre">PluginInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">came_with_porcupine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.Status" title="porcupine.pluginloader.Status"><span class="pre">Status</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span> <span class="p"><span class="pre">|</span></span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a> <span class="p"><span class="pre">|</span></span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/pluginloader.html#PluginInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.PluginInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#module-dataclasses" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataclass</span></code></a> represents a plugin.</p>
+<dt class="sig sig-object py" id="porcupine.pluginloader.PluginInfo">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></span><span class="sig-name descname"><span class="pre">PluginInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">came_with_porcupine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.Status" title="porcupine.pluginloader.Status"><span class="pre">porcupine.pluginloader.Status</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a> <span class="p"><span class="pre">|</span></span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/pluginloader.py#L96-L122"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.PluginInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#module-dataclasses" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataclass</span></code></a> represents a plugin.</p>
 <p>It’s usually better to use <code class="docutils literal notranslate"><span class="pre">info.setup_before</span></code>
 instead of accessing <code class="docutils literal notranslate"><span class="pre">info.module.setup_before</span></code> directly.
 Not all plugins define a <code class="docutils literal notranslate"><span class="pre">setup_before</span></code> variable, and if it’s not present,
@@ -136,16 +137,16 @@ user-readable one-line message.</p></li>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.pluginloader.plugin_infos">
-<code class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></code><code class="sig-name descname"><span class="pre">plugin_infos</span></code><em class="property"><span class="pre">:</span> <span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo"><span class="pre">PluginInfo</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#porcupine.pluginloader.plugin_infos" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.plugin_infos">
+<span class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></span><span class="sig-name descname"><span class="pre">plugin_infos</span></span><em class="property"><span class="pre">:</span> <span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo"><span class="pre">PluginInfo</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#porcupine.pluginloader.plugin_infos" title="Permalink to this definition">¶</a></dt>
 <dd><p>This contains infos for all the plugins that the plugin loader knows about,
 including plugins that failed to load and disabled plugins.
 Don’t modify this sequence outside <code class="docutils literal notranslate"><span class="pre">porcupine/pluginloader.py</span></code>.</p>
 </dd></dl>
 
 <dl class="py virtualevent">
-<dt id="porcupine.pluginloader.PluginsLoaded">
-<em class="property"><span class="pre">virtual</span> <span class="pre">event</span> </em><code class="sig-name descname"><span class="pre">&lt;&lt;PluginsLoaded&gt;&gt;</span></code><a class="headerlink" href="#porcupine.pluginloader.PluginsLoaded" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.PluginsLoaded">
+<em class="property"><span class="pre">virtual</span> <span class="pre">event</span> </em><span class="sig-name descname"><span class="pre">&lt;&lt;PluginsLoaded&gt;&gt;</span></span><a class="headerlink" href="#porcupine.pluginloader.PluginsLoaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>This virtual event is generated once on the main window
 when the <code class="docutils literal notranslate"><span class="pre">setup()</span></code> methods of all plugins have been called on startup.
 Bind to it if you want to run things that must not happen
@@ -163,15 +164,15 @@ This event also runs after that happens.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.pluginloader.can_setup_while_running">
-<code class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></code><code class="sig-name descname"><span class="pre">can_setup_while_running</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo"><span class="pre">porcupine.pluginloader.PluginInfo</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="reference internal" href="_modules/porcupine/pluginloader.html#can_setup_while_running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.can_setup_while_running" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.can_setup_while_running">
+<span class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></span><span class="sig-name descname"><span class="pre">can_setup_while_running</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo"><span class="pre">porcupine.pluginloader.PluginInfo</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/pluginloader.py#L285-L321"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.can_setup_while_running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether the plugin can be set up now, without having to
 restart Porcupine.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.pluginloader.setup_while_running">
-<code class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></code><code class="sig-name descname"><span class="pre">setup_while_running</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo"><span class="pre">porcupine.pluginloader.PluginInfo</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/pluginloader.html#setup_while_running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.setup_while_running" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.pluginloader.setup_while_running">
+<span class="sig-prename descclassname"><span class="pre">porcupine.pluginloader.</span></span><span class="sig-name descname"><span class="pre">setup_while_running</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#porcupine.pluginloader.PluginInfo" title="porcupine.pluginloader.PluginInfo"><span class="pre">porcupine.pluginloader.PluginInfo</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/pluginloader.py#L324-L340"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.pluginloader.setup_while_running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the <code class="docutils literal notranslate"><span class="pre">setup_argument_parser()</span></code> and <code class="docutils literal notranslate"><span class="pre">setup()</span></code> functions now.</p>
 <p>Before calling this function, make sure that
 <a class="reference internal" href="#porcupine.pluginloader.can_setup_while_running" title="porcupine.pluginloader.can_setup_while_running"><code class="xref py py-func docutils literal notranslate"><span class="pre">can_setup_while_running()</span></code></a> returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
@@ -182,7 +183,7 @@ restart Porcupine.</p>
 <p>The functions documented above handle the errors coming from plugins,
 so there’s no need to use <code class="docutils literal notranslate"><span class="pre">try/except</span></code> when calling them.</p>
 </div>
-</div>
+</section>
 
 
           </div>
@@ -228,7 +229,7 @@ so there’s no need to use <code class="docutils literal notranslate"><span cla
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -250,7 +251,7 @@ so there’s no need to use <code class="docutils literal notranslate"><span cla
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.98.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>porcupine.settings — Porcupine’s setting manager &#8212; Porcupine API 0.99.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,16 +33,16 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-porcupine.settings">
+  <section id="module-porcupine.settings">
 <span id="porcupine-settings-porcupine-s-setting-manager"></span><h1><a class="reference internal" href="#module-porcupine.settings" title="porcupine.settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code></a> — Porcupine’s setting manager<a class="headerlink" href="#module-porcupine.settings" title="Permalink to this headline">¶</a></h1>
 <p>This module manages Porcupine’s settings and the <em>Porcupine Settings</em> dialog
 in the <em>Edit</em> menu.</p>
-<div class="section" id="getting-and-setting">
+<section id="getting-and-setting">
 <h2>Getting and Setting<a class="headerlink" href="#getting-and-setting" title="Permalink to this headline">¶</a></h2>
 <p>Use these functions for setting and getting values of options:</p>
 <dl class="py function">
-<dt id="porcupine.settings.set_">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">set_</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><span class="pre">object</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_converter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a> <span class="p"><span class="pre">|</span></span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="headerlink" href="#porcupine.settings.set_" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.set_">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">set_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_converter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L206-L264"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.set_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of an opiton.</p>
 <p>Set <code class="docutils literal notranslate"><span class="pre">from_config=True</span></code> if the value comes from a configuration
 file (see <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a>). That does two things:</p>
@@ -56,16 +57,16 @@ later when the option is added.</p></li>
 <p>You can specify <code class="docutils literal notranslate"><span class="pre">call_converter</span></code> to force the converter to be or
 to not be called.</p>
 <p>This function is not named <code class="docutils literal notranslate"><span class="pre">set</span></code> to avoid conflicting with the
-built-in <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> class.</p>
+built-in <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> class.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.get">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="headerlink" href="#porcupine.settings.get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.get">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L282-L318"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current value of an option.
 <em>type_</em> should be e.g. <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code> depending on what type the option is.
 You can also specify <code class="docutils literal notranslate"><span class="pre">object</span></code> to allow any type.</p>
-<p>This method works correctly for <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>,
+<p>This method works correctly for <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>,
 but sometimes it returns Any because mypy sucks:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">foo</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 <span class="n">reveal_type</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>  <span class="c1"># str</span>
@@ -93,10 +94,16 @@ back. This is an easy way to make sure that change events run every
 time the value changes.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="porcupine.settings.debug_dump">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">debug_dump</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L320-L333"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.debug_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print all settings and their values. This is useful for debugging.</p>
+</dd></dl>
+
 <p>Porcupine has these options by default (but you can add your own options too, see below):</p>
 <blockquote>
 <div><dl>
-<dt><code class="docutils literal notranslate"><span class="pre">font_family</span></code>: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> <br /> <code class="docutils literal notranslate"><span class="pre">font_size</span></code>: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></dt><dd><p>The font family and size used in Porcupine’s main text widget.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">font_family</span></code>: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> <br /> <code class="docutils literal notranslate"><span class="pre">font_size</span></code>: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></dt><dd><p>The font family and size used in Porcupine’s main text widget.</p>
 <p>Porcupine also keeps these settings in a special font named
 <code class="docutils literal notranslate"><span class="pre">TkFixedFont</span></code>, so if you want to use this font in a widget just
 pass it a <code class="docutils literal notranslate"><span class="pre">font='TkFixedFont'</span></code> option. <code class="docutils literal notranslate"><span class="pre">Text</span></code> widgets use
@@ -108,7 +115,7 @@ string:</p>
 </pre></div>
 </div>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">pygments_style</span></code>: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></dt><dd><p>Name of the current Pygments style used for syntax highlighting.
+<dt><code class="docutils literal notranslate"><span class="pre">pygments_style</span></code>: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></dt><dd><p>Name of the current Pygments style used for syntax highlighting.
 Use this option like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porcupine</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">styles</span>
@@ -117,7 +124,7 @@ Use this option like this:</p>
 </div>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">disabled_plugins</span></code>: list[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+<p><code class="docutils literal notranslate"><span class="pre">disabled_plugins</span></code>: list[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
 <blockquote>
 <div><p>Names of plugins that the user has disabled. See <a class="reference internal" href="pluginloader.html#module-porcupine.pluginloader" title="porcupine.pluginloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.pluginloader</span></code></a>.</p>
 </div></blockquote>
@@ -127,29 +134,29 @@ Use this option like this:</p>
 </div></blockquote>
 </div></blockquote>
 <dl class="py class">
-<dt id="porcupine.settings.LineEnding">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">LineEnding</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#LineEnding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.LineEnding" title="Permalink to this definition">¶</a></dt>
-<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code></a> has these members representing different ways to write
+<dt class="sig sig-object py" id="porcupine.settings.LineEnding">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">LineEnding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L26-L70"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.LineEnding" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://docs.python.org/3/library/enum.html#module-enum" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code></a> has these members representing different ways to write
 newline characters to files:</p>
 <dl class="py data">
-<dt id="porcupine.settings.LineEnding.CR">
-<code class="sig-name descname"><span class="pre">CR</span></code><a class="headerlink" href="#porcupine.settings.LineEnding.CR" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.LineEnding.CR">
+<span class="sig-name descname"><span class="pre">CR</span></span><a class="headerlink" href="#porcupine.settings.LineEnding.CR" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">\r</span></code>, aka “Mac line endings”.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.settings.LineEnding.LF">
-<code class="sig-name descname"><span class="pre">LF</span></code><a class="headerlink" href="#porcupine.settings.LineEnding.LF" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.LineEnding.LF">
+<span class="sig-name descname"><span class="pre">LF</span></span><a class="headerlink" href="#porcupine.settings.LineEnding.LF" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">\n</span></code>, aka “Linux/Unix line endings”.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="porcupine.settings.LineEnding.CRLF">
-<code class="sig-name descname"><span class="pre">CRLF</span></code><a class="headerlink" href="#porcupine.settings.LineEnding.CRLF" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.LineEnding.CRLF">
+<span class="sig-name descname"><span class="pre">CRLF</span></span><a class="headerlink" href="#porcupine.settings.LineEnding.CRLF" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">\r\n</span></code>, aka “Windows line endings”.</p>
 </dd></dl>
 
-<p>Python’s <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> function translates all of these to the string
+<p>Python’s <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> function translates all of these to the string
 <code class="docutils literal notranslate"><span class="pre">'\n'</span></code> when reading files and uses a platform-specific default when
 writing files.</p>
 <p>There are 3 ways to represent line endings in Porcupine, and
@@ -157,7 +164,7 @@ different things want the line ending represented in different ways:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>The strings <code class="docutils literal notranslate"><span class="pre">'\r'</span></code>, <code class="docutils literal notranslate"><span class="pre">'\n'</span></code> and <code class="docutils literal notranslate"><span class="pre">'\r\n'</span></code>. For example,
-<a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> line endings are specified like this.</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> line endings are specified like this.</p></li>
 <li><p>The strings <code class="docutils literal notranslate"><span class="pre">'CR'</span></code>, <code class="docutils literal notranslate"><span class="pre">'LF'</span></code> and <code class="docutils literal notranslate"><span class="pre">'CRLF'</span></code>. Line endings are
 typically defined this way in configuration files, such as
 <a class="reference external" href="https://editorconfig.org/">editorconfig</a> files.</p></li>
@@ -178,14 +185,14 @@ raises an error if the string is invalid.</p></li>
 <p>Use <code class="docutils literal notranslate"><span class="pre">LineEnding(os.linesep)</span></code> to get the platform-specific default.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="custom-options">
+</section>
+<section id="custom-options">
 <h2>Custom Options<a class="headerlink" href="#custom-options" title="Permalink to this headline">¶</a></h2>
 <p>You can use <a class="reference internal" href="#module-porcupine.settings" title="porcupine.settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">porcupine.settings</span></code></a> for storing things that shouldn’t reset every
 time Porcupine is restarted.</p>
 <dl class="py function">
-<dt id="porcupine.settings.add_option">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">add_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">option_name:</span> <span class="pre">str,</span> <span class="pre">default:</span> <span class="pre">Any,</span> <span class="pre">type_:</span> <span class="pre">Any</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">*,</span> <span class="pre">converter:</span> <span class="pre">Callable[[Any],</span> <span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_default_converter&gt;,</span> <span class="pre">exist_ok:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="headerlink" href="#porcupine.settings.add_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.add_option">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">add_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">option_name:</span> <span class="pre">str,</span> <span class="pre">default:</span> <span class="pre">Any,</span> <span class="pre">type_:</span> <span class="pre">Optional[Any]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">*,</span> <span class="pre">converter:</span> <span class="pre">Callable[[Any],</span> <span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_default_converter&gt;,</span> <span class="pre">exist_ok:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L124-L204"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a custom option.</p>
 <p>The type of <em>default</em> determines how <a class="reference internal" href="#porcupine.settings.set_" title="porcupine.settings.set_"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_()</span></code></a> and <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> behave.
 For example, if <em>default</em> is a string, then
@@ -252,19 +259,19 @@ edited directly by users. Instead, please provide some way to change the
 settings with a GUI, such as a handle that can be dragged to change the size
 settings of a widget, or add something to the setting dialog (see below).</p>
 </div>
-</div>
-<div class="section" id="the-settings-dialog">
+</section>
+<section id="the-settings-dialog">
 <h2>The Settings Dialog<a class="headerlink" href="#the-settings-dialog" title="Permalink to this headline">¶</a></h2>
 <p>Click <em>Porcupine Settings</em> in the <em>Edit</em> menu to open the dialog.</p>
 <dl class="py function">
-<dt id="porcupine.settings.get_dialog_content">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">get_dialog_content</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">tkinter.ttk.Frame</span><a class="reference internal" href="_modules/porcupine/settings.html#get_dialog_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.get_dialog_content" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.get_dialog_content">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">get_dialog_content</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tkinter.ttk.Frame</span></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L508-L549"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.get_dialog_content" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget where setting changing widgets should be added.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">settings.get_dialog_content().winfo_toplevel()</span></code> to access the dialog
 itself. It’s a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Toplevel</span></code>.</p>
 <p>Use grid with the returned widget. Its columns are configured like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>,-----------------------------------------------------------.
-| Porcupine Settings                                        |
+| Porcupine Settings                      |  _  |  O  |  X  |
 |-----------------------------------------------------------|
 |                           :                           :   |
 |                           :                           :col|
@@ -284,10 +291,10 @@ itself. It’s a <code class="xref py py-class docutils literal notranslate"><sp
 |                           :                           :   |
 |                           :                           :   |
 |                           :                           :   |
-| ========================================================= |
-|                                   ,---------. ,---------. |
-|                                   |   OK    | |  Reset  | |
-|                                   `---------&#39; `---------&#39; |
+|===========================================================|
+|  ,---------.                                 ,---------.  |
+|  |  Reset  |                                 |   OK    |  |
+|  `---------&#39;                                 `---------&#39;  |
 `-----------------------------------------------------------&#39;
 </pre></div>
 </div>
@@ -301,8 +308,8 @@ All of these return the added widget.
 A label that displays <em>text</em> is added to column 0 (see the ascii art above).
 When setting the values, the converter passed to <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> is used.</p>
 <dl class="py function">
-<dt id="porcupine.settings.add_entry">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">add_entry</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">entry_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">tkinter.ttk.Entry</span><a class="reference internal" href="_modules/porcupine/settings.html#add_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_entry" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.add_entry">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">add_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">entry_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tkinter.ttk.Entry</span></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L616-L633"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_entry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Entry</span></code> to the setting dialog.</p>
 <p>A label that displays <em>text</em> will be added next to the entry.
 All <code class="docutils literal notranslate"><span class="pre">**entry_kwargs</span></code> go to <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Entry</span></code>.</p>
@@ -314,8 +321,8 @@ Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.add_checkbutton">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">add_checkbutton</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">checkbutton_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">tkinter.ttk.Checkbutton</span><a class="reference internal" href="_modules/porcupine/settings.html#add_checkbutton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_checkbutton" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.add_checkbutton">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">add_checkbutton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">checkbutton_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tkinter.ttk.Checkbutton</span></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L636-L675"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_checkbutton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Checkbutton</span></code> to the setting dialog.</p>
 <p>All <code class="docutils literal notranslate"><span class="pre">**checkbutton_kwargs</span></code> go to <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Checkbutton</span></code>.
 You can do this, for example:</p>
@@ -338,10 +345,10 @@ checkbutton. Let me know if you need it.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.add_combobox">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">add_combobox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">combobox_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)"><span class="pre">tkinter.ttk.Combobox</span></a><a class="reference internal" href="_modules/porcupine/settings.html#add_combobox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_combobox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Combobox</span></code></a> to the setting dialog.</p>
-<p>All <code class="docutils literal notranslate"><span class="pre">**combobox_kwargs</span></code> go to <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Combobox</span></code></a>.
+<dt class="sig sig-object py" id="porcupine.settings.add_combobox">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">add_combobox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">combobox_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.10)"><span class="pre">tkinter.ttk.Combobox</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L678-L697"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_combobox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Combobox</span></code></a> to the setting dialog.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">**combobox_kwargs</span></code> go to <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Combobox" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Combobox</span></code></a>.
 Usually you should pass at least <code class="docutils literal notranslate"><span class="pre">values=list_of_strings</span></code>.</p>
 <p>The content of the combobox is checked whenever it changes.
 If it’s in <code class="docutils literal notranslate"><span class="pre">combobox['values']</span></code>
@@ -353,31 +360,31 @@ in <code class="docutils literal notranslate"><span class="pre">combobox['values
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.add_spinbox">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">add_spinbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">spinbox_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.9)"><span class="pre">tkinter.ttk.Spinbox</span></a><a class="reference internal" href="_modules/porcupine/settings.html#add_spinbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_spinbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code></a> to the setting dialog.</p>
-<p>All <code class="docutils literal notranslate"><span class="pre">**spinbox_kwargs</span></code> go to <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code></a>.
+<dt class="sig sig-object py" id="porcupine.settings.add_spinbox">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">add_spinbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">spinbox_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.10)"><span class="pre">tkinter.ttk.Spinbox</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L700-L716"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_spinbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code></a> to the setting dialog.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">**spinbox_kwargs</span></code> go to <a class="reference external" href="https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Spinbox" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.ttk.Spinbox</span></code></a>.
 Usually you should pass at least <code class="docutils literal notranslate"><span class="pre">from_=some_integer,</span> <span class="pre">to=another_integer</span></code>.</p>
 <p>The content of the spinbox is checked whenever it changes.
 If it’s a valid integer between <code class="docutils literal notranslate"><span class="pre">spinbox['from']</span></code> and <code class="docutils literal notranslate"><span class="pre">spinbox['to']</span></code> (inclusive),
-then the option given by <em>option_name</em> is set to the <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.
+then the option given by <em>option_name</em> is set to the <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.
 Otherwise <img alt="triangle" src="_images/triangle.gif" /> is shown.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.add_label">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">add_label</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">tkinter.ttk.Label</span><a class="reference internal" href="_modules/porcupine/settings.html#add_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_label" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.add_label">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">add_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tkinter.ttk.Label</span></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L784-L796"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.add_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add text to the setting dialog.</p>
 <p>This is useful for explaining what some options do with more than a few words.
 The text is always as wide as the dialog is, even when the dialog is resized.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="change-events">
+</section>
+<section id="change-events">
 <h2>Change Events<a class="headerlink" href="#change-events" title="Permalink to this headline">¶</a></h2>
 <dl class="py virtualevent">
-<dt id="porcupine.settings.SettingChanged-foo">
-<span id="porcupine.settings.SettingChanged:foo"></span><em class="property"><span class="pre">virtual</span> <span class="pre">event</span> </em><code class="sig-name descname"><span class="pre">&lt;&lt;SettingChanged:foo&gt;&gt;</span></code><a class="headerlink" href="#porcupine.settings.SettingChanged-foo" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.SettingChanged-foo">
+<span id="porcupine.settings.SettingChanged:foo"></span><em class="property"><span class="pre">virtual</span> <span class="pre">event</span> </em><span class="sig-name descname"><span class="pre">&lt;&lt;SettingChanged:foo&gt;&gt;</span></span><a class="headerlink" href="#porcupine.settings.SettingChanged-foo" title="Permalink to this definition">¶</a></dt>
 <dd><p>When any setting is changed,
 all widgets in the main window (see <a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a>)
 receive a virtual event named <code class="docutils literal notranslate"><span class="pre">&lt;&lt;SettingChanged:option_name&gt;&gt;</span></code>,
@@ -394,9 +401,10 @@ This way your callback won’t be called when the text widget doesn’t exist an
 use the bind method of <a class="reference internal" href="porcupine.html#porcupine.get_tab_manager" title="porcupine.get_tab_manager"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_tab_manager()</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Don’t use <a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a> for binding to <code class="docutils literal notranslate"><span class="pre">&lt;&lt;SettingChanged:foo&gt;&gt;</span></code>.
-The main window is a <a class="reference external" href="https://docs.python.org/3/library/tkinter.html#tkinter.Tk" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Tk</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Toplevel</span></code> widget,
+<p>Do not use <a class="reference internal" href="porcupine.html#porcupine.get_main_window" title="porcupine.get_main_window"><code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.get_main_window()</span></code></a> for binding to <code class="docutils literal notranslate"><span class="pre">&lt;&lt;SettingChanged:foo&gt;&gt;</span></code>.
+The main window is a <a class="reference external" href="https://docs.python.org/3/library/tkinter.html#tkinter.Tk" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Tk</span></code></a> widget,
 so it gets notified of its child widgets’ events too.
+(The same applies to <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Toplevel</span></code>.)
 For example, let’s say that  there are 100 widgets currently being shown in the main window,
 and you unwisely use the main window’s <code class="docutils literal notranslate"><span class="pre">bind()</span></code> to bind <code class="docutils literal notranslate"><span class="pre">&lt;&lt;SettingChanged:foo&gt;&gt;</span></code>.
 When the <code class="docutils literal notranslate"><span class="pre">foo</span></code> setting changes, your bind callback runs
@@ -404,43 +412,52 @@ When the <code class="docutils literal notranslate"><span class="pre">foo</span>
 once with <code class="docutils literal notranslate"><span class="pre">event.widget</span></code> set to the main window.
 This can cause annoying slowness.</p>
 </div>
-</div>
-<div class="section" id="misc-functions">
+<dl class="py function">
+<dt class="sig sig-object py" id="porcupine.settings.use_pygments_fg_and_bg">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">use_pygments_fg_and_bg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'pygments_style'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L827-L848"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.use_pygments_fg_and_bg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a callback whenever the pygments theme changes.</p>
+<p>The callback no longer runs once <code class="docutils literal notranslate"><span class="pre">widget</span></code> has been destroyed. It is
+called with the foreground and background color of the pygments theme as
+arguments.</p>
+</dd></dl>
+
+</section>
+<section id="misc-functions">
 <h2>Misc functions<a class="headerlink" href="#misc-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="porcupine.settings.reset">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">reset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/settings.html#reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.reset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.reset">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L356-L358"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set an option to its default value given to <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.reset_all">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">reset_all</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/settings.html#reset_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.reset_all" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.reset_all">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">reset_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L361-L368"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.reset_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset all settings, including the ones not shown in the setting dialog.
 Clicking the reset button of the setting dialog runs this function.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.show_dialog">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">show_dialog</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/settings.html#show_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.show_dialog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.show_dialog">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">show_dialog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L498-L505"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.show_dialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the “Porcupine Settings” dialog.</p>
 <p>This function is called when the user opens the dialog from the menu.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="porcupine.settings.save">
-<code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><a class="reference internal" href="_modules/porcupine/settings.html#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.save" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.save">
+<span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L383-L398"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the settings to the config file.</p>
 <p>Note that <code class="xref py py-func docutils literal notranslate"><span class="pre">porcupine.run()</span></code> always calls this before it returns,
 so usually you don’t need to worry about calling this yourself.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="non-global-settings">
+</section>
+<section id="non-global-settings">
 <h2>Non-global Settings<a class="headerlink" href="#non-global-settings" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="porcupine.settings.Settings">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></code><code class="sig-name descname"><span class="pre">Settings</span></code><a class="reference internal" href="_modules/porcupine/settings.html#Settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.Settings">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">porcupine.settings.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L112-L346"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class provides settings that behave a lot like the global settings described above,
 but each instance of <a class="reference internal" href="#porcupine.settings.Settings" title="porcupine.settings.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a> has its own options
 and isn’t related to other instances or global settings.
@@ -457,27 +474,32 @@ only one widget receives them.</p></li>
 in the documentation of the <a class="reference internal" href="#porcupine.settings.Settings" title="porcupine.settings.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a> instance,
 such as the documentation of an attribute with type <a class="reference internal" href="#porcupine.settings.Settings" title="porcupine.settings.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a>.</p>
 <dl class="py method">
-<dt id="porcupine.settings.Settings.set">
-<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#Settings.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings.set" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.Settings.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L206-L264"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings.set" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="porcupine.settings.Settings.get">
-<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tybe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#Settings.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings.get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.Settings.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tybe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L282-L318"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="porcupine.settings.Settings.add_option">
-<code class="sig-name descname"><span class="pre">add_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/porcupine/settings.html#Settings.add_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings.add_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="porcupine.settings.Settings.add_option">
+<span class="sig-name descname"><span class="pre">add_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L124-L204"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings.add_option" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="porcupine.settings.Settings.debug_dump">
+<span class="sig-name descname"><span class="pre">debug_dump</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/Akuli/porcupine/blob/73f259cb2bb815598142451a3db408ab307b37c9/porcupine/settings.py#L320-L333"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#porcupine.settings.Settings.debug_dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>These methods are just like the
-<a class="reference internal" href="#porcupine.settings.set_" title="porcupine.settings.set_"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_()</span></code></a>, <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> and <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> functions,
+<a class="reference internal" href="#porcupine.settings.set_" title="porcupine.settings.set_"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_()</span></code></a>, <a class="reference internal" href="#porcupine.settings.get" title="porcupine.settings.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a>, <a class="reference internal" href="#porcupine.settings.add_option" title="porcupine.settings.add_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_option()</span></code></a> and <a class="reference internal" href="#porcupine.settings.debug_dump" title="porcupine.settings.debug_dump"><code class="xref py py-func docutils literal notranslate"><span class="pre">debug_dump()</span></code></a> functions,
 but they do things with the <a class="reference internal" href="#porcupine.settings.Settings" title="porcupine.settings.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a> instance, not with the global settings.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -523,7 +545,7 @@ but they do things with the <a class="reference internal" href="#porcupine.setti
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -545,7 +567,7 @@ but they do things with the <a class="reference internal" href="#porcupine.setti
       &copy; 2017-2021 Akuli.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
